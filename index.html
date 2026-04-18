@@ -2,273 +2,413 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Unser Notizblock</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    min-height: 100vh;
-    background: #f5f0e8;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 16px 40px;
-    font-family: 'DM Sans', sans-serif;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(transparent, transparent 31px, #e0d8cc 31px, #e0d8cc 32px);
-    pointer-events: none;
-    opacity: 0.35;
-  }
-  .card {
-    background: #fffdf7;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08), 4px 4px 0 #e0d4b8, 8px 8px 0 #d4c8a8;
-    width: 100%;
-    max-width: 600px;
-    padding: 32px 28px 28px;
-    position: relative;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    left: 52px;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: #f0a0a0;
-    opacity: 0.5;
-  }
-  .header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding-left: 24px;
-  }
-  h1 {
-    font-family: 'Caveat', cursive;
-    font-size: 2.2rem;
-    color: #3d2b1f;
-    font-weight: 700;
-    line-height: 1.1;
-  }
-  h1 span { color: #c0392b; }
-  .status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.7rem;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding-top: 6px;
-    font-weight: 500;
-  }
-  .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #2ecc71;
-    box-shadow: 0 0 0 2px rgba(46,204,113,0.25);
-    animation: pulse 2s infinite;
-    flex-shrink: 0;
-  }
-  .dot.saving  { background: #f39c12; box-shadow: 0 0 0 2px rgba(243,156,18,0.25); animation: none; }
-  .dot.error   { background: #e74c3c; box-shadow: none; animation: none; }
-  .dot.loading { background: #aaa; box-shadow: none; animation: none; }
-  @keyframes pulse {
-    0%,100% { box-shadow: 0 0 0 2px rgba(46,204,113,0.25); }
-    50%      { box-shadow: 0 0 0 5px rgba(46,204,113,0); }
-  }
-  textarea {
-    width: 100%;
-    min-height: 380px;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'Caveat', cursive;
-    font-size: 1.25rem;
-    color: #2c1810;
-    line-height: 2rem;
-    resize: none;
-    padding: 4px 4px 4px 28px;
-    letter-spacing: 0.01em;
-  }
-  textarea::placeholder { color: #c8bfb0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* WhatsApp Buttons */
-  .notify-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 16px 4px 0 28px;
-  }
-  .btn-wa {
-    background: #25D366;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    border-radius: 4px;
-    padding: 8px 16px;
-    transition: background 0.15s;
-  }
-  .btn-wa:hover { background: #1ebe5d; }
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f0e8;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
 
-  /* Footer with Copy + Clear */
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px dashed #e0d4c0;
-    padding-left: 28px;
-  }
-  .char-count { font-size: 0.72rem; color: #bbb; font-weight: 300; }
-  .btn-group { display: flex; gap: 8px; }
-  .btn-copy {
-    background: #3d2b1f;
-    color: #f5f0e8;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 4px;
-    padding: 7px 14px;
-    transition: background 0.15s;
-  }
-  .btn-copy:hover { background: #5a3f30; }
-  .btn-clear {
-    background: transparent;
-    color: #bbb;
-    border: 1px solid #e0d4c0;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 4px;
-    padding: 7px 14px;
-    transition: all 0.15s;
-  }
-  .btn-clear:hover { color: #c0392b; border-color: #c0392b; background: #fff5f5; }
+/* ── Tab bar ── */
+.tab-bar {
+  display: flex;
+  align-items: flex-end;
+  padding: 8px 8px 0;
+  gap: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: #e8e0d0;
+  flex-shrink: 0;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab {
+  padding: 6px 13px;
+  border-radius: 6px 6px 0 0;
+  background: #d4c8a8;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: #7a6040;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid #c4b898;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.12s;
+  user-select: none;
+}
+.tab.active { background: #fffdf7; color: #3d2b1f; }
+.tab-close {
+  font-size: 0.6rem; color: #bbb; cursor: pointer;
+  padding: 1px 3px; border-radius: 2px;
+}
+.tab-close:hover { background: #e0d4c0; color: #c0392b; }
+.tab-add {
+  padding: 5px 11px;
+  background: transparent; border: none; cursor: pointer;
+  font-size: 1.1rem; color: #a09080;
+  border-radius: 6px 6px 0 0;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+.tab-add:hover { background: #d4c8a8; color: #3d2b1f; }
+
+/* ── Main area ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fffdf7;
+  position: relative;
+  overflow: hidden;
+  border-top: 2px solid #c4b898;
+}
+.main::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(transparent, transparent 31px, #e8e4d8 31px, #e8e4d8 32px);
+  pointer-events: none; opacity: 0.5; z-index: 0;
+}
+.main::after {
+  content: '';
+  position: absolute; left: 44px; top: 0; bottom: 0; width: 1px;
+  background: #f0a0a0; opacity: 0.6; pointer-events: none; z-index: 1;
+}
+
+/* ── Header ── */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 56px 6px 52px;
+  flex-shrink: 0; position: relative; z-index: 2;
+}
+.title { font-family: 'Caveat', cursive; font-size: 1.6rem; color: #3d2b1f; font-weight: 700; }
+.title span { color: #c0392b; }
+.status { display: flex; align-items: center; gap: 5px; font-size: 0.65rem; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; animation: pulse 2s infinite; flex-shrink: 0; }
+.dot.saving { background: #f39c12; animation: none; }
+.dot.error  { background: #e74c3c; animation: none; }
+.dot.loading { background: #ccc; animation: none; }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 2px rgba(46,204,113,0.25); }
+  50%      { box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+}
+
+/* ── Editor ── */
+.editor {
+  flex: 1; overflow-y: auto;
+  padding: 4px 56px 20px 52px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem; line-height: 2rem; color: #2c1810;
+  outline: none; position: relative; z-index: 2;
+  -webkit-user-select: text; user-select: text;
+  word-break: break-word;
+}
+.editor:empty::before {
+  content: 'Schreib hier los… beide sehen es sofort ✏️';
+  color: #c8bfb0; pointer-events: none;
+}
+.editor b, .editor strong { font-weight: 700; }
+.editor i, .editor em { font-style: italic; }
+.editor u { text-decoration: underline; }
+.editor s { text-decoration: line-through; }
+
+/* ── Footer ── */
+.footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 56px 10px 52px;
+  border-top: 1px dashed #e0d4c0;
+  flex-shrink: 0; position: relative; z-index: 2;
+  flex-wrap: wrap; gap: 6px;
+}
+.char-count { font-size: 0.68rem; color: #bbb; font-weight: 300; }
+.btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.btn {
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem; font-weight: 500;
+  border-radius: 4px; padding: 6px 11px;
+  transition: all 0.15s;
+}
+.btn-dark { background: #3d2b1f; color: #f5f0e8; }
+.btn-dark:hover { background: #5a3f30; }
+.btn-ghost { background: transparent; color: #bbb; border: 1px solid #e0d4c0; }
+.btn-ghost:hover { color: #c0392b; border-color: #c0392b; background: #fff5f5; }
+.btn-wa { background: #25D366; color: #fff; }
+.btn-wa:hover { background: #1ebe5d; }
+
+/* ── Selection toolbar ── */
+.sel-toolbar {
+  position: fixed;
+  display: none;
+  background: #2c1810;
+  border-radius: 7px;
+  padding: 3px 5px;
+  gap: 1px;
+  z-index: 1000;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  transform: translateX(-50%);
+}
+.sel-toolbar.visible { display: flex; }
+.sel-toolbar::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: #2c1810;
+}
+.sel-toolbar button {
+  background: transparent; border: none; color: #f5f0e8;
+  font-size: 0.82rem; font-weight: 700;
+  padding: 5px 9px; border-radius: 4px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  line-height: 1; min-width: 28px;
+}
+.sel-toolbar button:hover { background: rgba(255,255,255,0.18); }
+
+/* ── Floating emoji sidebar ── */
+.emoji-sidebar {
+  position: fixed;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 100;
+}
+.emoji-btn {
+  width: 44px; height: 44px;
+  border: 1.5px solid #e0d4c0;
+  background: #fffdf7;
+  border-radius: 50%;
+  font-size: 1.35rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.12s, box-shadow 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.emoji-btn:hover  { transform: scale(1.12); box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+.emoji-btn:active { transform: scale(0.93); }
 </style>
 </head>
 <body>
 
-<div class="card">
+<!-- Tab bar -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab-add" onclick="addTab()">＋</button>
+</div>
+
+<!-- Notepad -->
+<div class="main">
   <div class="header">
-    <h1>Unser<br><span>Notizblock</span></h1>
+    <div class="title">Unser <span>Notizblock</span></div>
     <div class="status">
       <div class="dot loading" id="dot"></div>
       <span id="statusText">Verbinden…</span>
     </div>
   </div>
 
-  <textarea id="note" placeholder="Schreib hier los… beide sehen es sofort ✏️"></textarea>
+  <div class="editor" id="editor" contenteditable="true" spellcheck="true"></div>
 
-  <!-- WhatsApp Benachrichtigungen -->
-  <div class="notify-row">
-    <button class="btn-wa" onclick="notify('4915159141811', 'Keks')">📲 Keks benachrichtigen</button>
-    <button class="btn-wa" onclick="notify('491781600941', 'Knuspi')">📲 Knuspi benachrichtigen</button>
-  </div>
-
-  <!-- Kopieren & Leeren -->
   <div class="footer">
     <span class="char-count" id="charCount">0 Zeichen</span>
     <div class="btn-group">
-      <button class="btn-clear" onclick="clearNote()">Leeren</button>
-      <button class="btn-copy" onclick="copyNote()">📋 Kopieren</button>
+      <button class="btn btn-ghost" onclick="clearNote()">Leeren</button>
+      <button class="btn btn-dark" id="copyBtn" onclick="copyNote()">📋 Kopieren</button>
+      <button class="btn btn-wa" onclick="notify('4915159141811')">📲 Keks</button>
+      <button class="btn btn-wa" onclick="notify('491781600941')">📲 Knuspi</button>
     </div>
   </div>
 </div>
 
-<!-- Firebase CDN -->
+<!-- Selection formatting toolbar -->
+<div class="sel-toolbar" id="selToolbar">
+  <button onmousedown="event.preventDefault(); fmt('bold')"><b>F</b></button>
+  <button onmousedown="event.preventDefault(); fmt('italic')"><i>K</i></button>
+  <button onmousedown="event.preventDefault(); fmt('underline')" style="text-decoration:underline">U</button>
+  <button onmousedown="event.preventDefault(); fmt('strikeThrough')" style="text-decoration:line-through">S</button>
+</div>
+
+<!-- Floating emoji buttons -->
+<div class="emoji-sidebar">
+  <button class="emoji-btn" onclick="insertEmoji('✅')">✅</button>
+  <button class="emoji-btn" onclick="insertEmoji('❌')">❌</button>
+  <button class="emoji-btn" onclick="insertEmoji('❓')">❓</button>
+</div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBlMPI2tEB5K8-9NNML5xqdNo7C8wXVSWM",
-    authDomain: "notizblock-knuspikeks.firebaseapp.com",
-    projectId: "notizblock-knuspikeks",
-    storageBucket: "notizblock-knuspikeks.firebasestorage.app",
-    messagingSenderId: "804470399417",
-    appId: "1:804470399417:web:1140f112253fc83ac69668"
-  };
+firebase.initializeApp({
+  apiKey: "AIzaSyBlMPI2tEB5K8-9NNML5xqdNo7C8wXVSWM",
+  authDomain: "notizblock-knuspikeks.firebaseapp.com",
+  projectId: "notizblock-knuspikeks",
+  storageBucket: "notizblock-knuspikeks.firebasestorage.app",
+  messagingSenderId: "804470399417",
+  appId: "1:804470399417:web:1140f112253fc83ac69668"
+});
+const db = firebase.firestore();
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const docRef = db.collection("notes").doc("shared");
+let tabs = [], activeTab = null, unsubNote = null;
+let localChange = false, saveTimer = null, savedRange = null;
 
-  const textarea  = document.getElementById("note");
-  const dot       = document.getElementById("dot");
-  const statusTxt = document.getElementById("statusText");
-  const charCount = document.getElementById("charCount");
+const editor     = document.getElementById('editor');
+const dot        = document.getElementById('dot');
+const statusTxt  = document.getElementById('statusText');
+const charCount  = document.getElementById('charCount');
+const selToolbar = document.getElementById('selToolbar');
+const tabBar     = document.getElementById('tabBar');
+const tabsRef    = db.collection('meta').doc('tabs');
 
-  let saveTimer   = null;
-  let localChange = false;
+// ── Tabs ──────────────────────────────────────────────
+tabsRef.onSnapshot(snap => {
+  tabs = snap.exists ? (snap.data().list || []) : [];
+  if (tabs.length === 0) {
+    tabs = [{ id: 'page1', name: 'Seite 1' }];
+    tabsRef.set({ list: tabs });
+  }
+  renderTabs();
+  if (!activeTab || !tabs.find(t => t.id === activeTab)) switchTab(tabs[0].id);
+});
 
-  // Echtzeit-Sync
-  docRef.onSnapshot((snap) => {
-    if (!localChange) {
-      textarea.value = snap.exists ? (snap.data().text || "") : "";
-      updateCount();
+function renderTabs() {
+  const addBtn = tabBar.querySelector('.tab-add');
+  tabBar.innerHTML = '';
+  tabs.forEach(tab => {
+    const el = document.createElement('div');
+    el.className = 'tab' + (tab.id === activeTab ? ' active' : '');
+    const s = document.createElement('span');
+    s.textContent = tab.name;
+    s.ondblclick = () => renameTab(tab.id);
+    el.appendChild(s);
+    if (tabs.length > 1) {
+      const x = document.createElement('span');
+      x.className = 'tab-close'; x.textContent = '✕';
+      x.onclick = e => { e.stopPropagation(); deleteTab(tab.id); };
+      el.appendChild(x);
     }
-    dot.className = "dot";
-    statusTxt.textContent = "Verbunden";
-  }, () => {
-    dot.className = "dot error";
-    statusTxt.textContent = "Fehler";
+    el.onclick = () => switchTab(tab.id);
+    tabBar.appendChild(el);
   });
+  tabBar.appendChild(addBtn);
+}
 
-  // Auto-Save nach 1 Sekunde
-  textarea.addEventListener("input", () => {
-    localChange = true;
-    updateCount();
-    dot.className = "dot saving";
-    statusTxt.textContent = "Speichern…";
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(save, 1000);
-  });
+function switchTab(id) { activeTab = id; renderTabs(); loadNote(id); }
 
-  function save() {
-    docRef.set({ text: textarea.value })
-      .then(() => { localChange = false; dot.className = "dot"; statusTxt.textContent = "Gespeichert"; })
-      .catch(() => { dot.className = "dot error"; statusTxt.textContent = "Fehler"; });
-  }
+function addTab() {
+  const name = prompt('Name der neuen Seite:', 'Seite ' + (tabs.length + 1));
+  if (!name) return;
+  const id = 'page_' + Date.now();
+  tabs.push({ id, name });
+  tabsRef.set({ list: tabs });
+  switchTab(id);
+}
 
-  function updateCount() {
-    charCount.textContent = textarea.value.length + " Zeichen";
-  }
+function deleteTab(id) {
+  if (!confirm('Seite löschen?')) return;
+  tabs = tabs.filter(t => t.id !== id);
+  tabsRef.set({ list: tabs });
+  if (activeTab === id) switchTab(tabs[0].id);
+}
 
-  function notify(number, name) {
-    const msg = encodeURIComponent("Hey, ich habe den Notizblock aktualisiert! 📝");
-    window.open("https://wa.me/" + number + "?text=" + msg, "_blank");
-  }
+function renameTab(id) {
+  const tab = tabs.find(t => t.id === id);
+  if (!tab) return;
+  const name = prompt('Neuer Name:', tab.name);
+  if (name) { tab.name = name; tabsRef.set({ list: tabs }); }
+}
 
-  function copyNote() {
-    navigator.clipboard.writeText(textarea.value).then(() => {
-      const btn = document.querySelector(".btn-copy");
-      btn.textContent = "✅ Kopiert!";
-      setTimeout(() => btn.textContent = "📋 Kopieren", 2000);
-    });
-  }
+// ── Note sync ─────────────────────────────────────────
+function loadNote(tabId) {
+  if (unsubNote) unsubNote();
+  dot.className = 'dot loading'; statusTxt.textContent = 'Laden…';
+  const ref = db.collection('notes').doc(tabId);
+  unsubNote = ref.onSnapshot(snap => {
+    if (!localChange) { editor.innerHTML = snap.exists ? (snap.data().content || '') : ''; updateCount(); }
+    dot.className = 'dot'; statusTxt.textContent = 'Verbunden';
+  }, () => { dot.className = 'dot error'; statusTxt.textContent = 'Fehler'; });
+}
 
-  function clearNote() {
-    if (confirm("Notiz wirklich leeren?")) {
-      textarea.value = "";
-      updateCount();
-      save();
+function saveNote() {
+  if (!activeTab) return;
+  db.collection('notes').doc(activeTab).set({ content: editor.innerHTML })
+    .then(() => { localChange = false; dot.className = 'dot'; statusTxt.textContent = 'Gespeichert'; })
+    .catch(() => { dot.className = 'dot error'; statusTxt.textContent = 'Fehler'; });
+}
+
+editor.addEventListener('input', () => {
+  localChange = true; updateCount();
+  dot.className = 'dot saving'; statusTxt.textContent = 'Speichern…';
+  clearTimeout(saveTimer); saveTimer = setTimeout(saveNote, 1000);
+});
+
+function updateCount() {
+  charCount.textContent = (editor.innerText || '').replace(/\n/g,'').length + ' Zeichen';
+}
+
+// ── Formatting ────────────────────────────────────────
+function fmt(cmd) {
+  editor.focus();
+  document.execCommand(cmd, false, null);
+  localChange = true; clearTimeout(saveTimer); saveTimer = setTimeout(saveNote, 1000);
+}
+
+document.addEventListener('selectionchange', () => {
+  setTimeout(() => {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !editor.contains(sel.anchorNode)) {
+      selToolbar.classList.remove('visible'); return;
     }
-  }
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    if (!rect.width) { selToolbar.classList.remove('visible'); return; }
+    selToolbar.style.left = (rect.left + rect.width / 2) + 'px';
+    selToolbar.style.top  = (rect.top - 48) + 'px';
+    selToolbar.classList.add('visible');
+  }, 30);
+});
+
+document.addEventListener('mousedown', e => {
+  if (!selToolbar.contains(e.target)) selToolbar.classList.remove('visible');
+});
+
+// ── Emoji ─────────────────────────────────────────────
+editor.addEventListener('blur', () => {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+});
+
+function insertEmoji(emoji) {
+  editor.focus();
+  if (savedRange) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange); }
+  document.execCommand('insertText', false, emoji);
+  localChange = true; updateCount();
+  clearTimeout(saveTimer); saveTimer = setTimeout(saveNote, 800);
+}
+
+// ── Utilities ─────────────────────────────────────────
+function copyNote() {
+  navigator.clipboard.writeText(editor.innerText || '').then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Kopiert!';
+    setTimeout(() => btn.textContent = '📋 Kopieren', 2000);
+  });
+}
+
+function clearNote() {
+  if (confirm('Seite wirklich leeren?')) { editor.innerHTML = ''; updateCount(); localChange = true; saveNote(); }
+}
+
+function notify(number) {
+  window.open('https://wa.me/' + number + '?text=' + encodeURIComponent('Hey, ich habe den Notizblock aktualisiert! 📝'), '_blank');
+}
 </script>
 </body>
 </html>
