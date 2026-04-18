@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Unser Notizblock</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #f5f0e8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(transparent, transparent 31px, #e0d8cc 31px, #e0d8cc 32px);
+    pointer-events: none;
+    opacity: 0.35;
+  }
+  .card {
+    background: #fffdf7;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08), 4px 4px 0 #e0d4b8, 8px 8px 0 #d4c8a8;
+    width: 100%;
+    max-width: 600px;
+    padding: 32px 28px 28px;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 52px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #f0a0a0;
+    opacity: 0.5;
+  }
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-left: 24px;
+  }
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 2.2rem;
+    color: #3d2b1f;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  h1 span { color: #c0392b; }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 6px;
+    font-weight: 500;
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #2ecc71;
+    box-shadow: 0 0 0 2px rgba(46,204,113,0.25);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  .dot.saving  { background: #f39c12; box-shadow: 0 0 0 2px rgba(243,156,18,0.25); animation: none; }
+  .dot.error   { background: #e74c3c; box-shadow: none; animation: none; }
+  .dot.loading { background: #aaa; box-shadow: none; animation: none; }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 2px rgba(46,204,113,0.25); }
+    50%      { box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+  }
+  textarea {
+    width: 100%;
+    min-height: 380px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Caveat', cursive;
+    font-size: 1.25rem;
+    color: #2c1810;
+    line-height: 2rem;
+    resize: none;
+    padding: 4px 4px 4px 28px;
+    letter-spacing: 0.01em;
+  }
+  textarea::placeholder { color: #c8bfb0; }
+
+  /* WhatsApp Buttons */
+  .notify-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px 4px 0 28px;
+  }
+  .btn-wa {
+    background: #25D366;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 8px 16px;
+    transition: background 0.15s;
+  }
+  .btn-wa:hover { background: #1ebe5d; }
+
+  /* Footer with Copy + Clear */
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #e0d4c0;
+    padding-left: 28px;
+  }
+  .char-count { font-size: 0.72rem; color: #bbb; font-weight: 300; }
+  .btn-group { display: flex; gap: 8px; }
+  .btn-copy {
+    background: #3d2b1f;
+    color: #f5f0e8;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 7px 14px;
+    transition: background 0.15s;
+  }
+  .btn-copy:hover { background: #5a3f30; }
+  .btn-clear {
+    background: transparent;
+    color: #bbb;
+    border: 1px solid #e0d4c0;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 7px 14px;
+    transition: all 0.15s;
+  }
+  .btn-clear:hover { color: #c0392b; border-color: #c0392b; background: #fff5f5; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <h1>Unser<br><span>Notizblock</span></h1>
+    <div class="status">
+      <div class="dot loading" id="dot"></div>
+      <span id="statusText">Verbinden…</span>
+    </div>
+  </div>
+
+  <textarea id="note" placeholder="Schreib hier los… beide sehen es sofort ✏️"></textarea>
+
+  <!-- WhatsApp Benachrichtigungen -->
+  <div class="notify-row">
+    <button class="btn-wa" onclick="notify('4915159141811', 'Keks')">📲 Keks benachrichtigen</button>
+    <button class="btn-wa" onclick="notify('491781600941', 'Knuspi')">📲 Knuspi benachrichtigen</button>
+  </div>
+
+  <!-- Kopieren & Leeren -->
+  <div class="footer">
+    <span class="char-count" id="charCount">0 Zeichen</span>
+    <div class="btn-group">
+      <button class="btn-clear" onclick="clearNote()">Leeren</button>
+      <button class="btn-copy" onclick="copyNote()">📋 Kopieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBlMPI2tEB5K8-9NNML5xqdNo7C8wXVSWM",
+    authDomain: "notizblock-knuspikeks.firebaseapp.com",
+    projectId: "notizblock-knuspikeks",
+    storageBucket: "notizblock-knuspikeks.firebasestorage.app",
+    messagingSenderId: "804470399417",
+    appId: "1:804470399417:web:1140f112253fc83ac69668"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const docRef = db.collection("notes").doc("shared");
+
+  const textarea  = document.getElementById("note");
+  const dot       = document.getElementById("dot");
+  const statusTxt = document.getElementById("statusText");
+  const charCount = document.getElementById("charCount");
+
+  let saveTimer   = null;
+  let localChange = false;
+
+  // Echtzeit-Sync
+  docRef.onSnapshot((snap) => {
+    if (!localChange) {
+      textarea.value = snap.exists ? (snap.data().text || "") : "";
+      updateCount();
+    }
+    dot.className = "dot";
+    statusTxt.textContent = "Verbunden";
+  }, () => {
+    dot.className = "dot error";
+    statusTxt.textContent = "Fehler";
+  });
+
+  // Auto-Save nach 1 Sekunde
+  textarea.addEventListener("input", () => {
+    localChange = true;
+    updateCount();
+    dot.className = "dot saving";
+    statusTxt.textContent = "Speichern…";
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 1000);
+  });
+
+  function save() {
+    docRef.set({ text: textarea.value })
+      .then(() => { localChange = false; dot.className = "dot"; statusTxt.textContent = "Gespeichert"; })
+      .catch(() => { dot.className = "dot error"; statusTxt.textContent = "Fehler"; });
+  }
+
+  function updateCount() {
+    charCount.textContent = textarea.value.length + " Zeichen";
+  }
+
+  function notify(number, name) {
+    const msg = encodeURIComponent("Hey, ich habe den Notizblock aktualisiert! 📝");
+    window.open("https://wa.me/" + number + "?text=" + msg, "_blank");
+  }
+
+  function copyNote() {
+    navigator.clipboard.writeText(textarea.value).then(() => {
+      const btn = document.querySelector(".btn-copy");
+      btn.textContent = "✅ Kopiert!";
+      setTimeout(() => btn.textContent = "📋 Kopieren", 2000);
+    });
+  }
+
+  function clearNote() {
+    if (confirm("Notiz wirklich leeren?")) {
+      textarea.value = "";
+      updateCount();
+      save();
+    }
+  }
+</script>
+</body>
+</html>
