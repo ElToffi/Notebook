@@ -60,7 +60,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);transition:b
 .page-title-display{font-weight:700;font-size:.9rem;color:var(--text);flex:1}
 .toolbar-wrapper{background:var(--toolbar-bg);border-bottom:1px solid var(--border);flex-shrink:0}
 
-/* Quill */
+/* Quill overrides */
 .ql-toolbar.ql-snow{border:none;border-bottom:1px solid var(--border);padding:5px 10px;background:transparent}
 body.dark .ql-toolbar .ql-stroke{stroke:var(--text-muted)}
 body.dark .ql-toolbar .ql-fill{fill:var(--text-muted)}
@@ -68,6 +68,32 @@ body.dark .ql-toolbar .ql-picker{color:var(--text-muted)}
 body.dark .ql-toolbar .ql-picker-options{background:var(--surface);border-color:var(--border);color:var(--text)}
 body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-active .ql-stroke{stroke:var(--accent)}
 .ql-container.ql-snow{border:none;font-family:var(--font)}
+
+/* FIX BUG 3: Checkbox list styles */
+.ql-editor li[data-list="unchecked"],
+.ql-editor li[data-list="checked"] {
+  list-style: none !important;
+  padding-left: 0.5em;
+  cursor: pointer;
+}
+.ql-editor li[data-list="unchecked"]::before {
+  content: '☐' !important;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 1.1em;
+  color: var(--text-muted);
+}
+.ql-editor li[data-list="checked"]::before {
+  content: '☑' !important;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 1.1em;
+  color: var(--green);
+}
+.ql-editor li[data-list="checked"] {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
 
 .action-bar{display:flex;align-items:center;gap:2px;padding:5px 10px;flex-wrap:wrap;background:var(--toolbar-bg)}
 .btn-action{background:none;border:none;cursor:pointer;font-size:.95rem;padding:5px 7px;border-radius:6px;transition:background .12s,color .12s;color:var(--text);font-family:var(--font)}
@@ -120,17 +146,15 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
 .menu-item.danger{color:var(--red)}
 .menu-item.danger:hover{background:rgba(231,76,60,.1)}
 
-/* Date Picker */
+/* FIX BUG 4: Date Picker - stopPropagation via onclick on container */
 .date-picker{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);z-index:1000;display:flex;gap:6px;align-items:center}
 .date-picker.hidden{display:none}
 .date-picker input{border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:var(--font);font-size:.85rem;background:var(--bg);color:var(--text)}
 .dp-ok{border:none;border-radius:7px;padding:6px 10px;cursor:pointer;font-family:var(--font);font-size:.82rem;font-weight:600;background:var(--accent);color:#fff}
 .dp-cancel{border:none;border-radius:7px;padding:6px 10px;cursor:pointer;font-family:var(--font);font-size:.82rem;background:var(--accent-light);color:var(--accent)}
 
-/* Sidebar overlay */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199}
 
-/* Mobile */
 @media(max-width:620px){
   .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
@@ -145,7 +169,6 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
 </head>
 <body>
 
-<!-- Who are you -->
 <div id="userModal" class="modal">
   <div class="modal-box">
     <h2>🍪 Wer bist du?</h2>
@@ -154,7 +177,6 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
   </div>
 </div>
 
-<!-- Search -->
 <div id="searchModal" class="modal hidden">
   <div class="modal-box search-box">
     <h3>🔍 In allen Seiten suchen</h3>
@@ -164,7 +186,6 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
   </div>
 </div>
 
-<!-- Rename -->
 <div id="renameModal" class="modal hidden">
   <div class="modal-box">
     <h3>✏️ Seite umbenennen</h3>
@@ -174,10 +195,10 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
   </div>
 </div>
 
-<!-- Date Picker -->
-<div id="datePicker" class="date-picker hidden">
+<!-- FIX BUG 4: onclick stopPropagation on container -->
+<div id="datePicker" class="date-picker hidden" onclick="event.stopPropagation()">
   <input type="date" id="dateInput">
-  <button class="dp-ok" onclick="confirmDate()">✓</button>
+  <button class="dp-ok" onclick="confirmDate()">✓ Einfügen</button>
   <button class="dp-cancel" onclick="cancelDate()">✕</button>
 </div>
 
@@ -206,8 +227,8 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
     <div class="toolbar-wrapper">
       <div id="quillToolbar">
         <span class="ql-formats">
+          <!-- FIX BUG 5: "Klein" option removed -->
           <select class="ql-size">
-            <option value="small">Klein</option>
             <option selected>Normal</option>
             <option value="large">Groß</option>
             <option value="huge">Riesig</option>
@@ -233,14 +254,16 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
       </div>
       <div class="action-bar">
         <button class="btn-action" id="voiceBtn" onclick="toggleVoice()" title="Spracheingabe">🎤</button>
-        <button class="btn-action" id="listBtn"  onclick="toggleListMode()" title="Listen-Modus">☰</button>
-        <button class="btn-action" onclick="insertDate()" title="Datum">📅</button>
+        <!-- FIX BUG 3: toggleListMode now uses unchecked/checked format -->
+        <button class="btn-action" id="listBtn" onclick="toggleListMode()" title="Abhak-Liste">☑</button>
+        <!-- FIX BUG 4: insertDate uses stopPropagation -->
+        <button class="btn-action" onclick="insertDate(event)" title="Datum einfügen">📅</button>
         <button class="btn-action" onclick="doUndo()" title="Rückgängig">↶</button>
         <button class="btn-action" onclick="openSearch()" title="Suchen">🔍</button>
         <div class="separator"></div>
-        <button class="btn-emoji" onclick="ins('✅')" title="Kaufen/Erledigt">✅</button>
+        <button class="btn-emoji" onclick="ins('✅')" title="Kaufen / Erledigt">✅</button>
         <button class="btn-emoji" onclick="ins('❌')" title="Nicht kaufen">❌</button>
-        <button class="btn-emoji" onclick="ins('❓')" title="Ansehen">❓</button>
+        <button class="btn-emoji" onclick="ins('❓')" title="Im Laden ansehen">❓</button>
         <div class="separator"></div>
         <button class="btn-num" onclick="ins('1')">1</button>
         <button class="btn-num" onclick="ins('2')">2</button>
@@ -265,6 +288,7 @@ body.dark .ql-toolbar button:hover .ql-stroke,body.dark .ql-toolbar button.ql-ac
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script>
+// ── Firebase ────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey:"AIzaSyBlMPI2tEB5K8-9NNML5xqdNo7C8wXVSWM",
   authDomain:"notizblock-knuspikeks.firebaseapp.com",
@@ -277,6 +301,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 db.enablePersistence({synchronizeTabs:true}).catch(()=>{});
 
+// ── State ───────────────────────────────────────────────────
 let currentUser   = localStorage.getItem('kkUser');
 let currentPageId = null;
 let pages         = {};
@@ -287,218 +312,313 @@ let listActive    = false;
 let renameTarget  = null;
 let longPressTimer;
 
+// ── Init ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  initQuill(); applyDark();
+  initQuill();
+  applyDark();
   if (!currentUser) document.getElementById('userModal').classList.remove('hidden');
   else startApp();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
-  document.addEventListener('click', () => { const m=document.getElementById('ctxMenu'); if(m)m.remove(); });
+
+  // Close context menus on any click
+  document.addEventListener('click', () => {
+    const m = document.getElementById('ctxMenu');
+    if (m) m.remove();
+  });
+
+  // FIX BUG 4: Only close date picker when clicking truly outside it
   document.addEventListener('click', e => {
     const dp = document.getElementById('datePicker');
-    if (!dp.classList.contains('hidden') && !dp.contains(e.target)) cancelDate();
+    if (!dp.classList.contains('hidden') && !dp.contains(e.target)) {
+      cancelDate();
+    }
   });
 });
 
-function setUser(n){ currentUser=n; localStorage.setItem('kkUser',n); document.getElementById('userModal').classList.add('hidden'); startApp(); }
-function startApp(){ loadPages(); }
+function setUser(n) { currentUser=n; localStorage.setItem('kkUser',n); document.getElementById('userModal').classList.add('hidden'); startApp(); }
+function startApp() { loadPages(); }
 
-function initQuill(){
-  quill = new Quill('#editor',{
-    theme:'snow',
-    modules:{ toolbar:'#quillToolbar', history:{delay:1000,maxStack:100,userOnly:true} },
-    placeholder:'Schreib hier los…'
+// ── Quill ───────────────────────────────────────────────────
+function initQuill() {
+  quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: '#quillToolbar',
+      history: { delay:1000, maxStack:100, userOnly:true }
+    },
+    placeholder: 'Schreib hier los…'
   });
-  quill.on('text-change',(d,o,src)=>{ if(src==='user'&&currentPageId){ localEditing=true; scheduleSave(); } });
-}
 
-function loadPages(){
-  db.collection('pages').orderBy('createdAt').onSnapshot(snap=>{
-    pages={};
-    snap.forEach(d=>{ pages[d.id]={id:d.id,...d.data()}; });
-    renderPageList();
-    if(!currentPageId){
-      const ids=Object.keys(pages);
-      if(ids.length) openPage(ids[0]); else addPage('Einkaufsliste');
+  quill.on('text-change', (d, o, src) => {
+    if (src === 'user' && currentPageId) {
+      localEditing = true;
+      scheduleSave();
+    }
+  });
+
+  // FIX BUG 3: Click on checkbox area toggles checked/unchecked
+  quill.root.addEventListener('mousedown', e => {
+    const li = e.target.closest('li[data-list="unchecked"], li[data-list="checked"]');
+    if (!li) return;
+    const rect = li.getBoundingClientRect();
+    // Only trigger if clicking in the left ~28px where the checkbox symbol is
+    if (e.clientX - rect.left < 28) {
+      e.preventDefault();
+      try {
+        const blot = Quill.find(li);
+        if (!blot) return;
+        const index = quill.getIndex(blot);
+        const fmt   = quill.getFormat(index, 1);
+        const next  = fmt.list === 'checked' ? 'unchecked' : 'checked';
+        quill.formatLine(index, 1, 'list', next, 'user');
+        localEditing = true;
+        scheduleSave();
+      } catch(err) { console.log('checkbox toggle:', err); }
     }
   });
 }
 
-function renderPageList(){
-  const list=document.getElementById('pageList'); list.innerHTML='';
-  Object.values(pages).forEach(p=>{
-    const el=document.createElement('div');
-    el.className='page-item'+(p.id===currentPageId?' active':'');
-    el.innerHTML=`<span class="page-icon">${p.icon||'📄'}</span><span class="page-name">${p.title}</span>`;
-    el.onclick=()=>{ openPage(p.id); closeSidebar(); };
-    el.oncontextmenu=e=>{ e.preventDefault(); showCtx(p.id,e); };
-    el.addEventListener('touchstart',()=>{ longPressTimer=setTimeout(()=>showCtx(p.id),600); });
-    el.addEventListener('touchend',()=>clearTimeout(longPressTimer));
-    el.addEventListener('touchmove',()=>clearTimeout(longPressTimer));
+// ── Pages ───────────────────────────────────────────────────
+function loadPages() {
+  db.collection('pages').orderBy('createdAt').onSnapshot(snap => {
+    pages = {};
+    snap.forEach(d => { pages[d.id] = { id:d.id, ...d.data() }; });
+    renderPageList();
+    if (!currentPageId) {
+      const ids = Object.keys(pages);
+      if (ids.length) openPage(ids[0]);
+      else addPage('Einkaufsliste');
+    }
+  });
+}
+
+function renderPageList() {
+  const list = document.getElementById('pageList');
+  list.innerHTML = '';
+  Object.values(pages).forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'page-item' + (p.id === currentPageId ? ' active' : '');
+    el.innerHTML = `<span class="page-icon">${p.icon||'📄'}</span><span class="page-name">${p.title}</span>`;
+    el.onclick = () => { openPage(p.id); closeSidebar(); };
+    el.oncontextmenu = e => { e.preventDefault(); showCtx(p.id, e); };
+    el.addEventListener('touchstart', () => { longPressTimer = setTimeout(() => showCtx(p.id), 600); });
+    el.addEventListener('touchend',   () => clearTimeout(longPressTimer));
+    el.addEventListener('touchmove',  () => clearTimeout(longPressTimer));
     list.appendChild(el);
   });
 }
 
-function openPage(id){
-  if(unsub) unsub();
-  currentPageId=id; renderPageList();
-  document.getElementById('pageTitleDisplay').textContent=pages[id]?.title||'';
-  unsub=db.collection('pages').doc(id).onSnapshot(doc=>{
-    if(!doc.exists) return;
-    const data=doc.data();
-    if(!localEditing){
-      const inc=JSON.stringify(data.content||{ops:[]});
-      if(inc!==JSON.stringify(quill.getContents())) quill.setContents(data.content||{ops:[]}, 'silent');
+// FIX BUG 2: Proper page switching
+function openPage(id) {
+  // Cancel any pending save timer, reset editing flag
+  clearTimeout(saveTimer);
+  localEditing = false;
+
+  // Unsubscribe from previous page listener
+  if (unsub) { unsub(); unsub = null; }
+
+  currentPageId = id;
+  renderPageList();
+  document.getElementById('pageTitleDisplay').textContent = pages[id]?.title || '';
+  setStatus('saving'); // Show loading indicator
+
+  // FIX BUG 2: Load content immediately via .get() — don't wait for onSnapshot
+  db.collection('pages').doc(id).get().then(doc => {
+    if (doc.exists) {
+      const data = doc.data();
+      // FIX BUG 1: Use plain object via JSON round-trip when reading
+      const content = JSON.parse(JSON.stringify(data.content || { ops:[] }));
+      quill.setContents(content, 'silent');
+      updateFooter(data);
+    } else {
+      quill.setContents({ ops:[] }, 'silent');
     }
-    updateFooter(data); setStatus('saved');
-  },()=>setStatus('error'));
+    setStatus('saved');
+  }).catch(() => setStatus('error'));
+
+  // Then set up real-time listener for updates from other devices
+  unsub = db.collection('pages').doc(id).onSnapshot(doc => {
+    if (!doc.exists || localEditing) return;
+    const data = doc.data();
+    const incoming = JSON.stringify(data.content || { ops:[] });
+    const current  = JSON.stringify(quill.getContents());
+    if (incoming !== current) {
+      quill.setContents(JSON.parse(JSON.stringify(data.content || { ops:[] })), 'silent');
+    }
+    updateFooter(data);
+    setStatus('saved');
+  }, () => setStatus('error'));
 }
 
-function addPage(preset){
-  const title=preset||prompt('Name der neuen Seite:','Neue Seite');
-  if(!title) return;
+function addPage(preset) {
+  const title = preset || prompt('Name der neuen Seite:', 'Neue Seite');
+  if (!title) return;
   db.collection('pages').add({
-    title, icon:pageIcon(title), content:{ops:[]},
-    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-    lastModified:firebase.firestore.FieldValue.serverTimestamp(),
-    lastModifiedBy:currentUser||'?'
-  }).then(r=>openPage(r.id));
+    title, icon: pageIcon(title), content: { ops:[] },
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    lastModified: firebase.firestore.FieldValue.serverTimestamp(),
+    lastModifiedBy: currentUser || '?'
+  }).then(r => openPage(r.id));
 }
 
-function pageIcon(t){
-  t=t.toLowerCase();
-  if(t.includes('einkauf')||t.includes('kauf')) return '🛒';
-  if(t.includes('aufgabe')||t.includes('todo')) return '✅';
-  if(t.includes('idee')) return '💡';
-  if(t.includes('urlaub')||t.includes('reise')) return '✈️';
-  if(t.includes('rezept')||t.includes('essen')) return '🍴';
+function pageIcon(t) {
+  t = t.toLowerCase();
+  if (t.includes('einkauf')||t.includes('kauf')) return '🛒';
+  if (t.includes('aufgabe')||t.includes('todo')) return '✅';
+  if (t.includes('idee'))   return '💡';
+  if (t.includes('urlaub')||t.includes('reise')) return '✈️';
+  if (t.includes('rezept')||t.includes('essen')) return '🍴';
   return '📄';
 }
 
-function showCtx(id,e){
-  const old=document.getElementById('ctxMenu'); if(old)old.remove();
-  const m=document.createElement('div'); m.id='ctxMenu'; m.className='ctx-menu';
-  const x=e?Math.min(e.clientX,window.innerWidth-170):215;
-  const y=e?Math.min(e.clientY,window.innerHeight-90):80;
-  m.style.cssText=`left:${x}px;top:${y}px`;
-  m.innerHTML=`<div class="menu-item" onclick="startRename('${id}')">✏️ Umbenennen</div>
+function showCtx(id, e) {
+  const old = document.getElementById('ctxMenu');
+  if (old) old.remove();
+  const m = document.createElement('div');
+  m.id = 'ctxMenu'; m.className = 'ctx-menu';
+  const x = e ? Math.min(e.clientX, window.innerWidth-170) : 215;
+  const y = e ? Math.min(e.clientY, window.innerHeight-90)  : 80;
+  m.style.cssText = `left:${x}px;top:${y}px`;
+  m.innerHTML = `<div class="menu-item" onclick="startRename('${id}')">✏️ Umbenennen</div>
     <div class="menu-item danger" onclick="deletePage('${id}')">🗑️ Löschen</div>`;
   document.body.appendChild(m);
-  setTimeout(()=>document.addEventListener('click',()=>m.remove(),{once:true}),50);
+  setTimeout(() => document.addEventListener('click', () => m.remove(), { once:true }), 50);
 }
 
-function startRename(id){
-  renameTarget=id;
-  document.getElementById('renameInput').value=pages[id]?.title||'';
+function startRename(id) {
+  renameTarget = id;
+  document.getElementById('renameInput').value = pages[id]?.title || '';
   document.getElementById('renameModal').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('renameInput').focus(),80);
+  setTimeout(() => document.getElementById('renameInput').focus(), 80);
 }
-function confirmRename(){
-  const name=document.getElementById('renameInput').value.trim();
-  if(name&&renameTarget){
-    db.collection('pages').doc(renameTarget).update({title:name,icon:pageIcon(name)});
-    if(renameTarget===currentPageId) document.getElementById('pageTitleDisplay').textContent=name;
+function confirmRename() {
+  const name = document.getElementById('renameInput').value.trim();
+  if (name && renameTarget) {
+    db.collection('pages').doc(renameTarget).update({ title:name, icon:pageIcon(name) });
+    if (renameTarget === currentPageId)
+      document.getElementById('pageTitleDisplay').textContent = name;
   }
   closeRename();
 }
-function closeRename(){ document.getElementById('renameModal').classList.add('hidden'); renameTarget=null; }
+function closeRename() { document.getElementById('renameModal').classList.add('hidden'); renameTarget=null; }
 
-function deletePage(id){
-  if(Object.keys(pages).length<=1){ alert('Die letzte Seite kann nicht gelöscht werden.'); return; }
-  if(!confirm(`Seite "${pages[id]?.title}" wirklich löschen?`)) return;
-  if(currentPageId===id){
-    currentPageId=null;
-    const other=Object.keys(pages).find(k=>k!==id);
-    if(other) openPage(other);
+function deletePage(id) {
+  if (Object.keys(pages).length <= 1) { alert('Die letzte Seite kann nicht gelöscht werden.'); return; }
+  if (!confirm(`Seite "${pages[id]?.title}" wirklich löschen?`)) return;
+  if (currentPageId === id) {
+    currentPageId = null;
+    const other = Object.keys(pages).find(k => k !== id);
+    if (other) openPage(other);
   }
   db.collection('pages').doc(id).delete();
 }
 
-function scheduleSave(){ setStatus('saving'); clearTimeout(saveTimer); saveTimer=setTimeout(save,2000); }
-function save(){
-  if(!currentPageId) return;
+// ── Save ────────────────────────────────────────────────────
+function scheduleSave() { setStatus('saving'); clearTimeout(saveTimer); saveTimer=setTimeout(save, 2000); }
+
+// FIX BUG 1: Use JSON.parse(JSON.stringify(...)) to create a plain serializable object
+function save() {
+  if (!currentPageId) return;
+  const content = JSON.parse(JSON.stringify(quill.getContents()));
   db.collection('pages').doc(currentPageId).update({
-    content:quill.getContents(),
-    lastModified:firebase.firestore.FieldValue.serverTimestamp(),
-    lastModifiedBy:currentUser||'?'
-  }).then(()=>{ localEditing=false; setStatus('saved'); }).catch(()=>setStatus('error'));
-}
-function setStatus(s){
-  const el=document.getElementById('syncStatus');
-  if(s==='saved')  el.innerHTML='<span class="dot green"></span> Gespeichert';
-  if(s==='saving') el.innerHTML='<span class="dot yellow"></span> Speichern…';
-  if(s==='error')  el.innerHTML='<span class="dot red"></span> Offline – wird gespeichert wenn Verbindung da';
-}
-function updateFooter(data){
-  const el=document.getElementById('lastModified');
-  if(!data.lastModified){ el.textContent='–'; return; }
-  const ts=data.lastModified.toDate?data.lastModified.toDate():new Date();
-  const diff=Math.floor((Date.now()-ts.getTime())/60000);
-  const when=diff<1?'gerade eben':diff<60?`vor ${diff} Min.`:`vor ${Math.floor(diff/60)} Std.`;
-  el.textContent=`Zuletzt: ${data.lastModifiedBy||'?'} – ${when}`;
+    content,
+    lastModified: firebase.firestore.FieldValue.serverTimestamp(),
+    lastModifiedBy: currentUser || '?'
+  }).then(() => { localEditing=false; setStatus('saved'); })
+    .catch(() => setStatus('error'));
 }
 
-function ins(text){ quill.focus(); const r=quill.getSelection(true); quill.insertText(r.index,text,'user'); quill.setSelection(r.index+text.length); }
-
-function toggleListMode(){
-  listActive=!listActive;
-  document.getElementById('listBtn').classList.toggle('active',listActive);
-  quill.focus(); quill.format('list',listActive?'bullet':false);
+function setStatus(s) {
+  const el = document.getElementById('syncStatus');
+  if (s==='saved')  el.innerHTML = '<span class="dot green"></span> Gespeichert';
+  if (s==='saving') el.innerHTML = '<span class="dot yellow"></span> Speichern…';
+  if (s==='error')  el.innerHTML = '<span class="dot red"></span> Offline – wird gespeichert wenn Verbindung da';
+}
+function updateFooter(data) {
+  const el = document.getElementById('lastModified');
+  if (!data.lastModified) { el.textContent='–'; return; }
+  const ts   = data.lastModified.toDate ? data.lastModified.toDate() : new Date();
+  const diff = Math.floor((Date.now()-ts.getTime())/60000);
+  const when = diff<1 ? 'gerade eben' : diff<60 ? `vor ${diff} Min.` : `vor ${Math.floor(diff/60)} Std.`;
+  el.textContent = `Zuletzt: ${data.lastModifiedBy||'?'} – ${when}`;
 }
 
-function insertDate(){
-  const dp=document.getElementById('datePicker'); dp.classList.remove('hidden');
-  document.getElementById('dateInput').value=new Date().toISOString().split('T')[0];
-  const r=document.querySelector('.action-bar').getBoundingClientRect();
-  dp.style.top=(r.bottom+4)+'px'; dp.style.left=Math.min(200,window.innerWidth-230)+'px';
+// ── Insert helpers ──────────────────────────────────────────
+function ins(text) { quill.focus(); const r=quill.getSelection(true); quill.insertText(r.index,text,'user'); quill.setSelection(r.index+text.length); }
+
+// FIX BUG 3: Use 'unchecked' list format for checkable task list
+function toggleListMode() {
+  listActive = !listActive;
+  document.getElementById('listBtn').classList.toggle('active', listActive);
+  quill.focus();
+  quill.format('list', listActive ? 'unchecked' : false);
 }
-function confirmDate(){
-  const v=document.getElementById('dateInput').value;
-  if(v){ const[y,m,d]=v.split('-'); ins(` 📅 ${d}.${m}.${y} `); }
+
+// FIX BUG 4: Accept event and call stopPropagation to prevent immediate close
+function insertDate(e) {
+  e.stopPropagation();
+  const dp = document.getElementById('datePicker');
+  const isHidden = dp.classList.contains('hidden');
+  if (!isHidden) { cancelDate(); return; }
+  dp.classList.remove('hidden');
+  document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+  const r = document.querySelector('.action-bar').getBoundingClientRect();
+  dp.style.top  = (r.bottom + 6) + 'px';
+  dp.style.left = Math.min(140, window.innerWidth-260) + 'px';
+}
+function confirmDate() {
+  const v = document.getElementById('dateInput').value;
+  if (v) { const [y,m,d]=v.split('-'); ins(` 📅 ${d}.${m}.${y} `); }
   cancelDate();
 }
-function cancelDate(){ document.getElementById('datePicker').classList.add('hidden'); }
+function cancelDate() { document.getElementById('datePicker').classList.add('hidden'); }
 
-function doUndo(){ quill.history.undo(); }
+function doUndo() { quill.history.undo(); }
 
-function toggleVoice(){
-  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
+// ── Voice ───────────────────────────────────────────────────
+function toggleVoice() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     alert('Spracheingabe: bitte Chrome (Android) oder Safari (iPhone) nutzen.'); return;
   }
-  if(isListening){ window._recognition&&window._recognition.stop(); return; }
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const r=new SR(); window._recognition=r;
+  if (isListening) { window._rec && window._rec.stop(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const r  = new SR(); window._rec = r;
   r.lang='de-DE'; r.continuous=false; r.interimResults=false;
-  r.onstart=()=>{ isListening=true; const b=document.getElementById('voiceBtn'); b.classList.add('active'); b.textContent='🔴'; };
-  r.onresult=e=>{ ins(e.results[0][0].transcript.trim()); };
-  r.onend=r.onerror=()=>{ isListening=false; const b=document.getElementById('voiceBtn'); b.classList.remove('active'); b.textContent='🎤'; };
+  r.onstart  = () => { isListening=true;  const b=document.getElementById('voiceBtn'); b.classList.add('active'); b.textContent='🔴'; };
+  r.onresult = e => { ins(e.results[0][0].transcript.trim()); };
+  r.onend = r.onerror = () => { isListening=false; const b=document.getElementById('voiceBtn'); b.classList.remove('active'); b.textContent='🎤'; };
   r.start();
 }
 
-function openSearch(){ document.getElementById('searchModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('searchInput').focus(),80); }
-function closeSearch(){ document.getElementById('searchModal').classList.add('hidden'); document.getElementById('searchInput').value=''; document.getElementById('searchResults').innerHTML=''; }
-function doSearch(){
-  const q=document.getElementById('searchInput').value.toLowerCase().trim();
-  const res=document.getElementById('searchResults');
-  if(!q){ res.innerHTML=''; return; }
-  let html='';
-  Object.values(pages).forEach(p=>{
-    const text=(p.content?.ops||[]).map(op=>typeof op.insert==='string'?op.insert:'').join('');
-    if(text.toLowerCase().includes(q)||p.title.toLowerCase().includes(q)){
-      const idx=text.toLowerCase().indexOf(q);
-      const ex=idx>=0?'…'+text.substring(Math.max(0,idx-20),idx+50).replace(/\n/g,' ')+'…':'';
-      html+=`<div class="search-result" onclick="openPage('${p.id}');closeSearch()"><strong>${p.icon||'📄'} ${p.title}</strong>${ex?`<p>${ex}</p>`:''}</div>`;
+// ── Search ──────────────────────────────────────────────────
+function openSearch() { document.getElementById('searchModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('searchInput').focus(),80); }
+function closeSearch() { document.getElementById('searchModal').classList.add('hidden'); document.getElementById('searchInput').value=''; document.getElementById('searchResults').innerHTML=''; }
+function doSearch() {
+  const q   = document.getElementById('searchInput').value.toLowerCase().trim();
+  const res = document.getElementById('searchResults');
+  if (!q) { res.innerHTML=''; return; }
+  let html = '';
+  Object.values(pages).forEach(p => {
+    const text = (p.content?.ops||[]).map(op=>typeof op.insert==='string'?op.insert:'').join('');
+    if (text.toLowerCase().includes(q) || p.title.toLowerCase().includes(q)) {
+      const idx = text.toLowerCase().indexOf(q);
+      const ex  = idx>=0 ? '…'+text.substring(Math.max(0,idx-20),idx+50).replace(/\n/g,' ')+'…' : '';
+      html += `<div class="search-result" onclick="openPage('${p.id}');closeSearch()"><strong>${p.icon||'📄'} ${p.title}</strong>${ex?`<p>${ex}</p>`:''}</div>`;
     }
   });
-  res.innerHTML=html||'<p class="no-results">Keine Ergebnisse</p>';
+  res.innerHTML = html || '<p class="no-results">Keine Ergebnisse</p>';
 }
 
-function applyDark(){ const on=localStorage.getItem('kkDark')==='true'; document.body.classList.toggle('dark',on); const btn=document.getElementById('darkBtn'); if(btn)btn.textContent=on?'☀️':'🌙'; }
-function toggleDark(){ const on=document.body.classList.toggle('dark'); localStorage.setItem('kkDark',on); document.getElementById('darkBtn').textContent=on?'☀️':'🌙'; }
+// ── Dark Mode ────────────────────────────────────────────────
+function applyDark() { const on=localStorage.getItem('kkDark')==='true'; document.body.classList.toggle('dark',on); const btn=document.getElementById('darkBtn'); if(btn) btn.textContent=on?'☀️':'🌙'; }
+function toggleDark() { const on=document.body.classList.toggle('dark'); localStorage.setItem('kkDark',on); document.getElementById('darkBtn').textContent=on?'☀️':'🌙'; }
 
-function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
-function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+// ── Mobile ───────────────────────────────────────────────────
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
+function closeSidebar()  { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
 
-function notify(n){ window.open(`https://wa.me/${n}?text=${encodeURIComponent('Hey, ich habe den Notizblock aktualisiert! 📝')}`, '_blank'); }
+// ── WhatsApp ─────────────────────────────────────────────────
+function notify(n) { window.open(`https://wa.me/${n}?text=${encodeURIComponent('Hey, ich habe den Notizblock aktualisiert! 📝')}`, '_blank'); }
 </script>
 </body>
 </html>
