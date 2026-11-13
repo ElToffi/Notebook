@@ -475,7 +475,10 @@ function stats(){
   <div class="card"><div class="sec-t"><span class="grow">Last 6 weeks</span><span style="text-transform:none;letter-spacing:0;font-size:12px"><span style="color:var(--ds-primary)">■</span> Wear time logged &nbsp; <span style="color:var(--ds-accent)">■</span> Photos at cadence</span></div>
     <div style="display:flex;gap:18px;align-items:flex-end;height:160px">
       ${wk.map(([a,b],k)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;width:100%"><div style="flex:1;height:${a}%;background:var(--ds-primary);border-radius:4px 4px 1px 1px" title="${a} %"></div><div style="flex:1;height:${b}%;background:var(--ds-accent);border-radius:4px 4px 1px 1px" title="${b} %"></div></div><span class="muted" style="font-size:11px">W${41+k}</span></div>`).join('')}
-    </div></div>`;
+    </div></div>
+  <div class="card" style="margin-top:14px"><div class="sec-t"><span class="grow">Patient satisfaction · anonymous totals</span><span style="text-transform:none;letter-spacing:0;font-size:12px">n = 23 · shown from 5 answers</span></div>
+    ${[['Satisfied with treatment so far',4.5],['Knows if treatment is on track',4.3],['App makes treatment easier',4.4],['Easy to reach the practice',4.6],['Reminders at the right moments',3.9]].map(([q,v])=>`<div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 40px;gap:10px;align-items:center;margin:8px 0"><span>${q}</span><div style="height:10px;border-radius:5px;background:var(--line);overflow:hidden"><div style="height:100%;width:${v/5*100}%;background:var(--ds-primary)"></div></div><b style="font-variant-numeric:tabular-nums">${v.toFixed(1)}</b></div>`).join('')}
+    <p class="muted" style="margin-top:6px">Scale 1–5. 4 patients shared their answers with their name; see their patient detail.</p></div>`;
 }
 function inbox(){
   return `<header class="top"><h1>Messages</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>

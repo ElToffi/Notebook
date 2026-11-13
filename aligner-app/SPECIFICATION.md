@@ -1,10 +1,16 @@
 # Aligner Companion – Product Specification
 
-**Version:** 0.5 (draft) · **Date:** Nov 13, 2026
+**Version:** 0.6 (draft) · **Date:** Nov 13, 2026
 **Platforms:** patient app for Android (first) and iOS from one code base; practice dashboard as a web app
 **Design:** Dentsply Sirona corporate design
 **Inputs:** spec v0.1/v0.2 and the draft “Aligner Compliance Monitoring App – Option B” (v0.1)
 **Related:** `INFRASTRUKTUR.md` (infrastructure, security, onboarding; German), `klickdummy/` (clickable prototype)
+
+### Changes from v0.5
+- Decisions on the gaps from chapter 18: **education videos on YouTube (3.20), app rating prompts (3.21), satisfaction surveys (3.22), discreet mode (3.23) and emergency numbers per country (3.24)** are in scope. A practice photo gallery and a referral programme are **out of scope**.
+- **20 languages** at launch, including one right-to-left language (3.26, NF-08).
+- **Gamification is on by default** and can be switched off with one switch; patients can also hide single items (3.25, 17.5).
+- Prototype v0.4 shows all of this.
 
 ### Changes from v0.4
 - **Product links are advertising.** Every product link is clearly labelled as an ad with an affiliate disclosure (3.8.1). Patients can switch product links off.
@@ -54,6 +60,8 @@ The app improves **adherence in aligner treatment**. It tracks wear time, lets t
 - automated tray-change decisions
 - automated fit verdicts shown to patients
 - treatment planning, billing, booking directly in the practice management system
+- a before/after photo gallery for the practice’s own marketing
+- a referral or “recommend a friend” programme
 
 **Principle:** the clinician stays responsible for every clinical decision. The app informs; it never instructs a treatment change on its own.
 
@@ -263,7 +271,7 @@ Local reminders work offline. Push messages **never contain health data**. Quiet
 | P-JR-07 | **Total hours worn** over the whole treatment, shown with a neutral comparison (“about 5,900 hours, roughly 245 days”). | S |
 | P-JR-08 | Estimated finish date from the plan; updated when the practice extends a tray or adds a refinement. Marked as an estimate. | S |
 | P-JR-09 | **Goal date:** optional personal goal (event, holiday) with a countdown; shown at milestones. | C |
-| P-JR-10 | Milestone celebrations (25, 50, 75, 100 %) with a short animation; animation off with reduced-motion setting and in “calm mode” (17.5). | S |
+| P-JR-10 | Milestone celebrations (25, 50, 75, 100 %) with a short animation; animation off with reduced-motion setting and when gamification is switched off (17.5). | S |
 | P-JR-11 | Optional share card (journey picture without health data or photos) via the OS share sheet; off by default. | C |
 
 ### 3.14 Achievements and care kit (P-AC)
@@ -353,6 +361,68 @@ Local reminders work offline. Push messages **never contain health data**. Quiet
 | P-RT-04 | Check-up reminders (for example 3, 6, 12 months) and an optional photo check for the practice. | S |
 | P-RT-05 | Retainer achievements (for example “Night owl”) and a yearly “smile anniversary” message. | C |
 
+### 3.20 Education videos (P-VI)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-VI-01 | Short videos (under 2 min): putting in and taking out aligners, fit-check photos, chewies, cleaning aligners and retainers, brushing and flossing, attachments and IPR, using the VPro. | S |
+| P-VI-02 | **Hosted on YouTube** in an official Dentsply Sirona playlist; content approved by clinicians and Brand. | S |
+| P-VI-03 | Subtitles in all 20 app languages (3.26); spoken versions for the largest markets. Transcripts in the app for screen-reader users. | S |
+| P-VI-04 | **Privacy:** videos open in the YouTube app or browser by default. If shown inside the app, only via the privacy-enhanced player (youtube-nocookie.com) and only after the patient agrees to load YouTube content. No health data in the link. | M |
+| P-VI-05 | Videos appear in Help, next to the matching guide, and at the right moment (fit-check video on the Photos screen, VPro video during pairing, “first day” video after onboarding). | S |
+| P-VI-06 | YouTube may show its own ads or suggestions; Brand checks channel settings. Links show the source (“YouTube”). | S |
+
+### 3.21 App rating prompts (P-RV)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-RV-01 | Use only the **system rating dialogs**: Google Play In-App Review API and Apple’s StoreKit review request. No own pre-question (“Do you like the app?”) and no filtering of happy users, as the store rules forbid it. | M |
+| P-RV-02 | Triggered only after positive moments: a confirmed tray change, a milestone (25/50/75/100 %) or a perfect week. | S |
+| P-RV-03 | Never after pain, a “contact practice” or urgent result, a lost or broken report, during a pause, or in the first 14 days. Never linked to survey answers. At most 2 attempts per year (the systems apply their own limits too). | M |
+| P-RV-04 | “Rate the app” in Profile opens the store page at any time. Patients can switch prompts off (3.25). | S |
+
+### 3.22 Satisfaction surveys (P-SU)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-SU-01 | Three short surveys per treatment: after 2 weeks, at the halfway point and at the end (plus one in the retainer phase after 6 months). Five questions on a 1–5 scale and an optional comment; about 1 minute. | S |
+| P-SU-02 | Questions (draft): satisfaction with the treatment so far; “I know whether my treatment is on track”; “The app makes my treatment easier”; “It is easy to reach my practice”; “Reminders come at the right moments”. | S |
+| P-SU-03 | The patient chooses: share with the practice **anonymously** (default; shown only as totals from at least 5 patients) or **with their name**. Dentsply Sirona receives only anonymous totals for product improvement, with consent. | M |
+| P-SU-04 | Surveys are optional, can be skipped or switched off, and are never required for rewards or features. | M |
+
+### 3.23 Discreet mode (P-DM)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-DM-01 | One switch: notifications show only “Reminder” and “Open the app for details”, without sound or vibration pattern, and never name aligners, teeth or the practice. | S |
+| P-DM-02 | Optional neutral app icon and name (“Companion”), using the platforms’ alternate-icon support. | C |
+| P-DM-03 | Widgets and lock-screen controls switch to the neutral view (P-WG-08). | S |
+| P-DM-04 | Can be scheduled (for example school or work hours). | C |
+
+### 3.24 Emergency numbers (P-EM)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-EM-01 | An **Emergency** entry at the top of Help and in Practice: the practice number, the practice’s after-hours line (set by the practice) and the general emergency number of the practice’s country, with a short text on when to call which. | M |
+| P-EM-02 | Numbers are remote content per country, checked by the local Dentsply Sirona team, cached for offline use and shown as selectable text as well as call buttons. | M |
+| P-EM-03 | Country-specific services where they exist, for example NHS 111 in the UK for urgent dental care, set per country. | S |
+| P-EM-04 | Warning signs in the symptom check (P-SY-05) link straight to this sheet. | M |
+
+### 3.25 Customize what is shown (P-CU)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-CU-01 | Profile › **Customize** lets the patient hide and show each card on Today: status, daily check-in, achievements, tip of the day, VPro and photos shortcuts, help, surveys. Wear time and the current tray always stay. | S |
+| P-CU-02 | Feature switches: gamification (on by default, 17.5), product links (3.8.1), videos, tips, surveys, rating prompts, weekly summary. | S |
+| P-CU-03 | Always visible and not switchable: emergency numbers, messages from the practice, appointment proposals, safety notices. | M |
+| P-CU-04 | Settings sync across the patient’s devices (5.2). A “reset to default” button. | S |
+| P-CU-05 | The practice can switch off product links, achievements and care kit for all its patients (D-EN-04); patients can always switch things off, never on against the practice’s setting. | S |
+
+### 3.26 Languages (P-LG)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-LG-01 | **20 languages at launch (proposal):** English, Spanish, Portuguese, French, German, Italian, Dutch, Polish, Swedish, Turkish, Russian, Ukrainian, Arabic, Hindi, Chinese (Simplified), Japanese, Korean, Indonesian, Vietnamese, Thai. Final list aligned with market plans. | M |
+| P-LG-02 | Language follows the device setting and can be changed in the app. The practice dashboard offers the same languages. | M |
+| P-LG-03 | **Right-to-left** layout for Arabic (mirrored navigation, icons and progress direction where meaningful). | M |
+| P-LG-04 | Medical and safety texts (symptom check, emergency, consents, instructions) are translated by certified medical translators and reviewed by a clinician who speaks the language; UI texts by professional translators. No raw machine translation in production. | M |
+| P-LG-05 | Local formats for dates, times, numbers and units; time-zone handling as in P-WT-06. Plural rules and text expansion (up to +40 %) tested. | M |
+| P-LG-06 | Store listings, videos (subtitles), guides, emails, calendar entries and the care-kit flow are localized as well. | S |
+| P-LG-07 | Automated screenshot tests for every language and both themes in CI. | S |
+
 ---
 
 ## 4. Functional requirements: practice dashboard (web)
@@ -432,8 +502,9 @@ Practices need to start lab processes from the dashboard, for example when a pat
 | D-EN-01 | **Kudos:** one-tap praise (templates) to a patient, suggested automatically at milestones (for example three weeks on target) with a frequency cap. | S |
 | D-EN-02 | **Comfort diary view:** 14-day trend with tray-change days marked, next to wear time. | S |
 | D-EN-03 | **Milestones list** (verified achievements) so staff can congratulate patients at visits. | C |
-| D-EN-04 | **Gamification settings** per practice: enable or disable journey, achievements and care kit, kudos, product links. Patients can still choose calm mode (17.5). | S |
+| D-EN-04 | **Gamification settings** per practice: enable or disable journey, achievements and care kit, kudos, product links. Patients can still switch gamification off (17.5). | S |
 | D-EN-05 | Confirm or end patient pauses (P-PM-02). | S |
+| D-EN-06 | **Satisfaction results** (3.22) in Statistics: averages per question and trend, only as totals from at least 5 patients unless a patient chose to share with their name. | S |
 
 ---
 
@@ -526,7 +597,7 @@ This chapter covers situations beyond the simple “one patient, one phone, one 
 | NF-05 | Offline | Tracking, reminders, photo capture and guides work offline. | P-16 |
 | NF-06 | Battery | No permanent background activity; BLE only when needed. | |
 | NF-07 | Accessibility | **WCAG 2.2 AA** for app and dashboard; includes WCAG 2.1 AA and meets the EAA. | N-12 |
-| NF-08 | Languages | English and German at launch; more per market. | P-17 |
+| NF-08 | Languages | **20 languages** at launch (list and process in 3.26), including right-to-left layout for Arabic. | P-17 |
 | NF-09 | Tone | Supportive, never shaming; texts approved by UX writing and clinicians. | P-13 |
 | NF-10 | Motion and colour | Animations respect reduced-motion; progress is never shown by colour alone; the mountain has a text equivalent for screen readers (“tray 7 of 24, 29 % of the way”). | |
 | NF-11 | Remote content | Tips, achievements, guides, texts and product links are versioned remote content (UP-B-07), with a local fallback for offline use. | |
@@ -662,7 +733,7 @@ Targets are placeholders until a baseline from the pilot is available.
 | Weekly active patients during active treatment | ≥ 80 % |
 | Days with a check-in (patients who started the diary) | ≥ 50 % |
 | Appointment proposals answered within 48 h | ≥ 70 % |
-| Patients who switch to calm mode or turn off product links (guard metric, watched, no target to push down) | monitored, reviewed monthly |
+| Patients who switch gamification off or turn off product links (guard metric, watched, no target to push down) | monitored, reviewed monthly |
 | Wear-time adherence compared with a control group without gamification (primary outcome) | higher (baseline needed) |
 | Store rating | ≥ 4.3 |
 
@@ -704,7 +775,12 @@ Targets are placeholders until a baseline from the pilot is available.
 - **P-AP-02:** Accepting a slot shows in the dashboard within 5 s and creates exactly one appointment.
 - **P-AP-06:** The .ics file contains no patient name and no treatment data.
 - **D-LB-02/05:** A status change of a lab order shows in the dashboard within 5 min; the patient sees “replacement ordered” without a price.
-- **17.5:** Calm mode hides journey animation, streaks, achievements and tips; wear tracking and reminders are unchanged.
+- **17.5:** Switching gamification off hides journey animation, streaks, achievements and tips; wear tracking and reminders are unchanged.
+- **P-CU-01:** Every card on Today except wear time and the current tray can be hidden and shown again in Profile › Customize.
+- **P-RV-03:** The rating prompt never appears after a pain, “contact practice” or urgent result, during a pause, or in the first 14 days.
+- **P-DM-01:** With discreet mode on, no notification shows the words aligner, tooth, dental or the practice name, and none plays a sound.
+- **P-EM-02:** The emergency sheet shows the number of the practice’s country and works offline.
+- **3.26:** In Arabic the whole app is mirrored (right-to-left) without clipped or overlapping text; automated screenshot tests run for all 20 languages.
 - **S-05:** An automated check finds no health data in logs, push texts or crash reports.
 
 ---
@@ -730,7 +806,9 @@ Targets are placeholders until a baseline from the pilot is available.
 | Product link programme | Amazon Associates affiliate links with commission · plain links without commission · own webshop |
 | Owner of the Associates account | Dentsply Sirona entity per market · central entity |
 | Care kit | threshold 20 achievements (given) · minimum of 5 verified (proposal) · minimum treatment time before redemption (proposal 8 weeks) · cost, stock and fulfilment partner |
-| Gamification default | on for adults with calm mode (proposal) · off until chosen |
+| Gamification default | **decided:** on for everyone, can be switched off |
+| Final language list | 20 languages in 3.26 (proposal, to align with market plans) |
+| Video hosting | YouTube, official Dentsply Sirona channel (decided) · ad-free settings to check with Brand |
 | Minors | no ads, no streak-loss messages, kit via parent or practice (proposal) |
 | Social proof | show aggregated norms from at least 50 patients (proposal) · not at all |
 | Lab integration | API/EDI to SureSmile ordering (target) · portal with structured message first |
@@ -876,7 +954,7 @@ Warm, short, concrete. “Time to put them back in. Your smile will thank you.�
 | Rule | Detail |
 |---|---|
 | No dark patterns | No fake urgency, hidden opt-outs, guilt-based wording or countdowns to buy. Product links are labelled as ads (3.8.1). |
-| **Calm mode** | One switch in Profile hides journey animation, streaks, achievements and tips and leaves plain tracking and reminders. The practice cannot force gamification on. |
+| **Gamification switch** | Gamification is **on by default** for all patients. One switch (“Gamification”) turns off the journey animation, streaks, achievements and tips; plain tracking and reminders stay. Single items can also be hidden (3.25). The practice cannot force gamification on. |
 | Minors | No ads by default, no streak-loss messages, no random rewards; nudges reviewed against age-appropriate design rules (for example the UK Children’s Code); parent view stays optional. |
 | Do not raise anxiety | No daily score that shames; low days are met with support. Comfort diary answers never feed rewards. |
 | Health first | Nothing rewards ignoring pain, wearing aligners while eating or drinking, or skipping cleaning. |
@@ -893,29 +971,30 @@ Kudos (D-EN-01) and the milestones list (D-EN-03) let the practice take part in 
 |---|---|
 | Primary | Wear-time adherence; unplanned refinements; appointment attendance |
 | Secondary | Weekly active patients, check-in rate, fit-photo cadence |
-| Guard | Calm-mode and product-link opt-outs, complaints, notification mute rate, comfort diary signals of stress, support tickets about “too many reminders” |
+| Guard | Gamification and product-link opt-outs, complaints, notification mute rate, comfort diary signals of stress, support tickets about “too many reminders” |
 
 ---
 
 ## 18. Further gaps found in review
 
-| Gap | Proposal | Prio |
-|---|---|---|
-| Onboarding is thin on motivation | Add personal “why”, goal date, meal pattern for reminders, a short notification permission explanation, a first-day video | S |
-| Education beyond text | Short videos (under 60 s) on inserting and removing aligners, attachments, chewies, cleaning; subtitles and transcripts | S |
-| Practice branding | Co-branded header with the practice’s name and logo inside the Dentsply Sirona design rules | S |
-| App store rating prompts | Ask only after positive moments (an achievement, a tray change), never after pain or an urgent result, at most twice a year, using the OS API | S |
-| Patient-reported outcomes | Short satisfaction and confidence questions at the start, middle and end, with consent, for pilot metrics | S |
-| Photo use by the practice | Separate, revocable consent per photo set for the practice’s own before/after gallery | C |
-| Referral | “Recommend a friend” run by the practice, within local limits on incentives | C |
-| Health platform integration | Optional write of wear time to Apple Health or Health Connect, with explicit consent | C |
-| Accessibility of the journey | Text equivalent of the mountain, high contrast, large text, one-handed use | M |
-| Right-to-left languages | Layout and text-length tests before Arabic or Hebrew | C |
-| After-hours emergency information | Per practice and country (for example 116 117 in Germany) | M |
-| Practice onboarding checklist | First 7 days: add team, set rules, invite first patient, send first kudos | S |
-| In-app help centre and support | Help articles and a support form that never asks for health data; status page | S |
-| Discreet mode | Neutral notification text and no sound (17.4) | S |
-| Patients without a smartphone | Practice handles it on paper or by phone; no app features required | C |
+| Gap | Decision |
+|---|---|
+| Onboarding is thin on motivation | In scope: personal “why”, goal date, meal pattern, short permission explanation, first-day video (S) |
+| Education beyond text | **In scope:** videos on YouTube (3.20) |
+| Practice branding | In scope: co-branded header within Dentsply Sirona design rules (S) |
+| App store rating prompts | **In scope** (3.21) |
+| Patient-reported outcomes | **In scope:** satisfaction surveys (3.22) |
+| Photo use by the practice for a gallery | **Out of scope** (decided) |
+| Referral programme | **Out of scope** (decided) |
+| Health platform integration | Could, later: optional write of wear time to Apple Health or Health Connect with explicit consent |
+| Accessibility of the journey | In scope: text equivalent, high contrast, large text, one-handed use (M) |
+| Right-to-left languages | **In scope:** Arabic at launch (3.26) |
+| After-hours emergency information | **In scope** (3.24) |
+| Practice onboarding checklist | In scope: first 7 days checklist in the dashboard (S) |
+| In-app help centre and support | In scope: help articles and a support form without health data; status page (S) |
+| Discreet mode | **In scope** (3.23) |
+| Patients without a smartphone | Practice handles it on paper or by phone (C) |
+| Showing less | **In scope:** customize what is shown (3.25) |
 
 ---
 
