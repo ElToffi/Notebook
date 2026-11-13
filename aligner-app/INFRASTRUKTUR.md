@@ -1,7 +1,7 @@
 # Aligner Companion – Infrastruktur, Sicherheit und Praxis-Onboarding
 
 **Version:** 0.1 (Entwurf) · **Stand:** 13.11.2026
-**Bezug:** `SPEZIFIKATION.md` v0.2 (Kap. 6–8)
+**Bezug:** `SPECIFICATION.md` v0.3 (Kap. 6–9)
 
 Dieses Dokument beschreibt, was für einen sicheren Betrieb nötig ist:
 1. Gesamtbild der Infrastruktur
