@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Praxis-Dashboard Klickdummy</title>
+<title>Practice Dashboard Prototype</title>
 <style>
-/* Design-Tokens: Platzhalter, durch Werte aus den Dentsply Sirona Brand Guidelines ersetzen */
+/* Design tokens: placeholders, replace with values from the Dentsply Sirona brand guidelines */
 :root{
   --ds-primary:#0B5FA5;--ds-primary-dark:#07467C;--ds-primary-soft:#E6F0F8;--ds-accent:#00A3AD;
   --ok:#1E7F4F;--watch:#B25E00;--act:#B3261E;
@@ -163,31 +163,31 @@ const I={
   vib:'<rect x="8" y="4" width="8" height="16" rx="3"/><path d="M4 9v6M20 9v6"/>'
 };
 const ic=(n,a='')=>`<svg class="i" viewBox="0 0 24 24" ${a} aria-hidden="true">${I[n]}</svg>`;
-const ST={act:'Handlung nötig',watch:'beobachten',ok:'im Plan'};
+const ST={act:'Action needed',watch:'Watch',ok:'On track'};
 const ORDER={act:0,watch:1,ok:2};
 const wear=(base,dips)=>Array.from({length:14},(_,k)=>dips[k]??base+((k*7)%5-2)*.3);
 
 let P=[
- {id:1,name:'Lena Muster',age:29,al:7,tot:24,st:'act',reason:'Symptom-Check: „Praxis kontaktieren“ (Passform / Lücke)',icon:'help',since:'vor 12 min',w:wear(22.1,{}),vpro:9,fit:null,gap:true,photoNew:true},
- {id:2,name:'Jonas Becker',age:15,al:12,tot:30,st:'act',reason:'Tragezeit < 18 h an 4 von 7 Tagen',icon:'clock',since:'heute 07:00',w:wear(20,{8:16.5,9:17.2,11:15.9,12:17.5}),vpro:3,fit:'ok',parent:true},
- {id:3,name:'Aylin Demir',age:34,al:4,tot:18,st:'act',reason:'Aligner 4 gebrochen (mit Foto)',icon:'box',since:'gestern 18:40',w:wear(22.3,{}),vpro:10,fit:'ok'},
- {id:4,name:'Marc Hoffmann',age:41,al:19,tot:22,st:'watch',reason:'Passform-Check 3 Tage überfällig',icon:'cam',since:'seit 3 Tagen',w:wear(21.8,{}),vpro:7,fit:'ok'},
- {id:5,name:'Sophie Wagner',age:17,al:9,tot:26,st:'watch',reason:'Wechsel auf Aligner 10 nicht bestätigt',icon:'cal',since:'seit 2 Tagen',w:wear(21.5,{12:19.8}),vpro:8,fit:'ok',parent:true},
- {id:6,name:'Daniel Krüger',age:38,al:15,tot:20,st:'ok',reason:'Alles im Plan · Ø 22:24 h',icon:'check',since:'',w:wear(22.4,{}),vpro:10,fit:'ok'},
- {id:7,name:'Mira Schulz',age:26,al:3,tot:16,st:'ok',reason:'Alles im Plan · Ø 22:05 h',icon:'check',since:'',w:wear(22.1,{}),vpro:9,fit:'ok'},
- {id:8,name:'Tim Neumann',age:31,al:21,tot:28,st:'ok',reason:'Alles im Plan · Ø 22:40 h',icon:'check',since:'',w:wear(22.6,{}),vpro:10,fit:'ok'}
+ {id:1,name:'Lena Muster',age:29,al:7,tot:24,st:'act',reason:'Symptom check: “contact practice” (fit / gap)',icon:'help',since:'12 min ago',w:wear(22.1,{}),vpro:9,fit:null,gap:true,photoNew:true},
+ {id:2,name:'Jonas Becker',age:15,al:12,tot:30,st:'act',reason:'Wear time < 18 h on 4 of 7 days',icon:'clock',since:'today 07:00',w:wear(20,{8:16.5,9:17.2,11:15.9,12:17.5}),vpro:3,fit:'ok',parent:true},
+ {id:3,name:'Aylin Demir',age:34,al:4,tot:18,st:'act',reason:'Aligner 4 broken (with photo)',icon:'box',since:'yesterday 18:40',w:wear(22.3,{}),vpro:10,fit:'ok'},
+ {id:4,name:'Marc Hoffmann',age:41,al:19,tot:22,st:'watch',reason:'Fit check 3 days overdue',icon:'cam',since:'for 3 days',w:wear(21.8,{}),vpro:7,fit:'ok'},
+ {id:5,name:'Sophie Wagner',age:17,al:9,tot:26,st:'watch',reason:'Change to aligner 10 not confirmed',icon:'cal',since:'for 2 days',w:wear(21.5,{12:19.8}),vpro:8,fit:'ok',parent:true},
+ {id:6,name:'Daniel Krüger',age:38,al:15,tot:20,st:'ok',reason:'All on track · Ø 22:24 h',icon:'check',since:'',w:wear(22.4,{}),vpro:10,fit:'ok'},
+ {id:7,name:'Mira Schulz',age:26,al:3,tot:16,st:'ok',reason:'All on track · Ø 22:05 h',icon:'check',since:'',w:wear(22.1,{}),vpro:9,fit:'ok'},
+ {id:8,name:'Tim Neumann',age:31,al:21,tot:28,st:'ok',reason:'All on track · Ø 22:40 h',icon:'check',since:'',w:wear(22.6,{}),vpro:10,fit:'ok'}
 ];
 let S={view:'patients',filter:'alle',sel:1,assist:false,markers:[{x:44,y:52,s:null},{x:57,y:50,s:null}],audit:{
-  1:[['12:41','System','Alarm angelegt: Symptom-Check „Praxis kontaktieren“'],['12:40','Lena Muster','Passform-Check Aligner 7 hochgeladen (3 Fotos)'],['08:02','System','Tragezeit gestern 22:18 h']]}};
+  1:[['12:41','System','Alert created: symptom check “contact practice”'],['12:40','Lena Muster','Fit check aligner 7 uploaded (3 photos)'],['08:02','System','Wear time yesterday 22:18 h']]}};
 const RULES=[
- ['Tragezeit unter Ziel','< 20 h','3 Tage in Folge','watch'],
- ['Tragezeit deutlich unter Ziel','< 18 h','3 von 7 Tagen','act'],
- ['Wechsel nicht bestätigt','2 Tage','nach Plantermin','watch'],
- ['Passform-Foto fehlt','3 Tage','nach Fälligkeit','watch'],
- ['Symptom-Check „Praxis kontaktieren“','sofort','','act'],
- ['Aligner verloren / gebrochen','sofort','','act'],
- ['Passform „trackt nicht“','sofort','','act'],
- ['VPro nicht genutzt','5 Tage','in Folge','watch']];
+ ['Wear time below target','< 20 h','3 days in a row','watch'],
+ ['Wear time well below target','< 18 h','3 of 7 days','act'],
+ ['Tray change not confirmed','2 days','after planned date','watch'],
+ ['Fit photo missing','3 days','after due date','watch'],
+ ['Symptom check “contact practice”','immediately','','act'],
+ ['Aligner lost / broken','immediately','','act'],
+ ['Fit “not tracking”','immediately','','act'],
+ ['VPro not used','5 days','in a row','watch']];
 
 const cur=()=>P.find(p=>p.id===S.sel);
 function audit(t){ (S.audit[S.sel]=S.audit[S.sel]||[]).unshift([new Date().toTimeString().slice(0,5),'Dr. A. Weber',t]); }
@@ -195,11 +195,11 @@ let tt; function toast(t){const e=document.getElementById('toast');e.textContent
 
 function nav(){
   const n=P.filter(p=>p.st==='act').length;
-  const items=[['patients','Patient:innen','users',n],['alerts','Alarme','bell',0],['inbox','Nachrichten','chat',0],['stats','Statistik','chart',0],['rules','Alarmregeln','gear',0]];
+  const items=[['patients','Patients','users',n],['alerts','Alerts','bell',0],['inbox','Messages','chat',0],['stats','Statistics','chart',0],['rules','Alert rules','gear',0]];
   document.getElementById('nav').innerHTML=`
-   <div class="brand"><span class="mark">DS</span><span>Aligner Companion<small>Praxis-Dashboard</small></span></div>
+   <div class="brand"><span class="mark">DS</span><span>Aligner Companion<small>Practice dashboard</small></span></div>
    ${items.map(([k,l,i,c])=>`<button onclick="S.view='${k==='alerts'?'patients':k}';S.filter='${k==='alerts'?'act':'alle'}';render()" ${S.view===k||(k==='patients'&&S.view==='patients')?'aria-current="page"':''}>${ic(i)}${l}${c?`<span class="cnt">${c}</span>`:''}</button>`).join('')}
-   <div class="foot">Kieferorthopädie Dr. Weber<br>Klickdummy v0.2 · <a href="index.html">Patienten-App →</a></div>`;
+   <div class="foot">Dr. Weber Orthodontics<br>Prototype v0.2 · <a href="index.html">Patient app →</a></div>`;
 }
 
 function teeth(gap,plan){
@@ -217,23 +217,23 @@ function patients(){
   const list=P.filter(p=>S.filter==='alle'||p.st===S.filter).sort((a,b)=>ORDER[a.st]-ORDER[b.st]);
   const c=k=>P.filter(p=>p.st===k).length;
   return `
-  <header class="top"><h1>Patient:innen</h1><input class="search" placeholder="Name oder Fall-Nr. suchen" aria-label="Suche"><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
+  <header class="top"><h1>Patients</h1><input class="search" placeholder="Search name or case no." aria-label="Search"><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
   <div class="kpis">
-    <div class="card kpi"><div class="muted">Im Plan</div><div class="v">${Math.round(c('ok')/P.length*100)} %</div><div class="muted">${c('ok')} von ${P.length} Patient:innen</div></div>
-    <div class="card kpi"><div class="muted">Handlung nötig</div><div class="v" style="color:var(--act)">${c('act')}</div><div class="muted">${c('watch')} weitere beobachten</div></div>
-    <div class="card kpi"><div class="muted">Ø Tragezeit (7 Tage)</div><div class="v">21:52 h</div><div class="muted">Ziel 22:00 h</div></div>
-    <div class="card kpi"><div class="muted">Ø Reaktionszeit</div><div class="v">3,2 h</div><div class="muted">Ziel ≤ 1 Arbeitstag</div></div>
+    <div class="card kpi"><div class="muted">On track</div><div class="v">${Math.round(c('ok')/P.length*100)} %</div><div class="muted">${c('ok')} of ${P.length} patients</div></div>
+    <div class="card kpi"><div class="muted">Action needed</div><div class="v" style="color:var(--act)">${c('act')}</div><div class="muted">${c('watch')} more to watch</div></div>
+    <div class="card kpi"><div class="muted">Ø wear time (7 days)</div><div class="v">21:52 h</div><div class="muted">Target 22:00 h</div></div>
+    <div class="card kpi"><div class="muted">Ø response time</div><div class="v">3.2 h</div><div class="muted">Target ≤ 1 working day</div></div>
   </div>
   <div class="layout">
     <div>
       <div class="filters" role="group" aria-label="Filter">
-        ${[['alle','Alle'],['act','Handlung nötig'],['watch','Beobachten'],['ok','Im Plan']].map(([k,l])=>`<button aria-pressed="${S.filter===k}" onclick="S.filter='${k}';render()">${l}${k!=='alle'?` (${c(k)})`:''}</button>`).join('')}
+        ${[['alle','All'],['act','Action needed'],['watch','Watch'],['ok','On track']].map(([k,l])=>`<button aria-pressed="${S.filter===k}" onclick="S.filter='${k}';render()">${l}${k!=='alle'?` (${c(k)})`:''}</button>`).join('')}
       </div>
       <div class="card plist">
         ${list.map(p=>`<button class="prow" aria-current="${p.id===S.sel}" onclick="S.sel=${p.id};S.markers.forEach(m=>m.s=null);render()">
           <span class="avatar" style="background:${p.st==='act'?'var(--act)':p.st==='watch'?'var(--watch)':'var(--ok)'}">${p.name.split(' ').map(x=>x[0]).join('')}</span>
-          <span class="grow"><b>${p.name}</b> <span class="muted">· ${p.age} J. · Aligner ${p.al}/${p.tot}</span><span class="reason muted">${p.reason}</span></span>
-          <span class="st ${p.st}">${ST[p.st]}</span></button>`).join('')||'<p class="muted" style="padding:12px">Keine Patient:innen in diesem Filter.</p>'}
+          <span class="grow"><b>${p.name}</b> <span class="muted">· ${p.age} y · aligner ${p.al}/${p.tot}</span><span class="reason muted">${p.reason}</span></span>
+          <span class="st ${p.st}">${ST[p.st]}</span></button>`).join('')||'<p class="muted" style="padding:12px">No patients in this filter.</p>'}
       </div>
     </div>
     ${detail()}
@@ -248,114 +248,114 @@ function detail(){
   const showPhotos=p.photoNew||p.id===1;
   return `<section class="detail">
     <div class="dhead"><span class="avatar" style="width:44px;height:44px;font-size:15px">${p.name.split(' ').map(x=>x[0]).join('')}</span>
-      <div class="grow"><h2>${p.name}</h2><div class="muted">${p.age} Jahre · SureSmile® · Aligner ${p.al} von ${p.tot} · Wechsel alle 14 Tage${p.parent?' · Elternansicht aktiv':''}</div></div>
+      <div class="grow"><h2>${p.name}</h2><div class="muted">${p.age} years · SureSmile® · aligner ${p.al} of ${p.tot} · change every 14 days${p.parent?' · parent view active':''}</div></div>
       <span class="st ${p.st}">${ST[p.st]}</span>
-      <button class="btn ghost" onclick="toast('PDF für Patientenakte erstellt (Demo)')">${ic('doc')} PDF</button></div>
+      <button class="btn ghost" onclick="toast('PDF for patient record created (demo)')">${ic('doc')} PDF</button></div>
 
     <div class="card alert ${p.st}">
-      <div class="sec-t">${ic(p.icon)} <span class="grow">${p.st==='ok'?'Kein offener Alarm':'Offener Alarm'}</span><span class="muted" style="text-transform:none;letter-spacing:0">${p.since}</span></div>
+      <div class="sec-t">${ic(p.icon)} <span class="grow">${p.st==='ok'?'No open alert':'Open alert'}</span><span class="muted" style="text-transform:none;letter-spacing:0">${p.since}</span></div>
       <b style="font-size:15px">${p.reason}</b>
-      ${p.id===1&&p.st!=='ok'?`<p class="muted" style="margin-top:6px">Antworten: Lücke „an mehreren Zähnen“ · Chewies „selten oder nie“. Passform-Check (3 Fotos) wurde gleichzeitig hochgeladen.</p>`:''}
-      ${p.id===2&&p.st!=='ok'?`<p class="muted" style="margin-top:6px">Tiefpunkte an Schultagen. Elternansicht sieht nur den Tragezeit-Status.</p>`:''}
-      ${p.id===3&&p.st!=='ok'?`<p class="muted" style="margin-top:6px">Patientin trägt laut Standardanweisung Aligner 5 (Aligner 4 seit 9 Tagen getragen).</p>`:''}
+      ${p.id===1&&p.st!=='ok'?`<p class="muted" style="margin-top:6px">Answers: gap “on several teeth” · chewies “rarely or never”. Fit check (3 photos) uploaded at the same time.</p>`:''}
+      ${p.id===2&&p.st!=='ok'?`<p class="muted" style="margin-top:6px">Dips on school days. Parent view sees wear-time status only.</p>`:''}
+      ${p.id===3&&p.st!=='ok'?`<p class="muted" style="margin-top:6px">Following the standing instruction, patient now wears aligner 5 (aligner 4 worn for 9 days).</p>`:''}
       <div class="actions">
-        <button class="btn" onclick="msg()">${ic('send')} Nachricht</button>
-        <button class="btn sec" onclick="act('Neue Fotos angefordert (Passform-Check, 3 Ansichten)','Fotoanforderung gesendet')">${ic('cam')} Fotos anfordern</button>
-        <button class="btn sec" onclick="act('Aligner ${p.al} um 7 Tage verlängert','Verlängerung an Patient:in gesendet')">${ic('clock')} Aligner verlängern</button>
-        <button class="btn sec" onclick="act('Termin vorgeschlagen: 20.11., 10:30','Terminvorschlag gesendet')">${ic('cal')} Termin</button>
-        <button class="btn sec" onclick="act('Ersatz-Aligner ${p.al} bei SureSmile bestellt','Bestellung ausgelöst (Demo)')">${ic('box')} Ersatz bestellen</button>
-        ${p.st!=='ok'?`<button class="btn ghost" onclick="resolve()">${ic('check')} Alarm erledigt</button>`:''}
+        <button class="btn" onclick="msg()">${ic('send')} Message</button>
+        <button class="btn sec" onclick="act('New photos requested (fit check, 3 views)','Photo request sent')">${ic('cam')} Request photos</button>
+        <button class="btn sec" onclick="act('Aligner ${p.al} extended by 7 days','Extension sent to patient')">${ic('clock')} Extend aligner</button>
+        <button class="btn sec" onclick="act('Appointment proposed: Nov 20, 10:30','Appointment proposal sent')">${ic('cal')} Appointment</button>
+        <button class="btn sec" onclick="act('Replacement aligner ${p.al} ordered from SureSmile','Order placed (demo)')">${ic('box')} Order replacement</button>
+        ${p.st!=='ok'?`<button class="btn ghost" onclick="resolve()">${ic('check')} Resolve alert</button>`:''}
       </div>
     </div>
 
     ${showPhotos?`<div class="card" style="margin-bottom:14px">
-      <div class="sec-t"><span class="grow">Passform-Check Aligner ${p.al} · Frontal</span>
-        <label class="switch"><input type="checkbox" ${S.assist?'checked':''} onchange="S.assist=this.checked;render()"> Fit-Assist <span class="b2">B2</span></label></div>
+      <div class="sec-t"><span class="grow">Fit check aligner ${p.al} · front</span>
+        <label class="switch"><input type="checkbox" ${S.assist?'checked':''} onchange="S.assist=this.checked;render()"> Fit assist <span class="b2">B2</span></label></div>
       <div class="photos">
-        <div class="ph">${teeth(false,false)}<span class="lbl">Vorher · Aligner ${p.al-1}</span></div>
-        <div class="ph">${teeth(p.gap,false)}<span class="lbl">Aktuell · heute</span>
-          ${S.assist?S.markers.map((m,i)=>`<button class="mk ${m.s==='ok'?'ok':m.s==='no'?'no':''}" style="left:calc(${m.x}% - 13px);top:calc(${m.y}% - 13px)" title="Mögliche Lücke: bestätigen oder verwerfen" aria-label="Markierung ${i+1}" onclick="mark(${i})"></button>`).join(''):''}</div>
-        <div class="ph">${teeth(false,true)}<span class="lbl">Plan · Aligner ${p.al}</span></div>
+        <div class="ph">${teeth(false,false)}<span class="lbl">Before · aligner ${p.al-1}</span></div>
+        <div class="ph">${teeth(p.gap,false)}<span class="lbl">Current · today</span>
+          ${S.assist?S.markers.map((m,i)=>`<button class="mk ${m.s==='ok'?'ok':m.s==='no'?'no':''}" style="left:calc(${m.x}% - 13px);top:calc(${m.y}% - 13px)" title="Possible gap: confirm or reject" aria-label="Marker ${i+1}" onclick="mark(${i})"></button>`).join(''):''}</div>
+        <div class="ph">${teeth(false,true)}<span class="lbl">Plan · aligner ${p.al}</span></div>
       </div>
-      ${S.assist?`<p class="muted" style="margin-top:8px">Fit-Assist markiert mögliche Lücken an den Schneidekanten. Jede Markierung anklicken: einmal = bestätigen, zweimal = verwerfen. Nur Entscheidungsunterstützung (Stufe B2, nicht Release 1).</p>`:''}
-      <div class="verdict"><b style="margin-right:4px">Passform:</b>
-        ${[['ok','OK'],['gap','Lücke'],['nt','Trackt nicht']].map(([k,l])=>`<button class="${k}" aria-pressed="${p.fit===k}" onclick="fit('${k}','${l}')">${l}</button>`).join('')}
-        <span class="muted" style="margin-left:auto">Ansicht: <b>Frontal</b> · Links · Rechts</span></div>
+      ${S.assist?`<p class="muted" style="margin-top:8px">Fit assist highlights possible gaps at the incisal edges. Click each marker: once = confirm, twice = reject. Decision support only (scope B2, not release 1).</p>`:''}
+      <div class="verdict"><b style="margin-right:4px">Fit:</b>
+        ${[['ok','OK'],['gap','Gap'],['nt','Not tracking']].map(([k,l])=>`<button class="${k}" aria-pressed="${p.fit===k}" onclick="fit('${k}','${l}')">${l}</button>`).join('')}
+        <span class="muted" style="margin-left:auto">View: <b>Front</b> · Left · Right</span></div>
     </div>`:''}
 
     <div class="grid2">
-      <div class="card"><div class="sec-t"><span class="grow">Tragezeit 14 Tage</span><span style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--text)">Ø 7 T.: <b>${fmt(avg)} h</b></span></div>
-        <div class="bars" role="img" aria-label="Tragezeit der letzten 14 Tage"><div class="goal" style="bottom:${22/mx*100}%"></div>${p.w.map((v,k)=>`<div class="b ${low[k]}" style="height:${v/mx*100}%" title="${fmt(v)} h"></div>`).join('')}</div>
-        <div class="xl"><span>30.10.</span><span>Ziel 22 h</span><span>12.11.</span></div></div>
-      <div class="card"><div class="sec-t">${ic('vib')} <span class="grow">VPro &amp; Aligner</span></div>
+      <div class="card"><div class="sec-t"><span class="grow">Wear time, 14 days</span><span style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--text)">Ø 7 d: <b>${fmt(avg)} h</b></span></div>
+        <div class="bars" role="img" aria-label="Wear time over the last 14 days"><div class="goal" style="bottom:${22/mx*100}%"></div>${p.w.map((v,k)=>`<div class="b ${low[k]}" style="height:${v/mx*100}%" title="${fmt(v)} h"></div>`).join('')}</div>
+        <div class="xl"><span>Oct 30</span><span>Target 22 h</span><span>Nov 12</span></div></div>
+      <div class="card"><div class="sec-t">${ic('vib')} <span class="grow">VPro &amp; aligners</span></div>
         <div class="events">
-          <div class="ev"><span class="ic">${ic('vib')}</span><span><b>VPro an ${p.vpro} von 10 Tagen</b><br><span class="muted">automatisch vom Gerät übertragen</span></span></div>
-          <div class="ev"><span class="ic">${ic('tooth')}</span><span><b>Aligner ${p.al} seit 11 Tagen</b><br><span class="muted">Wechsel geplant 16.11.</span></span></div>
-          <div class="ev"><span class="ic">${ic('cal')}</span><span><b>Nächster Termin 20.11., 10:30</b><br><span class="muted">Kontrolle, IPR bei Aligner 12</span></span></div>
+          <div class="ev"><span class="ic">${ic('vib')}</span><span><b>VPro on ${p.vpro} of 10 days</b><br><span class="muted">transferred automatically from the device</span></span></div>
+          <div class="ev"><span class="ic">${ic('tooth')}</span><span><b>Aligner ${p.al} for 11 days</b><br><span class="muted">change planned Nov 16</span></span></div>
+          <div class="ev"><span class="ic">${ic('cal')}</span><span><b>Next appointment Nov 20, 10:30</b><br><span class="muted">check-up, IPR at aligner 12</span></span></div>
         </div></div>
     </div>
 
-    <div class="card"><div class="sec-t">${ic('shield')} <span class="grow">Audit-Trail</span><span class="muted" style="text-transform:none;letter-spacing:0">unveränderbar protokolliert</span></div>
-      <table><thead><tr><th>Zeit</th><th>Wer</th><th>Was</th></tr></thead><tbody>
-      ${(S.audit[p.id]||[['gestern','System','Tragezeit synchronisiert']]).map(([t,w,x])=>`<tr><td>${t}</td><td>${w}</td><td>${x}</td></tr>`).join('')}
+    <div class="card"><div class="sec-t">${ic('shield')} <span class="grow">Audit trail</span><span class="muted" style="text-transform:none;letter-spacing:0">tamper-proof log</span></div>
+      <table><thead><tr><th>Time</th><th>Who</th><th>What</th></tr></thead><tbody>
+      ${(S.audit[p.id]||[['yesterday','System','Wear time synced']]).map(([t,w,x])=>`<tr><td>${t}</td><td>${w}</td><td>${x}</td></tr>`).join('')}
       </tbody></table></div>
   </section>`;
 }
 function act(a,t){ audit(a); toast(t); render(); }
-function fit(k,l){ const p=cur(); p.fit=k; audit('Passform bewertet: '+l); if(k==='nt'){p.st='act';p.reason='Passform „trackt nicht“ markiert';} toast('Bewertung gespeichert'); render(); }
-function mark(i){ const m=S.markers[i]; m.s=m.s===null?'ok':m.s==='ok'?'no':null; audit('Fit-Assist-Markierung '+(i+1)+': '+(m.s==='ok'?'bestätigt':m.s==='no'?'verworfen':'zurückgesetzt')); render(); }
-function resolve(){ const p=cur(); audit('Alarm erledigt: '+p.reason); p.st='ok'; p.reason='Alles im Plan · Alarm erledigt'; p.icon='check'; p.since=''; toast('Alarm erledigt'); render(); }
+function fit(k,l){ const p=cur(); p.fit=k; audit('Fit rated: '+l); if(k==='nt'){p.st='act';p.reason='Fit marked “not tracking”';} toast('Rating saved'); render(); }
+function mark(i){ const m=S.markers[i]; m.s=m.s===null?'ok':m.s==='ok'?'no':null; audit('Fit assist marker '+(i+1)+': '+(m.s==='ok'?'confirmed':m.s==='no'?'rejected':'reset')); render(); }
+function resolve(){ const p=cur(); audit('Alert resolved: '+p.reason); p.st='ok'; p.reason='All on track · alert resolved'; p.icon='check'; p.since=''; toast('Alert resolved'); render(); }
 function msg(){
   const p=cur();
-  const tpl=p.id===1?'Hallo Frau Muster, danke für Ihre Fotos. Eine kleine Lücke an den Schneidezähnen ist zu sehen. Bitte nutzen Sie die Chewies 2× täglich für je 5 Minuten und tragen Sie Aligner 7 noch 3 Tage länger. Ihr Praxisteam':'Hallo, wir haben uns Ihre Daten angesehen. ';
-  document.getElementById('modal').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)this.remove()"><div class="modal" role="dialog" aria-label="Nachricht">
-    <h3>Nachricht an ${p.name}</h3>
-    <select style="border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface)"><option>Vorlage: Passform / Chewies</option><option>Vorlage: Tragezeit-Motivation</option><option>Vorlage: Ersatz unterwegs</option></select>
+  const tpl=p.id===1?'Hello Lena, thank you for your photos. We can see a small gap at your front teeth. Please use your chewies twice a day for 5 minutes each and wear aligner 7 for 3 more days. Your practice team':'Hello, we have reviewed your data. ';
+  document.getElementById('modal').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)this.remove()"><div class="modal" role="dialog" aria-label="Message">
+    <h3>Message to ${p.name}</h3>
+    <select style="border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface)"><option>Template: fit / chewies</option><option>Template: wear-time encouragement</option><option>Template: replacement on its way</option></select>
     <textarea id="mtxt">${tpl}</textarea>
-    <p class="muted" style="margin-bottom:12px">Wird Ende-zu-Ende-verschlüsselt zugestellt. Die Patient:in erhält eine Push-Mitteilung ohne Inhalt.</p>
-    <div class="actions" style="justify-content:flex-end"><button class="btn ghost" onclick="document.getElementById('modal').innerHTML=''">Abbrechen</button><button class="btn" onclick="audit('Nachricht gesendet: '+document.getElementById('mtxt').value.slice(0,60)+'…');document.getElementById('modal').innerHTML='';toast('Nachricht gesendet');render()">${ic('send')} Senden</button></div>
+    <p class="muted" style="margin-bottom:12px">Delivered end-to-end encrypted. The patient gets a push notification without content.</p>
+    <div class="actions" style="justify-content:flex-end"><button class="btn ghost" onclick="document.getElementById('modal').innerHTML=''">Cancel</button><button class="btn" onclick="audit('Message sent: '+document.getElementById('mtxt').value.slice(0,60)+'…');document.getElementById('modal').innerHTML='';toast('Message sent');render()">${ic('send')} Send</button></div>
   </div></div>`;
 }
 
 function rules(){
-  return `<header class="top"><h1>Alarmregeln</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
-  <div class="card" style="margin-bottom:14px"><div class="sec-t">Regeln dieser Praxis</div>
-  <table><thead><tr><th>Regel</th><th>Schwelle</th><th>Zeitraum</th><th>Status</th><th>Aktiv</th></tr></thead><tbody>
-  ${RULES.map(([r,s,z,st])=>`<tr><td><b>${r}</b></td><td><input value="${s}" aria-label="Schwelle ${r}"></td><td>${z?`<input value="${z}" style="width:140px" aria-label="Zeitraum ${r}">`:'–'}</td><td><select aria-label="Status ${r}"><option ${st==='watch'?'selected':''}>beobachten</option><option ${st==='act'?'selected':''}>Handlung nötig</option></select></td><td><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--ds-primary)" aria-label="aktiv"></td></tr>`).join('')}
+  return `<header class="top"><h1>Alert rules</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
+  <div class="card" style="margin-bottom:14px"><div class="sec-t">Rules for this practice</div>
+  <table><thead><tr><th>Rule</th><th>Threshold</th><th>Period</th><th>Status</th><th>Active</th></tr></thead><tbody>
+  ${RULES.map(([r,s,z,st])=>`<tr><td><b>${r}</b></td><td><input value="${s}" aria-label="Threshold ${r}"></td><td>${z?`<input value="${z}" style="width:140px" aria-label="Period ${r}">`:'–'}</td><td><select aria-label="Status ${r}"><option ${st==='watch'?'selected':''}>Watch</option><option ${st==='act'?'selected':''}>Action needed</option></select></td><td><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--ds-primary)" aria-label="active"></td></tr>`).join('')}
   </tbody></table></div>
   <div class="grid2">
-    <div class="card"><div class="sec-t">Vorgaben für Patient:innen</div>
+    <div class="card"><div class="sec-t">Patient settings</div>
       <table><tbody>
-        <tr><td>Tragezeitziel</td><td><input value="22 h"></td></tr>
-        <tr><td>Pausen-Erinnerung (Standard)</td><td><input value="45 min"></td></tr>
-        <tr><td>Pausen-Erinnerung (max. erlaubt)</td><td><input value="60 min"></td></tr>
-        <tr><td>Passform-Check</td><td><select><option>bei jedem Wechsel</option><option>alle 2 Wechsel</option><option>nur auf Anforderung</option></select></td></tr>
-        <tr><td>Foto-Umfang</td><td><select><option>3 Ansichten</option><option>6 Ansichten</option></select></td></tr>
+        <tr><td>Wear-time target</td><td><input value="22 h"></td></tr>
+        <tr><td>Break reminder (default)</td><td><input value="45 min"></td></tr>
+        <tr><td>Break reminder (max. allowed)</td><td><input value="60 min"></td></tr>
+        <tr><td>Fit check</td><td><select><option>every tray change</option><option>every 2nd change</option><option>on request only</option></select></td></tr>
+        <tr><td>Photo set</td><td><select><option>3 views</option><option>6 views</option></select></td></tr>
       </tbody></table></div>
-    <div class="card"><div class="sec-t">Standardanweisung bei Verlust / Bruch</div>
-      <textarea style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);min-height:120px">Wenn der aktuelle Aligner seit mindestens 7 Tagen getragen wird, den nächsten einsetzen, sonst den vorherigen. In jedem Fall weiter einen Aligner tragen.</textarea>
-      <p class="muted" style="margin-top:8px">Wird Patient:innen bei einer Meldung sofort angezeigt.</p></div>
+    <div class="card"><div class="sec-t">Standing instruction for lost / broken aligners</div>
+      <textarea style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);min-height:120px">If the current aligner has been worn for at least 7 days, move on to the next one; otherwise go back to the previous one. Always keep wearing an aligner.</textarea>
+      <p class="muted" style="margin-top:8px">Shown to patients immediately when they report a problem.</p></div>
   </div>
-  <button class="btn" onclick="toast('Regeln gespeichert (Änderung im Audit-Trail)')">Speichern</button>`;
+  <button class="btn" onclick="toast('Rules saved (change logged in audit trail)')">Save</button>`;
 }
 function stats(){
   const wk=[[62,71],[65,74],[70,76],[72,80],[75,78],[78,83]];
-  return `<header class="top"><h1>Statistik</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
+  return `<header class="top"><h1>Statistics</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
   <div class="kpis">
-    <div class="card kpi"><div class="muted">Tragezeit an ≥ 5 Tagen/Woche erfasst</div><div class="v">78 %</div><div class="muted">Pilotziel ≥ 60 %</div></div>
-    <div class="card kpi"><div class="muted">Fotos im Rhythmus</div><div class="v">83 %</div><div class="muted">Pilotziel ≥ 70 %</div></div>
-    <div class="card kpi"><div class="muted">Prüfzeit pro Fotoserie</div><div class="v">48 s</div><div class="muted">Ziel ≤ 1 min</div></div>
-    <div class="card kpi"><div class="muted">Alarme pro Woche</div><div class="v">11</div><div class="muted">davon 4 „Handlung nötig“</div></div>
+    <div class="card kpi"><div class="muted">Wear time logged ≥ 5 days/week</div><div class="v">78 %</div><div class="muted">Pilot target ≥ 60 %</div></div>
+    <div class="card kpi"><div class="muted">Photos at requested cadence</div><div class="v">83 %</div><div class="muted">Pilot target ≥ 70 %</div></div>
+    <div class="card kpi"><div class="muted">Review time per photo set</div><div class="v">48 s</div><div class="muted">Target ≤ 1 min</div></div>
+    <div class="card kpi"><div class="muted">Alerts per week</div><div class="v">11</div><div class="muted">4 of them “action needed”</div></div>
   </div>
-  <div class="card"><div class="sec-t"><span class="grow">Letzte 6 Wochen</span><span style="text-transform:none;letter-spacing:0;font-size:12px"><span style="color:var(--ds-primary)">■</span> Tragezeit erfasst &nbsp; <span style="color:var(--ds-accent)">■</span> Fotos im Rhythmus</span></div>
+  <div class="card"><div class="sec-t"><span class="grow">Last 6 weeks</span><span style="text-transform:none;letter-spacing:0;font-size:12px"><span style="color:var(--ds-primary)">■</span> Wear time logged &nbsp; <span style="color:var(--ds-accent)">■</span> Photos at cadence</span></div>
     <div style="display:flex;gap:18px;align-items:flex-end;height:160px">
-      ${wk.map(([a,b],k)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;width:100%"><div style="flex:1;height:${a}%;background:var(--ds-primary);border-radius:4px 4px 1px 1px" title="${a} %"></div><div style="flex:1;height:${b}%;background:var(--ds-accent);border-radius:4px 4px 1px 1px" title="${b} %"></div></div><span class="muted" style="font-size:11px">KW${41+k}</span></div>`).join('')}
+      ${wk.map(([a,b],k)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;width:100%"><div style="flex:1;height:${a}%;background:var(--ds-primary);border-radius:4px 4px 1px 1px" title="${a} %"></div><div style="flex:1;height:${b}%;background:var(--ds-accent);border-radius:4px 4px 1px 1px" title="${b} %"></div></div><span class="muted" style="font-size:11px">W${41+k}</span></div>`).join('')}
     </div></div>`;
 }
 function inbox(){
-  return `<header class="top"><h1>Nachrichten</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
-  <div class="card">${[['Lena Muster','Ist das normal? Passform / Lücke','vor 12 min','Team'],['Aylin Demir','Aligner 4 gebrochen','gestern','Dr. Weber'],['Sophie Wagner','Termin verschieben','gestern','Rezeption'],['Jonas Becker','Kurze Frage zu Chewies','Mo.','Team']].map(([n,t,d,z])=>`
-    <div class="prow"><span class="avatar">${n.split(' ').map(x=>x[0]).join('')}</span><span class="grow"><b>${n}</b><span class="reason muted">${t}</span></span><span class="muted">${d}</span><select aria-label="zuweisen" style="border:1.5px solid var(--line);border-radius:8px;padding:4px;background:var(--surface)"><option>${z}</option><option>Dr. Weber</option><option>Team</option></select></div>`).join('')}</div>`;
+  return `<header class="top"><h1>Messages</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
+  <div class="card">${[['Lena Muster','Is this normal? Fit / gap','12 min ago','Team'],['Aylin Demir','Aligner 4 broken','yesterday','Dr. Weber'],['Sophie Wagner','Reschedule appointment','yesterday','Front desk'],['Jonas Becker','Quick question about chewies','Mon','Team']].map(([n,t,d,z])=>`
+    <div class="prow"><span class="avatar">${n.split(' ').map(x=>x[0]).join('')}</span><span class="grow"><b>${n}</b><span class="reason muted">${t}</span></span><span class="muted">${d}</span><select aria-label="assign" style="border:1.5px solid var(--line);border-radius:8px;padding:4px;background:var(--surface)"><option>${z}</option><option>Dr. Weber</option><option>Team</option></select></div>`).join('')}</div>`;
 }
 function render(){
   nav();

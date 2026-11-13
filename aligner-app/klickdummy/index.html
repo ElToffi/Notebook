@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Aligner Companion Klickdummy</title>
+<title>Aligner Companion Prototype</title>
 <style>
 /* =========================================================================
-   DESIGN-TOKENS
-   Platzhalterwerte! Vor Freigabe durch die offiziellen Werte aus den
-   Dentsply Sirona Brand Guidelines ersetzen (Farben, Schrift, Radien).
+   DESIGN TOKENS
+   Placeholder values! Replace with the official values from the
+   Dentsply Sirona brand guidelines before release (colors, type, radii).
    ========================================================================= */
 :root{
-  --ds-primary:#0B5FA5;        /* Platzhalter DS-Primärblau */
+  --ds-primary:#0B5FA5;        /* placeholder DS primary blue */
   --ds-primary-dark:#07467C;
   --ds-primary-soft:#E6F0F8;
-  --ds-accent:#00A3AD;         /* Platzhalter Sekundärfarbe */
+  --ds-accent:#00A3AD;         /* placeholder secondary color */
   --ds-success:#1E7F4F;
   --ds-warning:#B25E00;
   --ds-danger:#B3261E;
@@ -26,7 +26,7 @@
   --radius:16px;
   --radius-s:10px;
   --shadow:0 1px 2px rgba(16,24,40,.06),0 2px 8px rgba(16,24,40,.06);
-  --font:"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif; /* Platzhalter DS-Schrift */
+  --font:"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif; /* placeholder DS typeface */
   --stage:#E9EDF1;
 }
 @media (prefers-color-scheme: dark){
@@ -50,7 +50,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--ds-accent);outline-offset:2px;border-radius:6px}
 
-/* ---------- Telefonrahmen (Desktop) ---------- */
+/* ---------- Phone frame (Desktop) ---------- */
 .phone{width:390px;height:812px;background:var(--bg);border-radius:44px;box-shadow:0 0 0 10px #1c232b,0 30px 60px rgba(0,0,0,.25);overflow:hidden;position:relative;display:flex;flex-direction:column;flex-shrink:0}
 .statusbar{height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600;flex-shrink:0}
 .side{max-width:300px;font-size:14px;color:var(--text-2);line-height:1.5}
@@ -66,7 +66,7 @@ input,textarea{font:inherit;color:inherit}
   .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}
 }
 
-/* ---------- App-Gerüst ---------- */
+/* ---------- App shell ---------- */
 .screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 16px 24px;scrollbar-width:none}
 .screen::-webkit-scrollbar{display:none}
 .appbar{display:flex;align-items:center;gap:8px;padding:6px 16px 10px;flex-shrink:0;min-height:52px}
@@ -83,7 +83,7 @@ input,textarea{font:inherit;color:inherit}
 .badge{position:absolute;top:0;right:10px;background:var(--ds-danger);color:#fff;font-size:10px;font-weight:700;border-radius:8px;padding:0 5px;line-height:16px}
 svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- Bausteine ---------- */
+/* ---------- Components ---------- */
 .card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
 .card h2{font-size:15px;font-weight:700;margin-bottom:4px}
 .muted{color:var(--text-2);font-size:13px}
@@ -115,7 +115,7 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .toggle[aria-checked="true"]{background:var(--ds-primary)}
 .toggle[aria-checked="true"]::after{left:23px}
 
-/* ---------- Heute ---------- */
+/* ---------- Today ---------- */
 .ring-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
 .ring{position:relative;width:220px;height:220px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
@@ -132,7 +132,7 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .grid2 .card{margin:0}
 .kpi{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
 
-/* ---------- Verlauf ---------- */
+/* ---------- History ---------- */
 .seg{display:flex;background:var(--surface);border-radius:12px;padding:4px;box-shadow:var(--shadow);margin-bottom:12px}
 .seg button{flex:1;padding:8px;border-radius:9px;font-size:14px;font-weight:600;color:var(--text-2)}
 .seg button[aria-pressed="true"]{background:var(--ds-primary);color:#fff}
@@ -144,7 +144,7 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .bars .b div.low{background:var(--ds-warning)}
 .bars .b span{font-size:11px;color:var(--text-2)}
 
-/* ---------- Fotos ---------- */
+/* ---------- Photos ---------- */
 .views{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .view{aspect-ratio:1;border-radius:12px;background:var(--ds-primary-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:var(--ds-primary-dark);position:relative;text-align:center;padding:4px}
 .view.done{background:linear-gradient(135deg,#f3d6cf,#e8b9ae);color:#5a2d24}
@@ -236,33 +236,33 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 </div>
 
 <aside class="side">
-  <span class="tag">Klickdummy v0.1</span>
+  <span class="tag">Prototype v0.2</span>
   <h1>Aligner Companion</h1>
-  <p>Interaktiver Prototyp zur Spezifikation (<code>aligner-app/SPEZIFIKATION.md</code>). Keine echten Daten, nichts wird gespeichert oder gesendet.</p>
-  <h2>Ausprobieren</h2>
+  <p>Interactive prototype for the product specification. No real data; nothing is stored or sent.</p>
+  <h2>Try it</h2>
   <ul>
-    <li>Onboarding mit Praxiscode und Einwilligungen</li>
-    <li>„Aligner raus/rein“ auf <b>Heute</b></li>
-    <li><b>Hilfe</b>: „Ist das normal?“, Aligner verloren/gebrochen, Ratgeber</li>
-    <li>VPro koppeln und Sitzung starten</li>
-    <li>Passform-Check (3 Fotos) aufnehmen und senden</li>
-    <li>Nachricht/E-Mail an die Praxis</li>
+    <li>Onboarding with practice code and consents</li>
+    <li>“Aligners out / in” on <b>Today</b></li>
+    <li><b>Help</b>: “Is this normal?”, lost/broken aligner, guides</li>
+    <li>Pair VPro and start a session</li>
+    <li>Take and send a fit check (3 photos)</li>
+    <li>Message / email the practice</li>
   </ul>
-  <h2>Demo-Steuerung</h2>
+  <h2>Demo controls</h2>
   <div class="btnrow">
-    <button onclick="demoPush('wear')">Erinnerung: wieder einsetzen</button>
-    <button onclick="demoPush('change')">Erinnerung: Wechsel</button>
-    <button onclick="demoPush('reply')">Praxis antwortet</button>
-    <button onclick="demoPush('photoreq')">Praxis fordert Fotos an</button>
-    <button onclick="demoPush('extend')">Praxis verlängert Aligner</button>
-    <button onclick="go('lock')">App sperren</button>
-    <button onclick="restart()">Neu starten</button>
-    <button onclick="toggleTheme()">Hell/Dunkel</button>
+    <button onclick="demoPush('wear')">Reminder: put aligners back in</button>
+    <button onclick="demoPush('change')">Reminder: tray change</button>
+    <button onclick="demoPush('reply')">Practice replies</button>
+    <button onclick="demoPush('photoreq')">Practice requests photos</button>
+    <button onclick="demoPush('extend')">Practice extends aligner</button>
+    <button onclick="go('lock')">Lock app</button>
+    <button onclick="restart()">Restart</button>
+    <button onclick="toggleTheme()">Light/Dark</button>
   </div>
-  <h2>Praxis-Seite</h2>
-  <p><a href="praxis.html" style="color:var(--ds-primary);font-weight:700">Praxis-Dashboard öffnen →</a></p>
-  <h2>Hinweis Design</h2>
-  <p>Farben und Schrift sind Platzhalter-Tokens. Vor Freigabe durch Werte aus den Dentsply Sirona Brand Guidelines ersetzen; Logo-Platzhalter „DS“ durch das offizielle Asset.</p>
+  <h2>Practice side</h2>
+  <p><a href="praxis.html" style="color:var(--ds-primary);font-weight:700">Open practice dashboard →</a></p>
+  <h2>Design note</h2>
+  <p>Colors and type are placeholder tokens. Replace them with values from the Dentsply Sirona brand guidelines before release, and the “DS” logo placeholder with the official asset.</p>
 </aside>
 
 <script>
@@ -309,25 +309,25 @@ const H = 3600e3, M = 60e3;
 function fresh(){
   const now = Date.now();
   return {
-    screen:'welcome', obStep:0, tab:'heute', stack:[],
+    screen:'welcome', obStep:0, tab:'today', stack:[],
     consents:{health:false,share:false,analytics:false,research:false},
     sy:{topic:null,step:0,ans:[]}, lost:{kind:null,photo:false},
     code:'PRX-4821-KZ', bio:true,
     out:false, outSince:null,
-    wornBase: 14*H + 37*M,           // bis jetzt heute getragen
+    wornBase: 14*H + 37*M,
     dayStart: now,
     aligner:7, alignerTotal:24, daysLeft:3, interval:14,
     vpro:{paired:false, pairing:false, running:false, remain:300, battery:72, today:false, streak:9},
-    photos:{}, photoSets:[{date:'30.10.2026',aligner:6,status:'erhalten'}],
-    camStep:0, period:'woche',
+    photos:{}, photoSets:[{date:'Oct 30, 2026',aligner:6,status:'received'}],
+    camStep:0, period:'week',
     unread:1,
     threads:[
-      {id:'t1',title:'Schiene Nr. 6 sitzt locker',msgs:[
-        {from:'out',text:'Hallo, die Schiene Nr. 6 sitzt hinten links etwas locker. Ist das normal?',t:'28.10. 18:12'},
-        {from:'in',text:'Guten Tag, das ist zu Beginn normal. Bitte nutzen Sie die Chewies 2× täglich. Senden Sie uns in 3 Tagen eine Fotoserie. Ihr Praxisteam',t:'29.10. 08:40'}]},
-      {id:'t2',title:'Fotoserie Aligner 6',msgs:[
-        {from:'out',text:'Fotoserie gesendet (6 Ansichten).',t:'30.10. 19:02',photos:6},
-        {from:'in',text:'Danke, alles im Plan. Weiter so!',t:'31.10. 09:15'}],unread:true}
+      {id:'t1',title:'Aligner 6 feels loose',msgs:[
+        {from:'out',text:'Hi, aligner 6 feels a bit loose at the back left. Is that normal?',t:'Oct 28, 18:12'},
+        {from:'in',text:'Hello, that is normal at the start. Please use your chewies twice a day and send us a fit check in 3 days. Your practice team',t:'Oct 29, 08:40'}]},
+      {id:'t2',title:'Fit check aligner 6',msgs:[
+        {from:'out',text:'Fit check sent (3 photos).',t:'Oct 30, 19:02',photos:3},
+        {from:'in',text:'Thanks, everything is on track. Keep it up!',t:'Oct 31, 09:15'}],unread:true}
     ],
     curThread:null,
     reminders:{wear:true,change:true,vpro:true,photo:true},
@@ -364,38 +364,38 @@ function toast(t,b){
   toastTO=setTimeout(()=>$('#toast').classList.remove('show'),3800);
 }
 function demoPush(k){
-  if(k==='wear'){ if(!S.out){S.wornBase=worn();S.out=true;S.outSince=Date.now()-48*M;} toast('Aligner wieder einsetzen','Ihre Pause dauert bereits 48 Minuten.'); }
-  if(k==='photoreq'){ S.photos={}; S.threads.unshift({id:'t'+Date.now(),title:'Bitte neue Fotos',msgs:[{from:'in',text:'Bitte senden Sie uns heute einen Passform-Check (3 Fotos). Danke! Ihr Praxisteam',t:'jetzt'}],unread:true}); S.unread++; toast('Ihre Praxis bittet um Fotos','Passform-Check in der App öffnen.'); }
-  if(k==='extend'){ S.daysLeft+=7; S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' verlängert',msgs:[{from:'in',text:'Bitte tragen Sie Aligner '+S.aligner+' noch 7 Tage länger, damit er vollständig ausgeformt ist. Das ist völlig normal.',t:'jetzt'}],unread:true}); S.unread++; toast('Neue Nachricht Ihrer Praxis','Öffnen Sie die App, um sie zu lesen.'); }
-  if(k==='change'){ toast('Heute ist Wechseltag','Zeit für Aligner Nr. '+(S.aligner+1)+'.'); }
+  if(k==='wear'){ if(!S.out){S.wornBase=worn();S.out=true;S.outSince=Date.now()-48*M;} toast('Put your aligners back in','Your break has lasted 48 minutes.'); }
+  if(k==='change'){ toast('Today is change day','Time for aligner '+(S.aligner+1)+'.'); }
   if(k==='reply'){
-    S.threads[0].msgs.push({from:'in',text:'Kurze Rückmeldung: Bitte kommen Sie zum Kontrolltermin am 20.11. um 10:30.',t:'jetzt'});
+    S.threads[0].msgs.push({from:'in',text:'Quick update: please come in for your check-up on Nov 20 at 10:30.',t:'now'});
     S.threads[0].unread=true; S.unread++;
-    toast('Neue Nachricht Ihrer Praxis','Öffnen Sie die App, um sie zu lesen.'); }
+    toast('New message from your practice','Open the app to read it.'); }
+  if(k==='photoreq'){ S.photos={}; S.threads.unshift({id:'t'+Date.now(),title:'New photos, please',msgs:[{from:'in',text:'Please send us a fit check (3 photos) today. Thank you! Your practice team',t:'now'}],unread:true}); S.unread++; toast('Your practice requests photos','Open the fit check in the app.'); }
+  if(k==='extend'){ S.daysLeft+=7; S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' extended',msgs:[{from:'in',text:'Please wear aligner '+S.aligner+' for 7 more days so it can fully seat. This is completely normal.',t:'now'}],unread:true}); S.unread++; toast('New message from your practice','Open the app to read it.'); }
   render();
 }
 
 /* ======================= Screens ======================= */
 const appbar = (title, opts={}) => `
   <div class="appbar">
-    ${opts.back?`<button class="back" onclick="back()" aria-label="Zurück">${ic('back')}</button>`:''}
+    ${opts.back?`<button class="back" onclick="back()" aria-label="Back">${ic('back')}</button>`:''}
     <h1>${title}</h1>${opts.right||''}
   </div>`;
 
 function tabbar(){
-  const t = [['heute','Heute','home'],['fotos','Fotos','cam'],['hilfe','Hilfe','help'],['praxis','Praxis','chat'],['profil','Profil','user']];
-  return `<nav class="tabbar" aria-label="Hauptnavigation">${t.map(([k,l,i])=>`
+  const t = [['today','Today','home'],['photos','Photos','cam'],['help','Help','help'],['practice','Practice','chat'],['profile','Profile','user']];
+  return `<nav class="tabbar" aria-label="Main navigation">${t.map(([k,l,i])=>`
     <button onclick="tab('${k}')" ${S.tab===k?'aria-current="page"':''}>
-      <span class="ico">${ic(i)}${k==='praxis'&&S.unread?`<span class="badge">${S.unread}</span>`:''}</span>${l}
+      <span class="ico">${ic(i)}${k==='practice'&&S.unread?`<span class="badge">${S.unread}</span>`:''}</span>${l}
     </button>`).join('')}</nav>`;
 }
 
 /* ----- Onboarding ----- */
 function scrWelcome(){
   const slides=[
-    ['Ihr Begleiter für die Aligner-Behandlung','Tragezeit im Blick, Erinnerungen zur richtigen Zeit und ein direkter, sicherer Draht zu Ihrer Praxis.','tooth'],
-    ['Sicher und vertraulich','Ihre Gesundheitsdaten werden verschlüsselt gespeichert und nur mit Ihrer Praxis geteilt. Server in Deutschland.','shield'],
-    ['Alles an einem Ort','Aligner, SureSmile® VPro™, Fotos und Nachrichten: in einer App.','vib']];
+    ['Your companion for aligner treatment','Wear time at a glance, reminders at the right moment and a direct, secure line to your practice.','tooth'],
+    ['Safe and confidential','Your health data is stored encrypted and shared only with your practice. Hosted in your region.','shield'],
+    ['Everything in one place','Aligners, SureSmile® VPro™, photos and messages: in one app.','vib']];
   const [h,p,i]=slides[S.obStep];
   return `<div class="ob">
     <div class="brand"><span class="brand-mark">DS</span>Dentsply Sirona</div>
@@ -403,204 +403,201 @@ function scrWelcome(){
     <h1>${h}</h1><p class="lead">${p}</p>
     <div class="spacer"></div>
     <div class="dots">${slides.map((_,k)=>`<i class="${k===S.obStep?'on':''}"></i>`).join('')}</div>
-    <button class="btn" onclick="${S.obStep<2?'S.obStep++;render()':"go('code')"}">${S.obStep<2?'Weiter':'Los geht’s'}</button>
-    <button class="btn ghost" style="margin-top:10px" onclick="go('code')">Ich habe bereits ein Konto</button>
+    <button class="btn" onclick="${S.obStep<2?'S.obStep++;render()':"go('code')"}">${S.obStep<2?'Next':'Get started'}</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="go('code')">I already have an account</button>
   </div>`;
 }
 function scrCode(){
-  return `${appbar('Praxis verbinden',{back:true})}
+  return `${appbar('Connect your practice',{back:true})}
   <div class="screen">
-    <p class="muted" style="margin-bottom:16px">Ihre Praxis hat Ihnen einen Einladungscode gegeben. So wird Ihr Konto sicher mit Ihrer Behandlung verknüpft.</p>
-    <button class="qr" onclick="S.code='PRX-4821-KZ';toast('QR-Code erkannt','Praxis Dr. Weber verknüpft.');render()">
+    <p class="muted" style="margin-bottom:16px">Your practice gave you an invite code. It securely links your account to your treatment.</p>
+    <button class="qr" onclick="S.code='PRX-4821-KZ';toast('QR code recognized','Dr. Weber Orthodontics linked.');render()">
       <span class="ic" style="width:48px;height:48px;border-radius:12px;background:var(--ds-primary-soft);color:var(--ds-primary);display:grid;place-items:center">${ic('cam')}</span>
-      <span><b>QR-Code scannen</b><br><span class="muted">Vom Behandlungsplan oder aus der Einladungs-E-Mail</span></span>
+      <span><b>Scan QR code</b><br><span class="muted">From your treatment plan or the invite email</span></span>
     </button>
-    <label class="field"><span>Oder Code eingeben</span><input value="${S.code}" oninput="S.code=this.value" autocomplete="one-time-code"></label>
+    <label class="field"><span>Or enter the code</span><input value="${S.code}" oninput="S.code=this.value" autocomplete="one-time-code"></label>
     <div class="card" style="box-shadow:none;border:1px solid var(--line)">
-      <div class="row"><div class="brand-mark" style="width:40px;height:40px">KFO</div><div class="grow"><b>Kieferorthopädie Dr. Weber</b><div class="muted">Musterstraße 12, 10115 Berlin</div></div><span class="chip ok">Gefunden</span></div>
+      <div class="row"><div class="brand-mark" style="width:40px;height:40px">ORT</div><div class="grow"><b>Dr. Weber Orthodontics</b><div class="muted">12 Sample Street, Berlin</div></div><span class="chip ok">Found</span></div>
     </div>
-    <label class="field"><span>E-Mail</span><input type="email" value="lena.muster@example.com"></label>
-    <label class="field"><span>Passwort</span><input type="password" value="••••••••••••"></label>
-    <button class="btn" onclick="go('consent')">Weiter</button>
+    <label class="field"><span>Email</span><input type="email" value="lena.muster@example.com"></label>
+    <label class="field"><span>Password</span><input type="password" value="••••••••••••"></label>
+    <button class="btn" onclick="go('consent')">Continue</button>
   </div>`;
 }
 function scrConsent(){
   const c=S.consents, ok=c.health&&c.share;
-  const box=(k,t,d,req)=>`<label class="check"><input type="checkbox" ${c[k]?'checked':''} onchange="S.consents.${k}=this.checked;render()"><span><b>${t}</b>${req?' <span class="chip" style="font-size:10px;padding:1px 6px">erforderlich</span>':' <span class="muted">(optional)</span>'}<br><span class="muted">${d}</span></span></label>`;
-  return `${appbar('Einwilligungen',{back:true})}
+  const box=(k,t,d,req)=>`<label class="check"><input type="checkbox" ${c[k]?'checked':''} onchange="S.consents.${k}=this.checked;render()"><span><b>${t}</b>${req?' <span class="chip" style="font-size:10px;padding:1px 6px">required</span>':' <span class="muted">(optional)</span>'}<br><span class="muted">${d}</span></span></label>`;
+  return `${appbar('Consents',{back:true})}
   <div class="screen">
-    <div class="hint" style="margin-bottom:8px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Sie können jede Einwilligung jederzeit unter Profil › Datenschutz widerrufen.</span></div>
-    ${box('health','Verarbeitung von Gesundheitsdaten','Tragezeiten, VPro-Nutzung und Fotos werden zur Begleitung Ihrer Behandlung gespeichert (Art. 9 Abs. 2 lit. a DSGVO).',true)}
-    ${box('share','Übermittlung an meine Praxis','Ihre Praxis sieht Tragezeiten, Fotos und Nachrichten.',true)}
-    ${box('analytics','Anonyme Nutzungsstatistik','Hilft uns, die App zu verbessern. Ohne Gesundheitsdaten.',false)}
-    ${box('research','Anonymisierte Forschung','Anonymisierte Trage- und Passformdaten helfen, Aligner-Behandlungen zu verbessern. Jederzeit widerrufbar.',false)}
-    <p class="muted" style="margin:14px 0">Mit „Zustimmen“ akzeptieren Sie die <u>Nutzungsbedingungen</u> und haben die <u>Datenschutzerklärung</u> gelesen.</p>
-    <button class="btn" ${ok?'':'disabled'} onclick="go('secure')">Zustimmen</button>
+    <div class="hint" style="margin-bottom:8px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>You can withdraw any consent at any time under Profile › Privacy.</span></div>
+    ${box('health','Processing of health data','Wear times, VPro use and photos are stored to support your treatment (GDPR Art. 9(2)(a)).',true)}
+    ${box('share','Sharing with my practice','Your practice sees wear times, photos and messages.',true)}
+    ${box('analytics','Anonymous usage statistics','Helps us improve the app. No health data.',false)}
+    ${box('research','Anonymized research','Anonymized wear and fit data help improve aligner treatment. Can be withdrawn at any time.',false)}
+    <p class="muted" style="margin:14px 0">By tapping “Agree” you accept the <u>terms of use</u> and confirm you have read the <u>privacy notice</u>.</p>
+    <button class="btn" ${ok?'':'disabled'} onclick="go('secure')">Agree</button>
   </div>`;
 }
 function scrSecure(){
-  return `${appbar('App absichern',{back:true})}
+  return `${appbar('Secure the app',{back:true})}
   <div class="screen">
-    <div class="card"><div class="row"><span class="ic" style="color:var(--ds-primary)">${ic('fp')}</span><div class="grow"><b>Mit Fingerabdruck entsperren</b><div class="muted">Schneller Zugang, sicher auf dem Gerät gespeichert</div></div>
-      <button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrie" onclick="S.bio=!S.bio;render()"></button></div></div>
-    <div class="card"><div class="row"><span style="color:var(--ds-primary)">${ic('lock')}</span><div class="grow"><b>Zwei-Faktor-Anmeldung</b><div class="muted">Bestätigungscode per Authenticator-App</div></div><span class="chip ok">Aktiv</span></div></div>
-    <div class="card"><div class="row"><span style="color:var(--ds-primary)">${ic('bell')}</span><div class="grow"><b>Mitteilungen erlauben</b><div class="muted">Für Trage-, Wechsel- und VPro-Erinnerungen. Inhalte Ihrer Nachrichten erscheinen nie im Sperrbildschirm.</div></div></div></div>
-    <button class="btn" style="margin-top:8px" onclick="S.stack=[];S.screen='tabs';S.tab='heute';render();toast('Willkommen, Lena','Ihre Behandlung wurde übernommen: Aligner 7 von 24.')">Fertig</button>
+    <div class="card"><div class="row"><span class="ic" style="color:var(--ds-primary)">${ic('fp')}</span><div class="grow"><b>Unlock with fingerprint</b><div class="muted">Fast access, stored securely on the device</div></div>
+      <button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrics" onclick="S.bio=!S.bio;render()"></button></div></div>
+    <div class="card"><div class="row"><span style="color:var(--ds-primary)">${ic('lock')}</span><div class="grow"><b>Two-factor sign-in</b><div class="muted">Verification code via authenticator app</div></div><span class="chip ok">On</span></div></div>
+    <div class="card"><div class="row"><span style="color:var(--ds-primary)">${ic('bell')}</span><div class="grow"><b>Allow notifications</b><div class="muted">For wear, change and VPro reminders. Message content never appears on the lock screen.</div></div></div></div>
+    <button class="btn" style="margin-top:8px" onclick="S.stack=[];S.screen='tabs';S.tab='today';render();toast('Welcome, Lena','Your treatment plan was imported: aligner 7 of 24.')">Done</button>
   </div>`;
 }
 function scrLock(){
   return `<div class="lock">
     <div class="brand" style="color:#fff"><span class="brand-mark" style="background:#fff;color:var(--ds-primary)">DS</span>Aligner Companion</div>
     <div class="fp">${ic('fp')}</div>
-    <div><b style="font-size:18px">Gesperrt</b><p style="opacity:.85;font-size:14px;margin-top:4px">Zum Entsperren Finger auflegen</p></div>
-    <button class="btn" style="background:#fff;color:var(--ds-primary);max-width:260px" onclick="back()">Entsperren (Demo)</button>
-    <button style="color:#fff;text-decoration:underline;font-size:14px">PIN verwenden</button>
+    <div><b style="font-size:18px">Locked</b><p style="opacity:.85;font-size:14px;margin-top:4px">Touch the sensor to unlock</p></div>
+    <button class="btn" style="background:#fff;color:var(--ds-primary);max-width:260px" onclick="back()">Unlock (demo)</button>
+    <button style="color:#fff;text-decoration:underline;font-size:14px">Use PIN</button>
   </div>`;
 }
 
-/* ----- Heute ----- */
-function scrHeute(){
+/* ----- Today ----- */
+function scrToday(){
   const goal=22*H, w=worn(), pct=Math.min(1,w/goal), r=96, C=2*Math.PI*r;
   const o=outFor(), longOut=o>45*M;
   const bars=Array.from({length:S.alignerTotal},(_,k)=>`<i class="${k+1<S.aligner?'done':k+1===S.aligner?'cur':''}"></i>`).join('');
-  return `${appbar('Hallo Lena',{right:`<button class="back" onclick="go('notifs')" aria-label="Erinnerungen">${ic('bell')}</button>`})}
+  return `${appbar('Hi Lena',{right:`<button class="back" onclick="go('notifs')" aria-label="Notifications">${ic('bell')}</button>`})}
   <div class="screen">
-    <button class="card row" style="width:100%;text-align:left" onclick="go('verlauf')">
+    <button class="card row" style="width:100%;text-align:left" onclick="go('history')">
       <span class="ic" style="width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--ds-success) 15%,transparent);color:var(--ds-success);display:grid;place-items:center;flex-shrink:0">${ic('check')}</span>
-      <span class="grow"><b>Ihre Behandlung ist im Plan</b><br><span class="muted">Diese Woche 6 von 7 Tagen im Ziel · Woche 13 von ca. 48</span></span>${ic('chev')}
+      <span class="grow"><b>Your treatment is on track</b><br><span class="muted">This week 6 of 7 days on target · week 13 of ~48</span></span>${ic('chev')}
     </button>
     <div class="card" style="padding-bottom:18px">
       <div class="ring-wrap">
-        <div class="ring" role="img" aria-label="Heute ${fmtHM(w)} Stunden getragen von 22 Stunden Ziel">
+        <div class="ring" role="img" aria-label="Worn today ${fmtHM(w)} hours of a 22 hour target">
           <svg viewBox="0 0 220 220"><circle cx="110" cy="110" r="${r}" stroke="var(--line)" stroke-width="16" fill="none"/>
           <circle cx="110" cy="110" r="${r}" stroke="${S.out?'var(--ds-warning)':'var(--ds-primary)'}" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}" style="transition:stroke-dashoffset .6s"/></svg>
           <div class="center">
-            <span class="muted">Heute getragen</span>
+            <span class="muted">Worn today</span>
             <span class="big" id="wornTxt">${fmtHM(w)}</span>
-            <span class="muted">von 22:00 h</span>
+            <span class="muted">of 22:00 h</span>
           </div>
         </div>
-        <span class="state-pill ${S.out?'chip warn':'chip ok'}" id="statePill">${S.out?`Pause seit <span id="outTxt">${fmtHM(o)}</span> h`:'Aligner eingesetzt'}</span>
+        <span class="state-pill ${S.out?'chip warn':'chip ok'}" id="statePill">${S.out?`Out for <span id="outTxt">${fmtHM(o)}</span> h`:'Aligners in'}</span>
       </div>
-      <button class="btn inout ${S.out?'':'out'}" onclick="toggleOut()">${S.out?'Aligner wieder eingesetzt':'Aligner herausnehmen'}</button>
-      ${longOut?`<div class="hint warn">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Pause dauert länger als 45 Minuten. Bitte setzen Sie die Aligner bald wieder ein.</span></div>`:''}
+      <button class="btn inout ${S.out?'':'out'}" onclick="toggleOut()">${S.out?'Aligners back in':'Take aligners out'}</button>
+      ${longOut?`<div class="hint warn">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Your break has lasted more than 45 minutes. Please put your aligners back in soon.</span></div>`:''}
     </div>
 
     <div class="card">
-      <div class="row"><div class="grow"><h2>Aligner ${S.aligner} von ${S.alignerTotal}</h2><div class="muted">${S.daysLeft===0?'Heute ist Wechseltag':`Wechsel in ${S.daysLeft} Tagen · Fr., 16.11.`}</div></div>
-      <button class="chip" onclick="S.sheet='change';render()">Wechseln</button></div>
+      <div class="row"><div class="grow"><h2>Aligner ${S.aligner} of ${S.alignerTotal}</h2><div class="muted">${S.daysLeft===0?'Today is change day':`Change in ${S.daysLeft} days · Fri, Nov 16`}</div></div>
+      <button class="chip" onclick="S.sheet='change';render()">Change</button></div>
       <div class="aligner-bar" aria-hidden="true">${bars}</div>
     </div>
 
     <div class="grid2">
       <button class="card" style="text-align:left" onclick="go('vpro')">
         <div class="row" style="gap:8px;color:var(--ds-primary)">${ic('vib')}<b style="color:var(--text)">VPro</b></div>
-        <div class="kpi" style="margin-top:8px">${S.vpro.today?'✓ erledigt':'5 min'}</div>
-        <div class="muted">${S.vpro.paired?`Verbunden · <span class="batt" style="--lvl:${S.vpro.battery}%"><i></i>${S.vpro.battery}%</span>`:'Nicht gekoppelt'}</div>
+        <div class="kpi" style="margin-top:8px">${S.vpro.today?'✓ done':'5 min'}</div>
+        <div class="muted">${S.vpro.paired?`Connected · <span class="batt" style="--lvl:${S.vpro.battery}%"><i></i>${S.vpro.battery}%</span>`:'Not paired'}</div>
       </button>
-      <button class="card" style="text-align:left" onclick="tab('fotos')">
-        <div class="row" style="gap:8px;color:var(--ds-primary)">${ic('cam')}<b style="color:var(--text)">Fotos</b></div>
-        <div class="kpi" style="margin-top:8px">fällig</div>
-        <div class="muted">Passform-Check zum Wechsel</div>
+      <button class="card" style="text-align:left" onclick="tab('photos')">
+        <div class="row" style="gap:8px;color:var(--ds-primary)">${ic('cam')}<b style="color:var(--text)">Photos</b></div>
+        <div class="kpi" style="margin-top:8px">due</div>
+        <div class="muted">Fit check at tray change</div>
       </button>
     </div>
 
-    <button class="card row" style="width:100%;text-align:left" onclick="tab('hilfe')">
-      <span style="color:var(--ds-primary)">${ic('help')}</span><span class="grow"><b>Etwas fühlt sich komisch an?</b><br><span class="muted">„Ist das normal?“ in 1 Minute klären</span></span>${ic('chev')}
+    <button class="card row" style="width:100%;text-align:left" onclick="tab('help')">
+      <span style="color:var(--ds-primary)">${ic('help')}</span><span class="grow"><b>Something feels off?</b><br><span class="muted">Check “Is this normal?” in 1 minute</span></span>${ic('chev')}
     </button>
   </div>`;
 }
 function toggleOut(){
-  if(S.out){ const p=outFor(); S.wornBase = worn(); S.dayStart = Date.now(); S.out=false; toast('Aligner eingesetzt','Pause von '+Math.max(1,Math.round(p/M))+' min erfasst.'); }
+  if(S.out){ const p=outFor(); S.wornBase = worn(); S.dayStart = Date.now(); S.out=false; toast('Aligners back in','Break of '+Math.max(1,Math.round(p/M))+' min logged.'); }
   else { S.wornBase = worn(); S.out=true; S.outSince=Date.now(); }
   render();
 }
 
-/* ----- Wechsel-Sheet ----- */
+/* ----- Change sheet ----- */
 function sheetChange(){
-  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Aligner wechseln">
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Change aligner">
     <div class="grab"></div>
-    <h2>Zu Aligner ${S.aligner+1} wechseln?</h2>
-    <p class="muted" style="margin-bottom:14px">Setzen Sie die neuen Aligner ein und bewahren Sie die alten in der Box auf.</p>
-    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Praxis wünscht bei jedem Wechsel einen Passform-Check (3 Fotos).</span></div>
-    <button class="btn" onclick="S.aligner++;S.daysLeft=S.interval;S.sheet=null;toast('Aligner '+S.aligner+' gestartet','Nächster Wechsel in 14 Tagen.');tab('fotos')">Wechsel bestätigen & Fotos machen</button>
-    <button class="btn secondary" onclick="askExtend()">Aligner sitzt noch nicht: Praxis fragen</button>
-    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Abbrechen</button>
+    <h2>Switch to aligner ${S.aligner+1}?</h2>
+    <p class="muted" style="margin-bottom:14px">Put in the new aligners and keep the old ones in their case.</p>
+    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Your practice asks for a fit check (3 photos) at every tray change.</span></div>
+    <button class="btn" onclick="S.aligner++;S.daysLeft=S.interval;S.sheet=null;toast('Aligner '+S.aligner+' started','Next change in 14 days.');tab('photos')">Confirm change & take photos</button>
+    <button class="btn secondary" onclick="askExtend()">Aligner doesn’t fit yet: ask practice</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Cancel</button>
   </div></div>`;
 }
-
 function askExtend(){
-  S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' sitzt noch nicht',msgs:[{from:'out',text:'Mein Aligner Nr. '+S.aligner+' sitzt noch nicht ganz. Soll ich ihn länger tragen?',t:'jetzt'}]});
-  S.sheet=null; render(); toast('Praxis gefragt','Ihre Praxis entscheidet über eine Verlängerung und meldet sich.');
+  S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' doesn’t fit yet',msgs:[{from:'out',text:'My aligner '+S.aligner+' doesn’t fully fit yet. Should I wear it longer?',t:'now'}]});
+  S.sheet=null; render(); toast('Practice asked','Your practice decides on an extension and will get back to you.');
 }
-/* ----- Verlauf ----- */
-function scrVerlauf(){
-  const data={woche:[[ 'Mo',22.4],['Di',21.1],['Mi',22.6],['Do',23.0],['Fr',20.2],['Sa',22.1],['So',worn()/H]],
-              monat:[['KW41',22.0],['KW42',21.6],['KW43',22.3],['KW44',21.9],['KW45',22.2]]}[S.period];
+
+/* ----- History ----- */
+function scrHistory(){
+  const data={week:[['Mon',22.4],['Tue',21.1],['Wed',22.6],['Thu',23.0],['Fri',20.2],['Sat',22.1],['Sun',worn()/H]],
+              month:[['W41',22.0],['W42',21.6],['W43',22.3],['W44',21.9],['W45',22.2]]}[S.period];
   const max=24, goal=22;
-  return `${appbar('Verlauf',{back:true})}
+  return `${appbar('History',{back:true})}
   <div class="screen">
-    <div class="seg" role="group" aria-label="Zeitraum">
-      ${['woche','monat'].map(p=>`<button aria-pressed="${S.period===p}" onclick="S.period='${p}';render()">${p==='woche'?'Woche':'Monat'}</button>`).join('')}
+    <div class="seg" role="group" aria-label="Period">
+      ${['week','month'].map(p=>`<button aria-pressed="${S.period===p}" onclick="S.period='${p}';render()">${p==='week'?'Week':'Month'}</button>`).join('')}
     </div>
     <div class="card">
-      <div class="row"><div class="grow"><h2>Tragezeit</h2><div class="muted">Stunden pro ${S.period==='woche'?'Tag':'Tag (Ø je Woche)'}</div></div><span class="chip ok">Ø 22:01 h</span></div>
-      <div class="bars" role="img" aria-label="Balkendiagramm Tragezeit">
-        <div class="goal" style="bottom:${goal/max*100}%"><span>Ziel 22 h</span></div>
+      <div class="row"><div class="grow"><h2>Wear time</h2><div class="muted">Hours per ${S.period==='week'?'day':'day (weekly average)'}</div></div><span class="chip ok">Ø 22:01 h</span></div>
+      <div class="bars" role="img" aria-label="Wear time bar chart">
+        <div class="goal" style="bottom:${goal/max*100}%"><span>Target 22 h</span></div>
         ${data.map(([l,v])=>`<div class="b"><div class="${v<goal?'low':''}" style="height:${v/max*100}%" title="${v.toFixed(1)} h"></div><span>${l}</span></div>`).join('')}
       </div>
     </div>
     <div class="grid2">
-      <div class="card"><div class="muted">Ziel erreicht</div><div class="kpi">6 / 7</div><div class="muted">Tage diese Woche</div></div>
-      <div class="card"><div class="muted">Ø Pause</div><div class="kpi">23 min</div><div class="muted">pro Mahlzeit</div></div>
-      <div class="card"><div class="muted">VPro</div><div class="kpi">${S.vpro.streak}/10</div><div class="muted">Tage genutzt</div></div>
-      <div class="card"><div class="muted">Behandlung</div><div class="kpi">${Math.round(S.aligner/S.alignerTotal*100)} %</div><div class="muted">abgeschlossen</div></div>
+      <div class="card"><div class="muted">On target</div><div class="kpi">6 / 7</div><div class="muted">days this week</div></div>
+      <div class="card"><div class="muted">Ø break</div><div class="kpi">23 min</div><div class="muted">per meal</div></div>
+      <div class="card"><div class="muted">VPro</div><div class="kpi">${S.vpro.streak}/10</div><div class="muted">days used</div></div>
+      <div class="card"><div class="muted">Treatment</div><div class="kpi">${Math.round(S.aligner/S.alignerTotal*100)} %</div><div class="muted">complete</div></div>
     </div>
-    <div class="section-t">Pausen heute</div>
+    <div class="section-t">Breaks today</div>
     <div class="card list">
-      ${[['07:05 – 07:24','Frühstück','19 min'],['12:30 – 12:58','Mittagessen','28 min'],['15:10 – 15:22','Kaffee','12 min']].map(([t,l,d])=>`
-      <button class="item" onclick="toast('Pause bearbeiten','Änderungen werden für Ihre Praxis gekennzeichnet.')"><span class="ic">${ic('tooth')}</span><span class="grow"><b>${t}</b><br><span class="muted">${l}</span></span><span class="muted">${d}</span></button>`).join('')}
+      ${[['07:05 – 07:24','Breakfast','19 min'],['12:30 – 12:58','Lunch','28 min'],['15:10 – 15:22','Coffee','12 min']].map(([t,l,d])=>`
+      <button class="item" onclick="toast('Edit break','Changes are flagged for your practice.')"><span class="ic">${ic('tooth')}</span><span class="grow"><b>${t}</b><br><span class="muted">${l}</span></span><span class="muted">${d}</span></button>`).join('')}
     </div>
-    <div class="hint" style="margin-bottom:12px">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Gut zu wissen: Viele Behandlungen brauchen gegen Ende Korrekturschienen (Refinements). Das ist ein normaler Teil der Behandlung.</span></div>
-    <button class="btn secondary" onclick="toast('PDF-Bericht erstellt','Bericht für Ihren Termin liegt sicher in der App.')">${ic('doc')} PDF-Bericht für Termin</button>
+    <div class="hint" style="margin-bottom:12px">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Good to know: many treatments need extra correction aligners (refinements) towards the end. That is a normal part of treatment.</span></div>
+    <button class="btn secondary" onclick="toast('PDF report created','Your report for the appointment is stored securely in the app.')">${ic('doc')} PDF report for appointment</button>
   </div>`;
 }
 
-/* ----- Fotos ----- */
-const VIEWS=[['front','Frontal'],['right','Rechts'],['left','Links']];
+/* ----- Photos ----- */
+const VIEWS=[['front','Front'],['right','Right'],['left','Left']];
 const TIPS={
-  front:'Aligner eingesetzt lassen. Wangenhalter einsetzen, Zähne zusammenbeißen, gerade in die Kamera schauen.',
-  right:'Aligner eingesetzt lassen. Kopf leicht nach links drehen, rechte Wange mit dem Halter zur Seite ziehen.',
-  left:'Aligner eingesetzt lassen. Kopf leicht nach rechts drehen, linke Wange mit dem Halter zur Seite ziehen.',
-  upper:'Spiegel nutzen, Mund weit öffnen und Oberkiefer von unten fotografieren.',
-  lower:'Spiegel nutzen, Mund weit öffnen und Unterkiefer von oben fotografieren.',
-  smile:'Ohne Wangenhalter natürlich lächeln.'};
-function scrFotos(){
+  front:'Keep your aligners in. Insert the cheek retractor, bite together and look straight at the camera.',
+  right:'Keep your aligners in. Turn your head slightly left and pull the right cheek aside with the retractor.',
+  left:'Keep your aligners in. Turn your head slightly right and pull the left cheek aside with the retractor.'};
+function scrPhotos(){
   const done=Object.keys(S.photos).length;
-  return `${appbar('Fotos')}
+  return `${appbar('Photos')}
   <div class="screen">
     <div class="card">
-      <div class="row"><div class="grow"><h2>Passform-Check Aligner ${S.aligner}</h2><div class="muted">${done} von ${VIEWS.length} Fotos · dauert ca. 1 Minute</div></div>${done===VIEWS.length?'<span class="chip ok">Vollständig</span>':'<span class="chip warn">Fällig</span>'}</div>
+      <div class="row"><div class="grow"><h2>Fit check aligner ${S.aligner}</h2><div class="muted">${done} of ${VIEWS.length} photos · takes about 1 minute</div></div>${done===VIEWS.length?'<span class="chip ok">Complete</span>':'<span class="chip warn">Due</span>'}</div>
       <div class="views" style="margin-top:14px">
-        ${VIEWS.map(([k,l],n)=>`<button class="view ${S.photos[k]?'done':''}" onclick="S.camStep=${n};go('camera')" aria-label="${l} ${S.photos[k]?'aufgenommen':'aufnehmen'}">${S.photos[k]?'':ic('cam')}<span>${l}</span></button>`).join('')}
+        ${VIEWS.map(([k,l],n)=>`<button class="view ${S.photos[k]?'done':''}" onclick="S.camStep=${n};go('camera')" aria-label="${l} ${S.photos[k]?'taken':'take'}">${S.photos[k]?'':ic('cam')}<span>${l}</span></button>`).join('')}
       </div>
-      <button class="btn" style="margin-top:14px" onclick="${done===VIEWS.length?"S.sheet='sendPhotos';render()":`S.camStep=${VIEWS.findIndex(([k])=>!S.photos[k])};go('camera')`}">${done===VIEWS.length?ic('send')+' An Praxis senden':done?'Weiter aufnehmen':'Geführte Aufnahme starten'}</button>
+      <button class="btn" style="margin-top:14px" onclick="${done===VIEWS.length?"S.sheet='sendPhotos';render()":`S.camStep=${VIEWS.findIndex(([k])=>!S.photos[k])};go('camera')`}">${done===VIEWS.length?ic('send')+' Send to practice':done?'Continue':'Start guided capture'}</button>
     </div>
-    <div class="hint" style="margin-bottom:12px">${ic('lock','style="width:18px;height:18px;flex-shrink:0"')}<span>Fotos werden verschlüsselt nur in dieser App gespeichert, nicht in Ihrer Galerie. Standortdaten werden entfernt.</span></div>
-    <div class="section-t">Vorher / Nachher</div>
+    <div class="hint" style="margin-bottom:12px">${ic('lock','style="width:18px;height:18px;flex-shrink:0"')}<span>Photos are stored encrypted in this app only, not in your gallery. Location data is removed.</span></div>
+    <div class="section-t">Before / after</div>
     <div class="card">
       <div class="compare" id="cmp">
         <svg class="teeth" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">${teethSVG(8)}</svg>
         <div class="after" id="cmpAfter"><svg class="teeth" viewBox="0 0 300 200" preserveAspectRatio="none">${teethSVG(0)}</svg></div>
         <div class="handle" id="cmpH"></div>
         <span class="lbl" style="left:8px">Aligner 1</span><span class="lbl" style="right:8px">Aligner ${S.aligner-1}</span>
-        <input type="range" min="0" max="100" value="50" aria-label="Vergleich verschieben" oninput="$('#cmpAfter').style.clipPath='inset(0 0 0 '+this.value+'%)';$('#cmpH').style.left=this.value+'%'">
+        <input type="range" min="0" max="100" value="50" aria-label="Move comparison" oninput="$('#cmpAfter').style.clipPath='inset(0 0 0 '+this.value+'%)';$('#cmpH').style.left=this.value+'%'">
       </div>
-      <div class="row" style="margin-top:10px"><span class="muted grow">Ansicht: Frontal</span><button class="chip" onclick="toast('Zeitraffer','Wird aus allen Fotoserien erstellt (Demo).')">Zeitraffer ▶</button></div>
+      <div class="row" style="margin-top:10px"><span class="muted grow">View: Front</span><button class="chip" onclick="toast('Time-lapse','Built from all your photo sets (demo).')">Time-lapse ▶</button></div>
     </div>
-    <div class="section-t">Gesendet</div>
+    <div class="section-t">Sent</div>
     <div class="card list">
-      ${S.photoSets.map(p=>`<div class="item"><span class="ic">${ic('cam')}</span><span class="grow"><b>Aligner ${p.aligner}</b><br><span class="muted">${p.date} · ${p.n||3} Fotos</span></span><span class="chip ${p.status==='erhalten'?'ok':''}">${p.status}</span></div>`).join('')}
+      ${S.photoSets.map(p=>`<div class="item"><span class="ic">${ic('cam')}</span><span class="grow"><b>Aligner ${p.aligner}</b><br><span class="muted">${p.date} · ${p.n||3} photos</span></span><span class="chip ${p.status==='received'?'ok':''}">${p.status}</span></div>`).join('')}
     </div>
   </div>`;
 }
@@ -615,114 +612,110 @@ function teethSVG(shift){
 }
 function scrCamera(){
   const [k,l]=VIEWS[S.camStep];
-  const occl = k==='upper'||k==='lower';
-  const guide = occl
-    ? '<path d="M70 360 Q195 120 320 360" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8" opacity=".9"/>'
-    : k==='smile' ? '<path d="M80 260 Q195 360 310 260" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><path d="M80 260 Q195 230 310 260" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/>'
-    : '<rect x="60" y="200" width="270" height="140" rx="70" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><line x1="195" y1="190" x2="195" y2="350" stroke="#fff" stroke-width="1.5" opacity=".6"/>';
-  return `<div class="camera" role="dialog" aria-label="Kamera ${l}">
-    <div class="cam-top"><button onclick="back()" aria-label="Schließen" style="color:#fff">${ic('x')}</button><b>${l} · ${S.camStep+1}/${VIEWS.length}</b><button style="color:#fff" aria-label="Blitz">${ic('flash')}</button></div>
+  const guide='<rect x="60" y="200" width="270" height="140" rx="70" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><line x1="195" y1="190" x2="195" y2="350" stroke="#fff" stroke-width="1.5" opacity=".6"/>';
+  return `<div class="camera" role="dialog" aria-label="Camera ${l}">
+    <div class="cam-top"><button onclick="back()" aria-label="Close" style="color:#fff">${ic('x')}</button><b>${l} · ${S.camStep+1}/${VIEWS.length}</b><button style="color:#fff" aria-label="Flash">${ic('flash')}</button></div>
     <div class="steps">${VIEWS.map(([kk],n)=>`<i class="${S.photos[kk]||n===S.camStep?'on':''}"></i>`).join('')}</div>
     <div class="cam-view">
       <svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${guide}</svg>
-      <div class="cam-q"><span>✓ Schärfe</span><span>✓ Licht</span><span>${occl?'↻ Spiegel':'✓ Gerade'}</span></div>
+      <div class="cam-q"><span>✓ Sharp</span><span>✓ Light</span><span>✓ Level</span></div>
       <div class="cam-tip"><b>${l}</b><br>${TIPS[k]}</div>
     </div>
     <div class="cam-bottom">
-      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+VIEWS.length-1)%VIEWS.length;render()">‹ Zurück</button>
-      <button class="shutter" aria-label="Foto aufnehmen" onclick="shoot()"></button>
-      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+1)%VIEWS.length;render()">Weiter ›</button>
+      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+VIEWS.length-1)%VIEWS.length;render()">‹ Back</button>
+      <button class="shutter" aria-label="Take photo" onclick="shoot()"></button>
+      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+1)%VIEWS.length;render()">Next ›</button>
     </div>
   </div>`;
 }
 function shoot(){
   S.photos[VIEWS[S.camStep][0]]=true;
   const next=VIEWS.findIndex(([k])=>!S.photos[k]);
-  if(next<0){ back(); S.tab='fotos'; S.sheet='sendPhotos'; render(); }
+  if(next<0){ back(); S.tab='photos'; S.sheet='sendPhotos'; render(); }
   else { S.camStep=next; render(); }
 }
 function sheetSendPhotos(){
-  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Fotos senden">
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Send photos">
     <div class="grab"></div>
-    <h2>Passform-Check senden</h2>
-    <p class="muted" style="margin-bottom:12px">An: Kieferorthopädie Dr. Weber · ${VIEWS.length} Fotos · Aligner ${S.aligner}</p>
+    <h2>Send fit check</h2>
+    <p class="muted" style="margin-bottom:12px">To: Dr. Weber Orthodontics · ${VIEWS.length} photos · aligner ${S.aligner}</p>
     <div class="views" style="margin-bottom:12px">${VIEWS.map(([k,l])=>`<div class="view done"><span>${l}</span></div>`).join('')}</div>
-    <label class="field"><span>Kommentar (optional)</span><textarea rows="2" placeholder="z. B. Aligner sitzt vorne gut, hinten rechts drückt er etwas."></textarea></label>
-    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Ende-zu-Ende-verschlüsselt. Ihre Praxis sieht sich die Fotos an und meldet sich, falls etwas zu tun ist. Die App bewertet die Fotos nicht automatisch.</span></div>
-    <button class="btn" onclick="sendPhotos()">${ic('send')} Sicher senden</button>
-    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Später</button>
+    <label class="field"><span>Comment (optional)</span><textarea rows="2" placeholder="e.g. fits well at the front, presses a little at the back right."></textarea></label>
+    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>End-to-end encrypted. Your practice reviews the photos and gets in touch if anything needs doing. The app does not assess the photos automatically.</span></div>
+    <button class="btn" onclick="sendPhotos()">${ic('send')} Send securely</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Later</button>
   </div></div>`;
 }
 function sendPhotos(){
-  S.photoSets.unshift({date:'13.11.2026',aligner:S.aligner,status:'gesendet',n:VIEWS.length});
+  S.photoSets.unshift({date:'Nov 13, 2026',aligner:S.aligner,status:'sent',n:VIEWS.length});
   S.photos={}; S.sheet=null;
-  S.threads.unshift({id:'t'+Date.now(),title:'Passform-Check Aligner '+S.aligner,msgs:[{from:'out',text:'Passform-Check gesendet (3 Fotos).',t:'jetzt',photos:3}]});
-  render(); toast('Passform-Check gesendet','Ihre Praxis meldet sich, falls etwas zu tun ist.');
-  setTimeout(()=>{ S.photoSets[0].status='erhalten'; render(); },2500);
+  S.threads.unshift({id:'t'+Date.now(),title:'Fit check aligner '+S.aligner,msgs:[{from:'out',text:'Fit check sent (3 photos).',t:'now',photos:3}]});
+  render(); toast('Fit check sent','Your practice will get in touch if anything needs doing.');
+  setTimeout(()=>{ S.photoSets[0].status='received'; render(); },2500);
 }
 
-/* ----- Hilfe ----- */
-/* Inhalte und Regeln sind Platzhalter und müssen von Behandelnden freigegeben werden. */
+/* ----- Help ----- */
+/* Content and rules are placeholders and must be approved by clinicians. */
 const SY={
-  'Schmerz / Druck':{ic:'tooth',tip:'Druck in den ersten 2–3 Tagen nach einem Wechsel ist normal und zeigt, dass der Aligner arbeitet. Chewies, kühle Getränke und weiche Kost helfen.',
-    q:[['Seit wann spüren Sie das?',[['Seit dem letzten Wechsel (1–3 Tage)',0],['Länger als 3 Tage',1],['Über eine Woche und es wird stärker',2]]],
-       ['Wie stark ist es?',[['Spürbarer Druck',0],['Stört beim Essen',1],['Stark, Schmerzmittel helfen kaum',2]]],
-       ['Bemerken Sie zusätzlich etwas davon?',[['Nein',0],['Ein Zahn wackelt deutlich',1],['Schwellung im Gesicht oder Fieber',3]]]]},
-  'Wange / Zunge gereizt':{ic:'warn',tip:'Scharfe Kanten reiben anfangs oft. Etwas Kieferorthopädie-Wachs auf die Kante hilft meist.',
-    q:[['Was bemerken Sie?',[['Leichte Reibung an einer Kante',0],['Eine wunde Stelle',1],['Offene Wunde, die blutet',2]]],
-       ['Seit wann?',[['1–2 Tage',0],['Mehr als 3 Tage',1],['Über eine Woche',2]]]]},
-  'Sprechen / Lispeln':{ic:'chat',tip:'Ein leichtes Lispeln verschwindet bei den meisten nach wenigen Tagen. Laut vorlesen beschleunigt die Gewöhnung.',
-    q:[['Seit wann?',[['Seit ein paar Tagen',0],['Seit über 2 Wochen unverändert',1]]]]},
-  'Attachment abgefallen':{ic:'spark',tip:'Bewahren Sie Ruhe: Ein fehlendes Attachment ist kein Notfall, sollte aber von der Praxis ersetzt werden.',
-    q:[['Wie viele Attachments fehlen?',[['Eines',1],['Mehrere',2]]],['Wie sitzt der Aligner?',[['Weiterhin gut',1],['Locker oder anders als sonst',2]]]]},
-  'Zahnfleisch':{ic:'tooth',tip:'Leichtes Zahnfleischbluten beim Putzen kommt vor. Gründliche, sanfte Reinigung hilft.',
-    q:[['Was bemerken Sie?',[['Leichtes Bluten beim Putzen',0],['Gerötet und empfindlich',1],['Geschwollen und schmerzhaft',2]]]]},
-  'Passform / Lücke':{ic:'cam',tip:'Kleine Lücken am Schneidezahn-Rand nach einem Wechsel schließen sich meist in wenigen Tagen. Chewies 2× täglich helfen.',
-    q:[['Wo sehen Sie eine Lücke?',[['An einem Zahn, kleiner als 1 mm',0],['An mehreren Zähnen',1],['Deutlich über 1 mm oder seit mehr als 3 Tagen',2]]],
-       ['Nutzen Sie Chewies?',[['Ja, täglich',0],['Selten oder nie',1]]]]}
+  'Pain / pressure':{ic:'tooth',tip:'Pressure in the first 2–3 days after a tray change is normal and shows the aligner is working. Chewies, cold drinks and soft food help.',
+    q:[['Since when have you noticed it?',[['Since the last tray change (1–3 days)',0],['More than 3 days',1],['Over a week and getting worse',2]]],
+       ['How strong is it?',[['Noticeable pressure',0],['Bothers me when eating',1],['Severe, painkillers barely help',2]]],
+       ['Do you also notice any of these?',[['No',0],['A tooth is clearly loose',1],['Facial swelling or fever',3]]]]},
+  'Cheek / tongue irritation':{ic:'warn',tip:'Sharp edges often rub at first. A little orthodontic wax on the edge usually helps.',
+    q:[['What do you notice?',[['Slight rubbing at an edge',0],['A sore spot',1],['Open sore that bleeds',2]]],
+       ['Since when?',[['1–2 days',0],['More than 3 days',1],['Over a week',2]]]]},
+  'Speech / lisp':{ic:'chat',tip:'A slight lisp goes away for most people within a few days. Reading aloud speeds up the adjustment.',
+    q:[['Since when?',[['A few days',0],['Unchanged for over 2 weeks',1]]]]},
+  'Attachment came off':{ic:'spark',tip:'Don’t worry: a missing attachment is not an emergency, but your practice should replace it.',
+    q:[['How many attachments are missing?',[['One',1],['Several',2]]],['How does the aligner fit?',[['Still fine',1],['Loose or different than usual',2]]]]},
+  'Gums':{ic:'tooth',tip:'Light bleeding when brushing can happen. Thorough, gentle cleaning helps.',
+    q:[['What do you notice?',[['Light bleeding when brushing',0],['Red and sensitive',1],['Swollen and painful',2]]]]},
+  'Fit / gap':{ic:'cam',tip:'Small gaps at the incisal edge after a tray change usually close within a few days. Chewies twice a day help.',
+    q:[['Where do you see a gap?',[['On one tooth, less than 1 mm',0],['On several teeth',1],['Clearly over 1 mm or for more than 3 days',2]]],
+       ['Do you use chewies?',[['Yes, daily',0],['Rarely or never',1]]]]}
 };
 const RG={
-  'Essen & Trinken':['cup','<p>Zum Essen immer herausnehmen. Wasser dürfen Sie mit Alignern trinken.</p><p><b>Kaffee, Tee, Rotwein, Cola:</b> nur ohne Aligner oder mit Strohhalm, danach Mund ausspülen. Sonst verfärben sich die Aligner und Zucker bleibt an den Zähnen.</p><p><b>Nach dem Essen:</b> Zähne putzen oder mindestens gründlich spülen, dann Aligner wieder einsetzen.</p>'],
-  'Reinigen':['spark','<p>Aligner morgens und abends mit weicher Bürste und kaltem Wasser reinigen. Kein heißes Wasser, keine Zahnpasta mit Schleifpartikeln.</p><p>Etui regelmäßig reinigen und trocknen lassen.</p>'],
-  'Reisen & Unterwegs':['bag','<p><b>Checkliste:</b></p><ul style="padding-left:18px;line-height:1.7"><li>Etui und Ersatz-Aligner (vorheriger)</li><li>Reise-Zahnbürste und Zahnseide</li><li>Chewies</li><li>Wachs für scharfe Kanten</li><li>Kontakt der Praxis</li></ul><p>Bei Zeitzonenwechsel passt die App Ihre Tragezeit automatisch an.</p>'],
-  'Attachments, IPR & Chewies':['book','<p><b>Attachments</b> sind kleine zahnfarbene Haltepunkte, damit der Aligner die Zähne gezielt bewegt.</p><p><b>IPR</b> heißt, dass zwischen einzelnen Zähnen minimal Schmelz abgetragen wird, um Platz zu schaffen.</p><p><b>Chewies</b> sind Kauhilfen, die den Aligner vollständig an die Zähne drücken.</p>'],
-  'Refinements':['info','<p>Viele Behandlungen brauchen gegen Ende eine zusätzliche Serie Korrekturschienen. Das ist <b>kein Rückschritt</b>, sondern ein normaler Teil der Behandlung, damit das Ergebnis genau passt.</p>']
+  'Eating & drinking':['cup','<p>Always take your aligners out to eat. You can drink water with them in.</p><p><b>Coffee, tea, red wine, cola:</b> only without aligners or through a straw, then rinse your mouth. Otherwise the aligners stain and sugar stays on your teeth.</p><p><b>After eating:</b> brush your teeth or at least rinse thoroughly, then put your aligners back in.</p>'],
+  'Cleaning':['spark','<p>Clean your aligners morning and evening with a soft brush and cold water. No hot water, no abrasive toothpaste.</p><p>Clean the case regularly and let it dry.</p>'],
+  'Travel & on the go':['bag','<p><b>Checklist:</b></p><ul style="padding-left:18px;line-height:1.7"><li>Case and spare aligners (previous set)</li><li>Travel toothbrush and floss</li><li>Chewies</li><li>Wax for sharp edges</li><li>Practice contact details</li></ul><p>When you change time zones, the app adjusts your wear time automatically.</p>'],
+  'Attachments, IPR & chewies':['book','<p><b>Attachments</b> are small tooth-colored bumps that help the aligner move teeth precisely.</p><p><b>IPR</b> means a tiny amount of enamel is polished away between some teeth to create space.</p><p><b>Chewies</b> are soft bite aids that press the aligner fully onto your teeth.</p>'],
+  'Refinements':['info','<p>Many treatments need an extra set of correction aligners towards the end. That is <b>not a setback</b> but a normal part of treatment to make the result fit exactly.</p>']
 };
-function scrHilfe(){
-  return `${appbar('Hilfe')}
+function scrHelp(){
+  return `${appbar('Help')}
   <div class="screen">
     <button class="card" style="width:100%;text-align:left;background:var(--ds-primary);color:#fff" onclick="S.sy={topic:null,step:0,ans:[]};go('symptom')">
-      <div class="row"><span>${ic('help','style="width:30px;height:30px"')}</span><span class="grow"><b style="font-size:18px">Ist das normal?</b><br><span style="opacity:.85;font-size:13px">Beschwerden in 1 Minute einordnen</span></span>${ic('chev')}</div>
+      <div class="row"><span>${ic('help','style="width:30px;height:30px"')}</span><span class="grow"><b style="font-size:18px">Is this normal?</b><br><span style="opacity:.85;font-size:13px">Check your symptoms in 1 minute</span></span>${ic('chev')}</div>
     </button>
     <button class="card row" style="width:100%;text-align:left" onclick="S.lost={kind:null,photo:false};go('lost')">
       <span class="ic" style="width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--ds-warning) 15%,transparent);color:var(--ds-warning);display:grid;place-items:center;flex-shrink:0">${ic('warn')}</span>
-      <span class="grow"><b>Aligner verloren oder gebrochen</b><br><span class="muted">So geht es jetzt weiter</span></span>${ic('chev')}
+      <span class="grow"><b>Aligner lost or broken</b><br><span class="muted">What to do now</span></span>${ic('chev')}
     </button>
-    <div class="section-t">Ratgeber</div>
+    <div class="section-t">Guides</div>
     <div class="card list">
       ${Object.entries(RG).map(([k,[i]])=>`<button class="item" onclick="S.sheet='rg:${k}';render()"><span class="ic">${ic(i)}</span><span class="grow"><b>${k}</b></span>${ic('chev')}</button>`).join('')}
     </div>
-    <div class="hint warn">${ic('phone','style="width:18px;height:18px;flex-shrink:0"')}<span>Bei Notfällen (starke Schwellung, Verletzung, Fieber) bitte die Praxis anrufen: <b>030 123 45 67</b>, außerhalb der Sprechzeiten 116 117.</span></div>
+    <div class="hint warn">${ic('phone','style="width:18px;height:18px;flex-shrink:0"')}<span>In an emergency (severe swelling, injury, fever) please call your practice: <b>+49 30 123 45 67</b>. Outside opening hours, contact your local emergency dental service.</span></div>
   </div>`;
 }
-function sheetRatgeber(k){
+function sheetGuide(k){
   const [i,html]=RG[k];
   return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="${k}">
     <div class="grab"></div><div class="row" style="margin-bottom:10px;color:var(--ds-primary)">${ic(i)}<h2 style="margin:0;color:var(--text)">${k}</h2></div>
     <div style="font-size:15px;line-height:1.55;display:grid;gap:10px">${html}</div>
-    <p class="muted" style="font-size:11px;margin:14px 0">Von Behandelnden freigegeben (Platzhaltertext)</p>
-    <button class="btn secondary" onclick="S.sheet=null;render()">Schließen</button></div></div>`;
+    <p class="muted" style="font-size:11px;margin:14px 0">Approved by clinicians (placeholder text)</p>
+    <button class="btn secondary" onclick="S.sheet=null;render()">Close</button></div></div>`;
 }
 function scrSymptom(){
   const y=S.sy;
-  if(!y.topic) return `${appbar('Ist das normal?',{back:true})}
+  if(!y.topic) return `${appbar('Is this normal?',{back:true})}
   <div class="screen">
-    <p class="muted" style="margin-bottom:12px">Worum geht es?</p>
+    <p class="muted" style="margin-bottom:12px">What is it about?</p>
     <div class="card list">
       ${Object.entries(SY).map(([k,v])=>`<button class="item" onclick="S.sy.topic='${k}';render()"><span class="ic">${ic(v.ic)}</span><span class="grow"><b>${k}</b></span>${ic('chev')}</button>`).join('')}
-      <button class="item" onclick="S.lost={kind:'gebrochen',photo:false};go('lost')"><span class="ic">${ic('warn')}</span><span class="grow"><b>Aligner gebrochen oder verloren</b></span>${ic('chev')}</button>
+      <button class="item" onclick="S.lost={kind:'broken',photo:false};go('lost')"><span class="ic">${ic('warn')}</span><span class="grow"><b>Aligner broken or lost</b></span>${ic('chev')}</button>
     </div>
-    <p class="muted" style="font-size:12px">Allgemeine Information, ersetzt keine Untersuchung. Inhalte von Behandelnden freigegeben (Platzhalter, Version 0.1).</p>
+    <p class="muted" style="font-size:12px">General information, not a substitute for an examination. Content approved by clinicians (placeholder, version 0.1).</p>
   </div>`;
   const t=SY[y.topic];
   if(y.step<t.q.length){
@@ -735,79 +728,79 @@ function scrSymptom(){
     </div>`;
   }
   const r=Math.max(...y.ans);
-  const R=[['normal','Das ist in der Regel normal','ok','check',t.tip],
-           ['beobachten','Bitte beobachten','warn','info',t.tip+' Wenn es in 2–3 Tagen nicht besser wird, machen Sie den Check erneut oder schreiben Sie Ihrer Praxis.'],
-           ['kontakt','Bitte informieren Sie Ihre Praxis','warn','chat','Das sollte sich Ihre Praxis ansehen. Senden Sie Ihre Antworten mit einem Tipp, die Praxis meldet sich bei Ihnen.'],
-           ['notfall','Bitte rufen Sie Ihre Praxis an','warn','phone','Diese Anzeichen sollten zeitnah untersucht werden. Rufen Sie Ihre Praxis an, außerhalb der Sprechzeiten den ärztlichen Bereitschaftsdienst 116 117.']][r];
+  const R=[['normal','This is usually normal','check',t.tip],
+           ['watch','Keep an eye on it','info',t.tip+' If it doesn’t improve in 2–3 days, run the check again or message your practice.'],
+           ['contact practice','Please let your practice know','chat','Your practice should take a look. Send your answers with one tap and your practice will get back to you.'],
+           ['urgent','Please call your practice','phone','These signs should be examined soon. Call your practice; outside opening hours, contact your local emergency dental service.']][r];
   const col=r===0?'var(--ds-success)':r===1?'var(--ds-warning)':'var(--ds-danger)';
-  return `${appbar('Ergebnis',{back:true})}
+  return `${appbar('Result',{back:true})}
   <div class="screen">
     <div class="card" style="text-align:center;padding:24px 16px">
-      <div style="width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;color:${col};background:color-mix(in srgb,${col} 14%,transparent)">${ic(R[3],'style="width:32px;height:32px"')}</div>
+      <div style="width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;color:${col};background:color-mix(in srgb,${col} 14%,transparent)">${ic(R[2],'style="width:32px;height:32px"')}</div>
       <span class="chip" style="color:${col};background:color-mix(in srgb,${col} 14%,transparent)">${R[0]}</span>
       <h2 style="font-size:20px;margin:10px 0 8px">${R[1]}</h2>
-      <p style="font-size:15px;line-height:1.5;color:var(--text-2)">${R[4]}</p>
+      <p style="font-size:15px;line-height:1.5;color:var(--text-2)">${R[3]}</p>
     </div>
-    ${r===2?`<button class="btn" onclick="symptomSend()">${ic('send')} Antworten an Praxis senden</button>`:''}
-    ${r===3?`<a class="btn" style="text-decoration:none;background:var(--ds-danger)" href="tel:+49301234567">${ic('phone')} Praxis anrufen</a>`:''}
-    ${r<2?`<button class="btn secondary" onclick="symptomSend()">Trotzdem Praxis fragen</button>`:''}
-    <button class="btn ghost" style="margin-top:10px" onclick="S.stack=[];tab('hilfe')">Fertig</button>
-    <p class="muted" style="font-size:12px;margin-top:12px">Allgemeine Information, ersetzt keine Untersuchung.</p>
+    ${r===2?`<button class="btn" onclick="symptomSend()">${ic('send')} Send answers to practice</button>`:''}
+    ${r===3?`<a class="btn" style="text-decoration:none;background:var(--ds-danger)" href="tel:+49301234567">${ic('phone')} Call practice</a>`:''}
+    ${r<2?`<button class="btn secondary" onclick="symptomSend()">Ask practice anyway</button>`:''}
+    <button class="btn ghost" style="margin-top:10px" onclick="S.stack=[];tab('help')">Done</button>
+    <p class="muted" style="font-size:12px;margin-top:12px">General information, not a substitute for an examination.</p>
   </div>`;
 }
 function symptomSend(){
   const y=S.sy, t=SY[y.topic];
-  const txt='Symptom-Check „'+y.topic+'“: '+t.q.map(([q,o],n)=>q+' '+(o.find(x=>x[1]===y.ans[n])||['–'])[0]).join(' · ');
-  S.threads.unshift({id:'t'+Date.now(),title:'Ist das normal? '+y.topic,msgs:[{from:'out',text:txt,t:'jetzt'}]});
-  S.stack=[]; S.screen='tabs'; S.tab='praxis'; render();
-  toast('An Praxis gesendet','Ihre Praxis meldet sich bei Ihnen.');
+  const txt='Symptom check “'+y.topic+'”: '+t.q.map(([q,o],n)=>q+' '+(o.find(x=>x[1]===y.ans[n])||['–'])[0]).join(' · ');
+  S.threads.unshift({id:'t'+Date.now(),title:'Is this normal? '+y.topic,msgs:[{from:'out',text:txt,t:'now'}]});
+  S.stack=[]; S.screen='tabs'; S.tab='practice'; render();
+  toast('Sent to practice','Your practice will get back to you.');
 }
 function scrLost(){
   const L=S.lost, dayIn=S.interval-S.daysLeft, next=dayIn>=7;
   const opt=(k,l,i)=>`<button class="card" style="flex:1;margin:0;text-align:center;border:2px solid ${L.kind===k?'var(--ds-primary)':'transparent'}" onclick="S.lost.kind='${k}';render()"><div style="color:var(--ds-primary)">${ic(i,'style="width:28px;height:28px"')}</div><b>${l}</b></button>`;
-  return `${appbar('Verloren oder gebrochen',{back:true})}
+  return `${appbar('Lost or broken',{back:true})}
   <div class="screen">
-    <p class="muted" style="margin-bottom:12px">Aligner Nr. ${S.aligner} · seit ${dayIn} Tagen getragen</p>
-    <div class="row" style="margin-bottom:12px;align-items:stretch">${opt('verloren','Verloren','pin')}${opt('gebrochen','Gebrochen','warn')}</div>
-    ${L.kind==='gebrochen'?`<button class="card row" style="width:100%;text-align:left" onclick="S.lost.photo=true;render()"><span class="ic" style="color:var(--ds-primary)">${ic(L.photo?'check':'cam')}</span><span class="grow"><b>${L.photo?'Foto aufgenommen':'Foto vom Bruch aufnehmen'}</b><br><span class="muted">Hilft der Praxis beim Ersatz</span></span></button>`:''}
+    <p class="muted" style="margin-bottom:12px">Aligner ${S.aligner} · worn for ${dayIn} days</p>
+    <div class="row" style="margin-bottom:12px;align-items:stretch">${opt('lost','Lost','pin')}${opt('broken','Broken','warn')}</div>
+    ${L.kind==='broken'?`<button class="card row" style="width:100%;text-align:left" onclick="S.lost.photo=true;render()"><span class="ic" style="color:var(--ds-primary)">${ic(L.photo?'check':'cam')}</span><span class="grow"><b>${L.photo?'Photo taken':'Take a photo of the break'}</b><br><span class="muted">Helps your practice with the replacement</span></span></button>`:''}
     ${L.kind?`<div class="card" style="border-left:4px solid var(--ds-primary)">
-      <div class="muted" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Anweisung Ihrer Praxis</div>
-      <p style="margin:6px 0 10px;font-size:14px;line-height:1.5">Wenn der aktuelle Aligner seit mindestens 7 Tagen getragen wird, setzen Sie den nächsten ein, sonst den vorherigen. Tragen Sie in jedem Fall weiter einen Aligner.</p>
-      <div class="hint"><span><b>Für Sie heißt das:</b> Bitte jetzt Aligner Nr. ${next?S.aligner+1:S.aligner-1} einsetzen.</span></div>
+      <div class="muted" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Your practice’s instruction</div>
+      <p style="margin:6px 0 10px;font-size:14px;line-height:1.5">If you have worn the current aligner for at least 7 days, move on to the next one; otherwise go back to the previous one. Always keep wearing an aligner.</p>
+      <div class="hint"><span><b>For you this means:</b> please put in aligner ${next?S.aligner+1:S.aligner-1} now.</span></div>
     </div>
-    <button class="btn" ${L.kind==='gebrochen'&&!L.photo?'disabled':''} onclick="lostSend(${next})">${ic('send')} Praxis informieren</button>`:''}
+    <button class="btn" ${L.kind==='broken'&&!L.photo?'disabled':''} onclick="lostSend(${next})">${ic('send')} Notify practice</button>`:''}
   </div>`;
 }
 function lostSend(next){
   const L=S.lost;
-  S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' '+L.kind,msgs:[{from:'out',text:'Mein Aligner Nr. '+S.aligner+' ist '+L.kind+'. Ich trage laut Anweisung jetzt Nr. '+(next?S.aligner+1:S.aligner-1)+'.',t:'jetzt',photos:L.photo?1:0}]});
-  S.stack=[]; S.screen='tabs'; S.tab='praxis'; render();
-  toast('Praxis informiert','Ihre Praxis kümmert sich um einen Ersatz.');
+  S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' '+L.kind,msgs:[{from:'out',text:'My aligner '+S.aligner+' is '+L.kind+'. Following your instruction I am now wearing aligner '+(next?S.aligner+1:S.aligner-1)+'.',t:'now',photos:L.photo?1:0}]});
+  S.stack=[]; S.screen='tabs'; S.tab='practice'; render();
+  toast('Practice notified','Your practice will arrange a replacement.');
 }
 
-/* ----- Praxis ----- */
-function scrPraxis(){
-  return `${appbar('Meine Praxis')}
+/* ----- Practice ----- */
+function scrPractice(){
+  return `${appbar('My practice')}
   <div class="screen">
     <div class="card">
-      <div class="row"><div class="brand-mark" style="width:52px;height:52px;border-radius:14px;font-size:13px">KFO</div>
-      <div class="grow"><h2 style="margin:0">Kieferorthopädie Dr. Weber</h2><div class="muted">Dr. med. dent. A. Weber</div><span class="chip ok" style="margin-top:6px">● Geöffnet bis 18:00</span></div></div>
+      <div class="row"><div class="brand-mark" style="width:52px;height:52px;border-radius:14px;font-size:13px">ORT</div>
+      <div class="grow"><h2 style="margin:0">Dr. Weber Orthodontics</h2><div class="muted">Dr. A. Weber, orthodontist</div><span class="chip ok" style="margin-top:6px">● Open until 18:00</span></div></div>
       <div class="grid2" style="margin:14px 0 0;grid-template-columns:1fr 1fr 1fr">
-        <a class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px;text-decoration:none" href="tel:+49301234567">${ic('phone')}Anrufen</a>
-        <button class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px" onclick="go('newmsg')">${ic('mail')}E-Mail</button>
-        <button class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px" onclick="toast('Route','Öffnet die Karten-App (Demo).')">${ic('pin')}Route</button>
+        <a class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px;text-decoration:none" href="tel:+49301234567">${ic('phone')}Call</a>
+        <button class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px" onclick="go('newmsg')">${ic('mail')}Email</button>
+        <button class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px" onclick="toast('Directions','Opens your maps app (demo).')">${ic('pin')}Directions</button>
       </div>
     </div>
-    <div class="hint warn" style="margin-bottom:12px">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Kein Notfallkanal. Bei starken Schmerzen oder Verletzungen bitte anrufen: <b>030 123 45 67</b>, außerhalb der Sprechzeiten 116 117.</span></div>
-    <div class="row" style="margin:18px 4px 8px"><div class="section-t grow" style="margin:0">Nachrichten</div><button class="chip" onclick="go('newmsg')">+ Neu</button></div>
+    <div class="hint warn" style="margin-bottom:12px">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Not for emergencies. For severe pain or injuries please call: <b>+49 30 123 45 67</b>. Outside opening hours, contact your local emergency dental service.</span></div>
+    <div class="row" style="margin:18px 4px 8px"><div class="section-t grow" style="margin:0">Messages</div><button class="chip" onclick="go('newmsg')">+ New</button></div>
     <div class="card list">
       ${S.threads.map(t=>{const last=t.msgs[t.msgs.length-1];return `
       <button class="item" onclick="openThread('${t.id}')"><span class="ic">${ic(last.photos?'cam':'chat')}</span>
-        <span class="grow" style="min-width:0"><b>${t.title}</b><br><span class="muted" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.from==='in'?'Praxis: ':'Sie: '}${last.text}</span></span>
-        ${t.unread?'<span class="badge" style="position:static">neu</span>':`<span class="muted" style="font-size:11px">${last.t}</span>`}</button>`}).join('')}
+        <span class="grow" style="min-width:0"><b>${t.title}</b><br><span class="muted" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.from==='in'?'Practice: ':'You: '}${last.text}</span></span>
+        ${t.unread?'<span class="badge" style="position:static">new</span>':`<span class="muted" style="font-size:11px">${last.t}</span>`}</button>`}).join('')}
     </div>
-    <div class="section-t">Nächster Termin</div>
-    <div class="card"><div class="row"><div style="text-align:center;min-width:48px"><div class="muted" style="font-size:11px">NOV</div><div class="kpi">20</div></div><div class="grow"><b>Kontrolltermin</b><div class="muted">Do., 10:30 Uhr · ca. 20 min</div></div><button class="chip" onclick="go('newmsg');S.draft='Termin verschieben';render()">Verschieben</button></div></div>
+    <div class="section-t">Next appointment</div>
+    <div class="card"><div class="row"><div style="text-align:center;min-width:48px"><div class="muted" style="font-size:11px">NOV</div><div class="kpi">20</div></div><div class="grow"><b>Check-up</b><div class="muted">Thu, 10:30 · about 20 min</div></div><button class="chip" onclick="S.draft='Reschedule appointment';S.draftBody=TEMPL['Reschedule appointment'];go('newmsg')">Reschedule</button></div></div>
   </div>`;
 }
 function openThread(id){ S.curThread=id; const t=S.threads.find(x=>x.id===id); if(t.unread){t.unread=false;S.unread=Math.max(0,S.unread-1);} go('thread'); }
@@ -815,57 +808,57 @@ function scrThread(){
   const t=S.threads.find(x=>x.id===S.curThread);
   return `${appbar(t.title,{back:true})}
   <div class="screen"><div class="msgs">
-    <div class="muted" style="text-align:center;font-size:12px;margin:4px 0 8px">${ic('lock','style="width:12px;height:12px;vertical-align:-1px"')} Ende-zu-Ende-verschlüsselt</div>
-    ${t.msgs.map(m=>`<div class="msg ${m.from}">${m.text}${m.photos?`<div class="thumbs">${'<i></i>'.repeat(Math.min(4,m.photos))}</div>`:''}<div class="meta">${m.t}${m.from==='out'?' · ✓✓ gelesen':''}</div></div>`).join('')}
+    <div class="muted" style="text-align:center;font-size:12px;margin:4px 0 8px">${ic('lock','style="width:12px;height:12px;vertical-align:-1px"')} End-to-end encrypted</div>
+    ${t.msgs.map(m=>`<div class="msg ${m.from}">${m.text}${m.photos?`<div class="thumbs">${'<i></i>'.repeat(Math.min(4,m.photos))}</div>`:''}<div class="meta">${m.t}${m.from==='out'?' · ✓✓ read':''}</div></div>`).join('')}
   </div></div>
   <div class="composer">
-    <button class="att" aria-label="Foto anhängen" onclick="toast('Anhang','Foto aus der sicheren App-Galerie wählen (Demo).')">${ic('clip')}</button>
-    <input id="reply" placeholder="Nachricht schreiben" aria-label="Nachricht" onkeydown="if(event.key==='Enter')sendReply()">
-    <button class="send" aria-label="Senden" onclick="sendReply()">${ic('send')}</button>
+    <button class="att" aria-label="Attach photo" onclick="toast('Attachment','Pick a photo from the secure in-app gallery (demo).')">${ic('clip')}</button>
+    <input id="reply" placeholder="Write a message" aria-label="Message" onkeydown="if(event.key==='Enter')sendReply()">
+    <button class="send" aria-label="Send" onclick="sendReply()">${ic('send')}</button>
   </div>`;
 }
 function sendReply(){
   const v=$('#reply').value.trim(); if(!v) return;
-  S.threads.find(x=>x.id===S.curThread).msgs.push({from:'out',text:v,t:'jetzt'}); render();
+  S.threads.find(x=>x.id===S.curThread).msgs.push({from:'out',text:v,t:'now'}); render();
   const sc=$('.screen'); sc.scrollTop=sc.scrollHeight;
 }
 const TEMPL={
-  'Aligner passt nicht':'Mein Aligner Nr. {n} sitzt nicht richtig. Betroffener Bereich: ',
-  'Aligner verloren/gebrochen':'Mein Aligner Nr. {n} ist verloren gegangen / gebrochen. Ich trage jetzt: ',
-  'Schmerzen':'Ich habe seit ___ Tagen Schmerzen im Bereich: ',
-  'Attachment abgefallen':'Ein Attachment ist abgefallen, Zahn/Bereich: ',
-  'Termin verschieben':'Ich möchte meinen Termin am 20.11. verschieben. Mögliche Zeiten: '};
+  'Aligner doesn’t fit':'My aligner {n} doesn’t fit properly. Affected area: ',
+  'Aligner lost / broken':'My aligner {n} is lost / broken. I am now wearing: ',
+  'Pain':'I have had pain for ___ days in this area: ',
+  'Attachment came off':'An attachment came off, tooth/area: ',
+  'Reschedule appointment':'I would like to reschedule my appointment on Nov 20. Possible times: '};
 function scrNewMsg(){
-  return `${appbar('Neue Nachricht',{back:true})}
+  return `${appbar('New message',{back:true})}
   <div class="screen">
-    <p class="muted" style="margin-bottom:10px">An: Kieferorthopädie Dr. Weber (praxis@kfo-weber.de)</p>
-    <div class="section-t" style="margin-top:4px">Häufige Anliegen</div>
+    <p class="muted" style="margin-bottom:10px">To: Dr. Weber Orthodontics (practice@example.com)</p>
+    <div class="section-t" style="margin-top:4px">Common topics</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-      ${Object.keys(TEMPL).map(k=>`<button class="chip" style="padding:8px 12px;font-size:13px" onclick="useTpl('${k}')">${k}</button>`).join('')}
+      ${Object.keys(TEMPL).map((k,n)=>`<button class="chip" style="padding:8px 12px;font-size:13px" onclick="useTpl(${n})">${k}</button>`).join('')}
     </div>
-    <label class="field"><span>Betreff</span><input id="subj" value="${S.draft||''}"></label>
-    <label class="field"><span>Nachricht</span><textarea id="body" rows="5">${S.draftBody||''}</textarea></label>
-    <button class="btn ghost" style="margin-bottom:12px" onclick="toast('Anhang','Fotos aus der sicheren App-Galerie hinzufügen (Demo).')">${ic('clip')} Fotos anhängen</button>
-    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Nachricht wird verschlüsselt übertragen. Die Praxis erhält per E-Mail nur einen Hinweis ohne Inhalt und liest die Nachricht im gesicherten Praxis-Portal.</span></div>
-    <button class="btn" onclick="sendNew()">${ic('send')} Sicher senden</button>
-    <button style="display:block;margin:14px auto 0;color:var(--text-2);font-size:13px;text-decoration:underline" onclick="S.sheet='insecure';render()">Stattdessen mit eigener E-Mail-App senden</button>
+    <label class="field"><span>Subject</span><input id="subj" value="${S.draft||''}"></label>
+    <label class="field"><span>Message</span><textarea id="body" rows="5">${(S.draftBody||'').replace('{n}',S.aligner)}</textarea></label>
+    <button class="btn ghost" style="margin-bottom:12px" onclick="toast('Attachment','Add photos from the secure in-app gallery (demo).')">${ic('clip')} Attach photos</button>
+    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Your message is sent encrypted. The practice only gets an email notice without content and reads your message in the secure practice portal.</span></div>
+    <button class="btn" onclick="sendNew()">${ic('send')} Send securely</button>
+    <button style="display:block;margin:14px auto 0;color:var(--text-2);font-size:13px;text-decoration:underline" onclick="S.sheet='insecure';render()">Send with my own email app instead</button>
   </div>`;
 }
-function useTpl(k){ S.draft=k; S.draftBody=TEMPL[k].replace('{n}',S.aligner); render(); }
+function useTpl(n){ const k=Object.keys(TEMPL)[n]; S.draft=k; S.draftBody=TEMPL[k]; render(); }
 function sendNew(){
-  const s=$('#subj').value.trim()||'Allgemeine Anfrage', b=$('#body').value.trim()||'(ohne Text)';
-  S.threads.unshift({id:'t'+Date.now(),title:s,msgs:[{from:'out',text:b,t:'jetzt'}]});
-  S.draft=S.draftBody=''; S.stack=[]; S.screen='tabs'; S.tab='praxis'; render();
-  toast('Nachricht gesendet','Die Praxis wurde per E-Mail benachrichtigt.');
+  const s=$('#subj').value.trim()||'General question', b=$('#body').value.trim()||'(no text)';
+  S.threads.unshift({id:'t'+Date.now(),title:s,msgs:[{from:'out',text:b,t:'now'}]});
+  S.draft=S.draftBody=''; S.stack=[]; S.screen='tabs'; S.tab='practice'; render();
+  toast('Message sent','Your practice was notified by email.');
 }
 function sheetInsecure(){
-  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="alertdialog" aria-label="Warnung">
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="alertdialog" aria-label="Warning">
     <div class="grab"></div>
     <div style="color:var(--ds-warning)">${ic('warn','style="width:32px;height:32px"')}</div>
-    <h2>Unverschlüsselt senden?</h2>
-    <p class="muted" style="margin-bottom:14px;line-height:1.5">Normale E-Mails sind nicht sicher verschlüsselt. Gesundheitsdaten und Fotos könnten von Dritten gelesen werden und verbleiben in Ihrem E-Mail-Postfach. Wir empfehlen den sicheren Versand.</p>
-    <button class="btn" onclick="S.sheet=null;render()">Sicher senden (empfohlen)</button>
-    <button class="btn ghost" style="margin-top:10px;color:var(--ds-warning)" onclick="S.sheet=null;render();toast('E-Mail-App geöffnet','Export wurde im Datenschutz-Protokoll vermerkt.')">Trotzdem E-Mail-App öffnen</button>
+    <h2>Send unencrypted?</h2>
+    <p class="muted" style="margin-bottom:14px;line-height:1.5">Regular email is not securely encrypted. Health data and photos could be read by third parties and stay in your mailbox. We recommend sending securely.</p>
+    <button class="btn" onclick="S.sheet=null;render()">Send securely (recommended)</button>
+    <button class="btn ghost" style="margin-top:10px;color:var(--ds-warning)" onclick="S.sheet=null;render();toast('Email app opened','The export was recorded in the privacy log.')">Open email app anyway</button>
   </div></div>`;
 }
 
@@ -877,30 +870,30 @@ function scrVPro(){
   <div class="screen">
     <div class="vpro-dev"><div class="dev"><div class="led"></div></div></div>
     <div class="card" style="text-align:center">
-      <h2>Gerät koppeln</h2>
-      <p class="muted" style="margin:6px 0 14px">Halten Sie den Knopf am VPro 3 Sekunden gedrückt, bis die Leuchte blinkt. Bluetooth muss eingeschaltet sein.</p>
-      ${v.pairing?`<div class="muted" style="margin-bottom:12px">${ic('bt','style="vertical-align:-5px"')} Suche nach Geräten …</div>
-        <button class="list item card" style="box-shadow:none;border:1.5px solid var(--ds-primary);padding:12px" onclick="S.vpro.paired=true;S.vpro.pairing=false;toast('VPro verbunden','Sichere Kopplung abgeschlossen.');render()">
-          <span class="ic">${ic('vib')}</span><span class="grow" style="text-align:left"><b>VPro · 4F2A</b><br><span class="muted">Signal stark</span></span>${ic('chev')}</button>`
-      :`<button class="btn" onclick="S.vpro.pairing=true;render()">${ic('bt')} Gerät suchen</button>`}
+      <h2>Pair your device</h2>
+      <p class="muted" style="margin:6px 0 14px">Hold the button on your VPro for 3 seconds until the light flashes. Bluetooth must be on.</p>
+      ${v.pairing?`<div class="muted" style="margin-bottom:12px">${ic('bt','style="vertical-align:-5px"')} Searching for devices …</div>
+        <button class="list item card" style="box-shadow:none;border:1.5px solid var(--ds-primary);padding:12px" onclick="S.vpro.paired=true;S.vpro.pairing=false;toast('VPro connected','Secure pairing complete.');render()">
+          <span class="ic">${ic('vib')}</span><span class="grow" style="text-align:left"><b>VPro · 4F2A</b><br><span class="muted">Strong signal</span></span>${ic('chev')}</button>`
+      :`<button class="btn" onclick="S.vpro.pairing=true;render()">${ic('bt')} Search for device</button>`}
     </div>
-    <button class="btn ghost" onclick="S.vpro.today=true;toast('Sitzung erfasst','Heutige VPro-Sitzung manuell eingetragen.');back()">Ohne Gerät: Sitzung manuell eintragen</button>
+    <button class="btn ghost" onclick="S.vpro.today=true;toast('Session logged','Today’s VPro session logged manually.');back()">Without device: log session manually</button>
   </div>`;
   return `${appbar('SureSmile® VPro™',{back:true})}
   <div class="screen">
     <div class="vpro-dev ${v.running?'on':''}"><div class="dev"><div class="led"></div></div></div>
     <div class="card" style="text-align:center">
-      <div class="muted">${v.running?'Sitzung läuft · sanft zubeißen':v.today?'Heute erledigt':'Tägliche Sitzung'}</div>
+      <div class="muted">${v.running?'Session running · bite gently':v.today?'Done for today':'Daily session'}</div>
       <div class="big" style="font-size:52px;font-weight:800;font-variant-numeric:tabular-nums" id="vproTime">${fmtMS(v.remain)}</div>
-      <button class="btn ${v.running?'warn':''}" style="margin-top:10px" onclick="vproToggle()">${v.running?'Sitzung stoppen':v.today?'Erneut starten':'Sitzung starten'}</button>
+      <button class="btn ${v.running?'warn':''}" style="margin-top:10px" onclick="vproToggle()">${v.running?'Stop session':v.today?'Start again':'Start session'}</button>
     </div>
     <div class="card list">
-      <div class="item"><span class="ic">${ic('bt')}</span><span class="grow"><b>Verbunden</b><br><span class="muted">VPro · 4F2A · Firmware 2.4.1</span></span><span class="chip ok">●</span></div>
-      <div class="item"><span class="ic">${ic('flash')}</span><span class="grow"><b>Akku</b><br><span class="muted">reicht für ca. 14 Sitzungen</span></span><span class="batt" style="--lvl:${v.battery}%"><i></i>${v.battery}%</span></div>
-      <button class="item" onclick="toast('Gerät wird gesucht','VPro piept für 10 Sekunden.')"><span class="ic">${ic('pin')}</span><span class="grow"><b>Gerät finden</b><br><span class="muted">Zuletzt gesehen: vor 2 min</span></span>${ic('chev')}</button>
-      <div class="item"><span class="ic">${ic('bell')}</span><span class="grow"><b>Erinnerung</b><br><span class="muted">täglich 21:00 Uhr</span></span><button class="toggle" role="switch" aria-checked="${S.reminders.vpro}" aria-label="VPro-Erinnerung" onclick="S.reminders.vpro=!S.reminders.vpro;render()"></button></div>
+      <div class="item"><span class="ic">${ic('bt')}</span><span class="grow"><b>Connected</b><br><span class="muted">VPro · 4F2A · firmware 2.4.1</span></span><span class="chip ok">●</span></div>
+      <div class="item"><span class="ic">${ic('flash')}</span><span class="grow"><b>Battery</b><br><span class="muted">enough for about 14 sessions</span></span><span class="batt" style="--lvl:${v.battery}%"><i></i>${v.battery}%</span></div>
+      <button class="item" onclick="toast('Finding device','VPro beeps for 10 seconds.')"><span class="ic">${ic('pin')}</span><span class="grow"><b>Find device</b><br><span class="muted">Last seen: 2 min ago</span></span>${ic('chev')}</button>
+      <div class="item"><span class="ic">${ic('bell')}</span><span class="grow"><b>Reminder</b><br><span class="muted">daily at 21:00</span></span><button class="toggle" role="switch" aria-checked="${S.reminders.vpro}" aria-label="VPro reminder" onclick="S.reminders.vpro=!S.reminders.vpro;render()"></button></div>
     </div>
-    <div class="hint">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Nutzungsdaten werden automatisch vom Gerät übernommen und Ihrer Praxis angezeigt.</span></div>
+    <div class="hint">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Usage data is read from the device automatically and shown to your practice.</span></div>
   </div>`;
 }
 function vproToggle(){
@@ -908,61 +901,61 @@ function vproToggle(){
   if(v.running){ v.running=false; clearInterval(vproTimer); render(); return; }
   v.running=true; v.remain=300; render();
   vproTimer=setInterval(()=>{
-    v.remain-=10; // Demo: 10x schneller
-    if(v.remain<=0){ v.remain=0; v.running=false; v.today=true; v.streak=Math.min(10,v.streak+1); clearInterval(vproTimer); render(); toast('VPro-Sitzung abgeschlossen','5 Minuten. Super!'); return; }
+    v.remain-=10; // demo: 10x faster
+    if(v.remain<=0){ v.remain=0; v.running=false; v.today=true; v.streak=Math.min(10,v.streak+1); clearInterval(vproTimer); render(); toast('VPro session complete','5 minutes. Great!'); return; }
     const el=$('#vproTime'); if(el) el.textContent=fmtMS(v.remain);
   },1000);
 }
 
-/* ----- Profil ----- */
-function scrProfil(){
+/* ----- Profile ----- */
+function scrProfile(){
   const tg=(k,l,d)=>`<div class="item"><span class="ic">${ic('bell')}</span><span class="grow"><b>${l}</b><br><span class="muted">${d}</span></span><button class="toggle" role="switch" aria-checked="${S.reminders[k]}" aria-label="${l}" onclick="S.reminders.${k}=!S.reminders.${k};render()"></button></div>`;
-  return `${appbar('Profil')}
+  return `${appbar('Profile')}
   <div class="screen">
-    <div class="card row"><div class="brand-mark" style="width:52px;height:52px;border-radius:50%;font-size:16px;background:var(--ds-accent)">LM</div><div class="grow"><h2 style="margin:0">Lena Muster</h2><div class="muted">Behandlung seit 15.08.2026 · SureSmile®</div></div></div>
-    <div class="section-t">Behandlung</div>
+    <div class="card row"><div class="brand-mark" style="width:52px;height:52px;border-radius:50%;font-size:16px;background:var(--ds-accent)">LM</div><div class="grow"><h2 style="margin:0">Lena Muster</h2><div class="muted">In treatment since Aug 15, 2026 · SureSmile®</div></div></div>
+    <div class="section-t">Treatment</div>
     <div class="card list">
-      <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Tragezeitziel</b><br><span class="muted">22 h pro Tag · von Ihrer Praxis festgelegt</span></span></div>
-      <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Wechselintervall</b><br><span class="muted">alle ${S.interval} Tage · ${S.alignerTotal} Aligner</span></span></div>
-      <div class="item"><span class="ic">${ic('spark')}</span><span class="grow"><b>Attachments & IPR</b><br><span class="muted">Attachments 15.08. ✓ · IPR 12.09. ✓ · nächster Schritt bei Aligner 12</span></span></div>
-      <button class="item" onclick="go('vpro')"><span class="ic">${ic('vib')}</span><span class="grow"><b>SureSmile® VPro™</b><br><span class="muted">${S.vpro.paired?'Verbunden':'Nicht gekoppelt'}</span></span>${ic('chev')}</button>
+      <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Wear-time target</b><br><span class="muted">22 h per day · set by your practice</span></span></div>
+      <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Change interval</b><br><span class="muted">every ${S.interval} days · ${S.alignerTotal} aligners</span></span></div>
+      <div class="item"><span class="ic">${ic('spark')}</span><span class="grow"><b>Attachments & IPR</b><br><span class="muted">Attachments Aug 15 ✓ · IPR Sep 12 ✓ · next step at aligner 12</span></span></div>
+      <button class="item" onclick="go('vpro')"><span class="ic">${ic('vib')}</span><span class="grow"><b>SureSmile® VPro™</b><br><span class="muted">${S.vpro.paired?'Connected':'Not paired'}</span></span>${ic('chev')}</button>
     </div>
-    <div class="section-t">Familie</div>
+    <div class="section-t">Family</div>
     <div class="card list">
-      <button class="item" onclick="toast('Elternansicht','Einladung erstellt. Sie, Ihre Eltern und die Praxis legen fest, was sichtbar ist.')"><span class="ic">${ic('family')}</span><span class="grow"><b>Elternansicht einladen</b><br><span class="muted">z. B. nur Tragezeit-Status und Termine, keine Nachrichten</span></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Parent view','Invite created. You, your parents and the practice agree on what is visible.')"><span class="ic">${ic('family')}</span><span class="grow"><b>Invite a parent</b><br><span class="muted">e.g. only wear-time status and appointments, no messages</span></span>${ic('chev')}</button>
     </div>
-    <div class="section-t">Erinnerungen</div>
+    <div class="section-t">Reminders</div>
     <div class="card list">
-      ${tg('wear','Aligner wieder einsetzen','nach 45 min Pause · Praxis erlaubt bis 60 min')}
-      ${tg('change','Aligner-Wechsel','am Wechseltag um 20:00')}
-      ${tg('vpro','VPro-Sitzung','täglich um 21:00')}
-      ${tg('photo','Passform-Check','bei jedem Wechsel · von Ihrer Praxis festgelegt')}
+      ${tg('wear','Put aligners back in','after a 45 min break · practice allows up to 60 min')}
+      ${tg('change','Tray change','on change day at 20:00')}
+      ${tg('vpro','VPro session','daily at 21:00')}
+      ${tg('photo','Fit check','at every tray change · set by your practice')}
     </div>
-    <div class="section-t">Sicherheit & Datenschutz</div>
+    <div class="section-t">Security & privacy</div>
     <div class="card list">
-      <div class="item"><span class="ic">${ic('fp')}</span><span class="grow"><b>Biometrisch entsperren</b><br><span class="muted">Automatische Sperre nach 5 min</span></span><button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrie" onclick="S.bio=!S.bio;render()"></button></div>
-      <button class="item" onclick="toast('Einwilligungen','Hier einzeln einsehen und widerrufen (Demo).')"><span class="ic">${ic('shield')}</span><span class="grow"><b>Einwilligungen</b><br><span class="muted">2 erteilt · zuletzt geändert 13.11.2026</span></span>${ic('chev')}</button>
-      <button class="item" onclick="toast('Datenexport','Ihre Daten werden als verschlüsselte Datei bereitgestellt (Art. 15/20 DSGVO).')"><span class="ic">${ic('doc')}</span><span class="grow"><b>Meine Daten exportieren</b></span>${ic('chev')}</button>
-      <button class="item" onclick="toast('Angemeldete Geräte','Pixel 9 (dieses Gerät) · Sitzungen widerrufen (Demo).')"><span class="ic">${ic('lock')}</span><span class="grow"><b>Angemeldete Geräte</b></span>${ic('chev')}</button>
-      <button class="item" onclick="toast('Konto löschen','Bestätigung per 2FA erforderlich. Aufbewahrungspflichten der Praxis bleiben bestehen.')"><span class="ic" style="color:var(--ds-danger)">${ic('trash')}</span><span class="grow"><b style="color:var(--ds-danger)">Konto löschen</b></span>${ic('chev')}</button>
+      <div class="item"><span class="ic">${ic('fp')}</span><span class="grow"><b>Biometric unlock</b><br><span class="muted">Auto-lock after 5 min</span></span><button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrics" onclick="S.bio=!S.bio;render()"></button></div>
+      <button class="item" onclick="toast('Consents','View and withdraw each one here (demo).')"><span class="ic">${ic('shield')}</span><span class="grow"><b>Consents</b><br><span class="muted">2 given · last changed Nov 13, 2026</span></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Data export','Your data is provided as an encrypted file (GDPR Art. 15/20).')"><span class="ic">${ic('doc')}</span><span class="grow"><b>Export my data</b></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Signed-in devices','Pixel 9 (this device) · revoke sessions (demo).')"><span class="ic">${ic('lock')}</span><span class="grow"><b>Signed-in devices</b></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Delete account','Requires 2FA confirmation. The practice’s retention duties remain.')"><span class="ic" style="color:var(--ds-danger)">${ic('trash')}</span><span class="grow"><b style="color:var(--ds-danger)">Delete account</b></span>${ic('chev')}</button>
     </div>
-    <div class="section-t">Allgemein</div>
+    <div class="section-t">General</div>
     <div class="card list">
-      <div class="item"><span class="ic">${ic('globe')}</span><span class="grow"><b>Sprache</b></span><span class="muted">Deutsch</span></div>
-      <button class="item" onclick="toast('Hilfe','FAQ und Kontakt zum Support (Demo).')"><span class="ic">${ic('info')}</span><span class="grow"><b>Hilfe & Support</b></span>${ic('chev')}</button>
-      <button class="item" onclick="go('lock')"><span class="ic">${ic('lock')}</span><span class="grow"><b>App sperren</b></span>${ic('chev')}</button>
-      <button class="item" onclick="restart()"><span class="ic">${ic('back')}</span><span class="grow"><b>Abmelden</b></span></button>
+      <div class="item"><span class="ic">${ic('globe')}</span><span class="grow"><b>Language</b></span><span class="muted">English</span></div>
+      <button class="item" onclick="toast('Help','FAQ and support contact (demo).')"><span class="ic">${ic('info')}</span><span class="grow"><b>Help & support</b></span>${ic('chev')}</button>
+      <button class="item" onclick="go('lock')"><span class="ic">${ic('lock')}</span><span class="grow"><b>Lock app</b></span>${ic('chev')}</button>
+      <button class="item" onclick="restart()"><span class="ic">${ic('back')}</span><span class="grow"><b>Sign out</b></span></button>
     </div>
-    <p class="muted" style="text-align:center;margin-top:8px;font-size:12px">Aligner Companion 0.1 (Klickdummy) · Impressum · Datenschutz</p>
+    <p class="muted" style="text-align:center;margin-top:8px;font-size:12px">Aligner Companion 0.2 (prototype) · Legal notice · Privacy</p>
   </div>`;
 }
 function scrNotifs(){
-  return `${appbar('Mitteilungen',{back:true})}
+  return `${appbar('Notifications',{back:true})}
   <div class="screen"><div class="card list">
-    ${[['bell','Aligner wieder einsetzen','Heute 12:58'],['cam','Passform-Check fällig','Gestern 20:00'],['chat','Neue Nachricht Ihrer Praxis','31.10. 09:15'],['vib','Zeit für Ihre VPro-Sitzung','30.10. 21:00']].map(([i,t,d])=>`
+    ${[['bell','Put your aligners back in','Today 12:58'],['cam','Fit check due','Yesterday 20:00'],['chat','New message from your practice','Oct 31, 09:15'],['vib','Time for your VPro session','Oct 30, 21:00']].map(([i,t,d])=>`
     <div class="item"><span class="ic">${ic(i)}</span><span class="grow"><b>${t}</b><br><span class="muted">${d}</span></span></div>`).join('')}
   </div>
-  <p class="muted" style="font-size:12px;padding:0 4px">Mitteilungen auf dem Sperrbildschirm enthalten nie Gesundheitsdaten oder Nachrichteninhalte.</p></div>`;
+  <p class="muted" style="font-size:12px;padding:0 4px">Lock-screen notifications never contain health data or message content.</p></div>`;
 }
 
 /* ======================= Render ======================= */
@@ -978,23 +971,23 @@ function render(){
     case 'thread': h=scrThread(); break;
     case 'newmsg': h=scrNewMsg(); break;
     case 'notifs': h=scrNotifs(); break;
-    case 'verlauf': h=scrVerlauf(); break;
+    case 'history': h=scrHistory(); break;
     case 'symptom': h=scrSymptom(); break;
     case 'lost': h=scrLost(); break;
-    case 'camera': h=scrFotos()+tabbar()+scrCamera(); break;
+    case 'camera': h=scrPhotos()+tabbar()+scrCamera(); break;
     default:
-      h={heute:scrHeute,fotos:scrFotos,hilfe:scrHilfe,praxis:scrPraxis,profil:scrProfil}[S.tab]()+tabbar();
+      h={today:scrToday,photos:scrPhotos,help:scrHelp,practice:scrPractice,profile:scrProfile}[S.tab]()+tabbar();
   }
   if(S.sheet==='change') h+=sheetChange();
   if(S.sheet==='sendPhotos') h+=sheetSendPhotos();
   if(S.sheet==='insecure') h+=sheetInsecure();
-  if(S.sheet&&S.sheet.startsWith('rg:')) h+=sheetRatgeber(S.sheet.slice(3));
+  if(S.sheet&&S.sheet.startsWith('rg:')) h+=sheetGuide(S.sheet.slice(3));
   const sc=$('.screen'), top=sc?sc.scrollTop:0, same=render.last===S.screen+S.tab;
   $('#app').innerHTML=h;
   if(same && $('.screen')) $('.screen').scrollTop=top;
   render.last=S.screen+S.tab;
 }
-/* Live-Aktualisierung von Uhr und Timer ohne Neuaufbau */
+/* Live update of clock and timers without re-rendering */
 setInterval(()=>{
   const d=new Date(); $('#clock').textContent=d.getHours()+':'+pad(d.getMinutes());
   const w=$('#wornTxt'); if(w) w.textContent=fmtHM(worn());
