@@ -243,8 +243,9 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
   <ul>
     <li>Onboarding mit Praxiscode und Einwilligungen</li>
     <li>„Aligner raus/rein“ auf <b>Heute</b></li>
+    <li><b>Hilfe</b>: „Ist das normal?“, Aligner verloren/gebrochen, Ratgeber</li>
     <li>VPro koppeln und Sitzung starten</li>
-    <li>Geführte Fotoserie aufnehmen und senden</li>
+    <li>Passform-Check (3 Fotos) aufnehmen und senden</li>
     <li>Nachricht/E-Mail an die Praxis</li>
   </ul>
   <h2>Demo-Steuerung</h2>
@@ -252,10 +253,14 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
     <button onclick="demoPush('wear')">Erinnerung: wieder einsetzen</button>
     <button onclick="demoPush('change')">Erinnerung: Wechsel</button>
     <button onclick="demoPush('reply')">Praxis antwortet</button>
+    <button onclick="demoPush('photoreq')">Praxis fordert Fotos an</button>
+    <button onclick="demoPush('extend')">Praxis verlängert Aligner</button>
     <button onclick="go('lock')">App sperren</button>
     <button onclick="restart()">Neu starten</button>
     <button onclick="toggleTheme()">Hell/Dunkel</button>
   </div>
+  <h2>Praxis-Seite</h2>
+  <p><a href="praxis.html" style="color:var(--ds-primary);font-weight:700">Praxis-Dashboard öffnen →</a></p>
   <h2>Hinweis Design</h2>
   <p>Farben und Schrift sind Platzhalter-Tokens. Vor Freigabe durch Werte aus den Dentsply Sirona Brand Guidelines ersetzen; Logo-Platzhalter „DS“ durch das offizielle Asset.</p>
 </aside>
@@ -288,7 +293,14 @@ const I = {
   globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
   trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
-  flash:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'
+  flash:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 3.8M12 17h0"/>',
+  book:'<path d="M4 4h6a2 2 0 012 2v14a2 2 0 00-2-2H4z"/><path d="M20 4h-6a2 2 0 00-2 2v14a2 2 0 012-2h6z"/>',
+  cup:'<path d="M5 8h12v6a5 5 0 01-5 5h-2a5 5 0 01-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 010 5H17M9 3v2M13 3v2"/>',
+  bag:'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a3 3 0 016 0v2"/>',
+  spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
+  family:'<circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c.5-4 3-6 6-6s5.5 2 6 6M14 20c.3-2.5 1.5-4 3-4s3 1.5 3.5 4"/>',
+  check:'<path d="M5 12l5 5 9-10"/>'
 };
 const ic = (n,s='') => `<svg class="i" viewBox="0 0 24 24" ${s} aria-hidden="true">${I[n]}</svg>`;
 
@@ -298,14 +310,15 @@ function fresh(){
   const now = Date.now();
   return {
     screen:'welcome', obStep:0, tab:'heute', stack:[],
-    consents:{health:false,share:false,analytics:false},
+    consents:{health:false,share:false,analytics:false,research:false},
+    sy:{topic:null,step:0,ans:[]}, lost:{kind:null,photo:false},
     code:'PRX-4821-KZ', bio:true,
     out:false, outSince:null,
     wornBase: 14*H + 37*M,           // bis jetzt heute getragen
     dayStart: now,
     aligner:7, alignerTotal:24, daysLeft:3, interval:14,
     vpro:{paired:false, pairing:false, running:false, remain:300, battery:72, today:false, streak:9},
-    photos:{}, photoSets:[{date:'30.10.2026',aligner:6,status:'angesehen'}],
+    photos:{}, photoSets:[{date:'30.10.2026',aligner:6,status:'erhalten'}],
     camStep:0, period:'woche',
     unread:1,
     threads:[
@@ -351,7 +364,9 @@ function toast(t,b){
   toastTO=setTimeout(()=>$('#toast').classList.remove('show'),3800);
 }
 function demoPush(k){
-  if(k==='wear'){ if(!S.out){S.out=true;S.outSince=Date.now()-34*M;} toast('Aligner wieder einsetzen','Ihre Pause dauert bereits 34 Minuten.'); }
+  if(k==='wear'){ if(!S.out){S.wornBase=worn();S.out=true;S.outSince=Date.now()-48*M;} toast('Aligner wieder einsetzen','Ihre Pause dauert bereits 48 Minuten.'); }
+  if(k==='photoreq'){ S.photos={}; S.threads.unshift({id:'t'+Date.now(),title:'Bitte neue Fotos',msgs:[{from:'in',text:'Bitte senden Sie uns heute einen Passform-Check (3 Fotos). Danke! Ihr Praxisteam',t:'jetzt'}],unread:true}); S.unread++; toast('Ihre Praxis bittet um Fotos','Passform-Check in der App öffnen.'); }
+  if(k==='extend'){ S.daysLeft+=7; S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' verlängert',msgs:[{from:'in',text:'Bitte tragen Sie Aligner '+S.aligner+' noch 7 Tage länger, damit er vollständig ausgeformt ist. Das ist völlig normal.',t:'jetzt'}],unread:true}); S.unread++; toast('Neue Nachricht Ihrer Praxis','Öffnen Sie die App, um sie zu lesen.'); }
   if(k==='change'){ toast('Heute ist Wechseltag','Zeit für Aligner Nr. '+(S.aligner+1)+'.'); }
   if(k==='reply'){
     S.threads[0].msgs.push({from:'in',text:'Kurze Rückmeldung: Bitte kommen Sie zum Kontrolltermin am 20.11. um 10:30.',t:'jetzt'});
@@ -368,7 +383,7 @@ const appbar = (title, opts={}) => `
   </div>`;
 
 function tabbar(){
-  const t = [['heute','Heute','home'],['verlauf','Verlauf','chart'],['fotos','Fotos','cam'],['praxis','Praxis','chat'],['profil','Profil','user']];
+  const t = [['heute','Heute','home'],['fotos','Fotos','cam'],['hilfe','Hilfe','help'],['praxis','Praxis','chat'],['profil','Profil','user']];
   return `<nav class="tabbar" aria-label="Hauptnavigation">${t.map(([k,l,i])=>`
     <button onclick="tab('${k}')" ${S.tab===k?'aria-current="page"':''}>
       <span class="ico">${ic(i)}${k==='praxis'&&S.unread?`<span class="badge">${S.unread}</span>`:''}</span>${l}
@@ -418,6 +433,7 @@ function scrConsent(){
     ${box('health','Verarbeitung von Gesundheitsdaten','Tragezeiten, VPro-Nutzung und Fotos werden zur Begleitung Ihrer Behandlung gespeichert (Art. 9 Abs. 2 lit. a DSGVO).',true)}
     ${box('share','Übermittlung an meine Praxis','Ihre Praxis sieht Tragezeiten, Fotos und Nachrichten.',true)}
     ${box('analytics','Anonyme Nutzungsstatistik','Hilft uns, die App zu verbessern. Ohne Gesundheitsdaten.',false)}
+    ${box('research','Anonymisierte Forschung','Anonymisierte Trage- und Passformdaten helfen, Aligner-Behandlungen zu verbessern. Jederzeit widerrufbar.',false)}
     <p class="muted" style="margin:14px 0">Mit „Zustimmen“ akzeptieren Sie die <u>Nutzungsbedingungen</u> und haben die <u>Datenschutzerklärung</u> gelesen.</p>
     <button class="btn" ${ok?'':'disabled'} onclick="go('secure')">Zustimmen</button>
   </div>`;
@@ -445,10 +461,14 @@ function scrLock(){
 /* ----- Heute ----- */
 function scrHeute(){
   const goal=22*H, w=worn(), pct=Math.min(1,w/goal), r=96, C=2*Math.PI*r;
-  const o=outFor(), longOut=o>30*M;
+  const o=outFor(), longOut=o>45*M;
   const bars=Array.from({length:S.alignerTotal},(_,k)=>`<i class="${k+1<S.aligner?'done':k+1===S.aligner?'cur':''}"></i>`).join('');
   return `${appbar('Hallo Lena',{right:`<button class="back" onclick="go('notifs')" aria-label="Erinnerungen">${ic('bell')}</button>`})}
   <div class="screen">
+    <button class="card row" style="width:100%;text-align:left" onclick="go('verlauf')">
+      <span class="ic" style="width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--ds-success) 15%,transparent);color:var(--ds-success);display:grid;place-items:center;flex-shrink:0">${ic('check')}</span>
+      <span class="grow"><b>Ihre Behandlung ist im Plan</b><br><span class="muted">Diese Woche 6 von 7 Tagen im Ziel · Woche 13 von ca. 48</span></span>${ic('chev')}
+    </button>
     <div class="card" style="padding-bottom:18px">
       <div class="ring-wrap">
         <div class="ring" role="img" aria-label="Heute ${fmtHM(w)} Stunden getragen von 22 Stunden Ziel">
@@ -463,7 +483,7 @@ function scrHeute(){
         <span class="state-pill ${S.out?'chip warn':'chip ok'}" id="statePill">${S.out?`Pause seit <span id="outTxt">${fmtHM(o)}</span> h`:'Aligner eingesetzt'}</span>
       </div>
       <button class="btn inout ${S.out?'':'out'}" onclick="toggleOut()">${S.out?'Aligner wieder eingesetzt':'Aligner herausnehmen'}</button>
-      ${longOut?`<div class="hint warn">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Pause dauert länger als 30 Minuten. Bitte setzen Sie die Aligner bald wieder ein.</span></div>`:''}
+      ${longOut?`<div class="hint warn">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Pause dauert länger als 45 Minuten. Bitte setzen Sie die Aligner bald wieder ein.</span></div>`:''}
     </div>
 
     <div class="card">
@@ -481,13 +501,13 @@ function scrHeute(){
       <button class="card" style="text-align:left" onclick="tab('fotos')">
         <div class="row" style="gap:8px;color:var(--ds-primary)">${ic('cam')}<b style="color:var(--text)">Fotos</b></div>
         <div class="kpi" style="margin-top:8px">fällig</div>
-        <div class="muted">Fotoserie zum Wechsel</div>
+        <div class="muted">Passform-Check zum Wechsel</div>
       </button>
     </div>
 
-    <div class="card">
-      <div class="row"><span style="color:var(--ds-accent)">${ic('flash')}</span><div class="grow"><b>9 Tage in Folge</b><div class="muted">Tagesziel erreicht. Weiter so!</div></div></div>
-    </div>
+    <button class="card row" style="width:100%;text-align:left" onclick="tab('hilfe')">
+      <span style="color:var(--ds-primary)">${ic('help')}</span><span class="grow"><b>Etwas fühlt sich komisch an?</b><br><span class="muted">„Ist das normal?“ in 1 Minute klären</span></span>${ic('chev')}
+    </button>
   </div>`;
 }
 function toggleOut(){
@@ -502,19 +522,23 @@ function sheetChange(){
     <div class="grab"></div>
     <h2>Zu Aligner ${S.aligner+1} wechseln?</h2>
     <p class="muted" style="margin-bottom:14px">Setzen Sie die neuen Aligner ein und bewahren Sie die alten in der Box auf.</p>
-    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Praxis wünscht bei jedem Wechsel eine Fotoserie.</span></div>
+    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Praxis wünscht bei jedem Wechsel einen Passform-Check (3 Fotos).</span></div>
     <button class="btn" onclick="S.aligner++;S.daysLeft=S.interval;S.sheet=null;toast('Aligner '+S.aligner+' gestartet','Nächster Wechsel in 14 Tagen.');tab('fotos')">Wechsel bestätigen & Fotos machen</button>
-    <button class="btn secondary" onclick="S.daysLeft+=3;S.sheet=null;toast('Tragedauer verlängert','Ihre Praxis wird informiert.');render()">Aligner sitzt noch nicht: 3 Tage verlängern</button>
+    <button class="btn secondary" onclick="askExtend()">Aligner sitzt noch nicht: Praxis fragen</button>
     <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Abbrechen</button>
   </div></div>`;
 }
 
+function askExtend(){
+  S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' sitzt noch nicht',msgs:[{from:'out',text:'Mein Aligner Nr. '+S.aligner+' sitzt noch nicht ganz. Soll ich ihn länger tragen?',t:'jetzt'}]});
+  S.sheet=null; render(); toast('Praxis gefragt','Ihre Praxis entscheidet über eine Verlängerung und meldet sich.');
+}
 /* ----- Verlauf ----- */
 function scrVerlauf(){
   const data={woche:[[ 'Mo',22.4],['Di',21.1],['Mi',22.6],['Do',23.0],['Fr',20.2],['Sa',22.1],['So',worn()/H]],
               monat:[['KW41',22.0],['KW42',21.6],['KW43',22.3],['KW44',21.9],['KW45',22.2]]}[S.period];
   const max=24, goal=22;
-  return `${appbar('Verlauf')}
+  return `${appbar('Verlauf',{back:true})}
   <div class="screen">
     <div class="seg" role="group" aria-label="Zeitraum">
       ${['woche','monat'].map(p=>`<button aria-pressed="${S.period===p}" onclick="S.period='${p}';render()">${p==='woche'?'Woche':'Monat'}</button>`).join('')}
@@ -537,16 +561,17 @@ function scrVerlauf(){
       ${[['07:05 – 07:24','Frühstück','19 min'],['12:30 – 12:58','Mittagessen','28 min'],['15:10 – 15:22','Kaffee','12 min']].map(([t,l,d])=>`
       <button class="item" onclick="toast('Pause bearbeiten','Änderungen werden für Ihre Praxis gekennzeichnet.')"><span class="ic">${ic('tooth')}</span><span class="grow"><b>${t}</b><br><span class="muted">${l}</span></span><span class="muted">${d}</span></button>`).join('')}
     </div>
+    <div class="hint" style="margin-bottom:12px">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Gut zu wissen: Viele Behandlungen brauchen gegen Ende Korrekturschienen (Refinements). Das ist ein normaler Teil der Behandlung.</span></div>
     <button class="btn secondary" onclick="toast('PDF-Bericht erstellt','Bericht für Ihren Termin liegt sicher in der App.')">${ic('doc')} PDF-Bericht für Termin</button>
   </div>`;
 }
 
 /* ----- Fotos ----- */
-const VIEWS=[['front','Frontal'],['right','Rechts'],['left','Links'],['upper','Oberkiefer'],['lower','Unterkiefer'],['smile','Lächeln']];
+const VIEWS=[['front','Frontal'],['right','Rechts'],['left','Links']];
 const TIPS={
-  front:'Wangenhalter einsetzen, Zähne zusammenbeißen und gerade in die Kamera schauen.',
-  right:'Kopf leicht nach links drehen, rechte Wange mit dem Halter zur Seite ziehen.',
-  left:'Kopf leicht nach rechts drehen, linke Wange mit dem Halter zur Seite ziehen.',
+  front:'Aligner eingesetzt lassen. Wangenhalter einsetzen, Zähne zusammenbeißen, gerade in die Kamera schauen.',
+  right:'Aligner eingesetzt lassen. Kopf leicht nach links drehen, rechte Wange mit dem Halter zur Seite ziehen.',
+  left:'Aligner eingesetzt lassen. Kopf leicht nach rechts drehen, linke Wange mit dem Halter zur Seite ziehen.',
   upper:'Spiegel nutzen, Mund weit öffnen und Oberkiefer von unten fotografieren.',
   lower:'Spiegel nutzen, Mund weit öffnen und Unterkiefer von oben fotografieren.',
   smile:'Ohne Wangenhalter natürlich lächeln.'};
@@ -555,11 +580,11 @@ function scrFotos(){
   return `${appbar('Fotos')}
   <div class="screen">
     <div class="card">
-      <div class="row"><div class="grow"><h2>Fotoserie Aligner ${S.aligner}</h2><div class="muted">${done} von 6 Ansichten aufgenommen</div></div>${done===6?'<span class="chip ok">Vollständig</span>':'<span class="chip warn">Fällig</span>'}</div>
+      <div class="row"><div class="grow"><h2>Passform-Check Aligner ${S.aligner}</h2><div class="muted">${done} von ${VIEWS.length} Fotos · dauert ca. 1 Minute</div></div>${done===VIEWS.length?'<span class="chip ok">Vollständig</span>':'<span class="chip warn">Fällig</span>'}</div>
       <div class="views" style="margin-top:14px">
         ${VIEWS.map(([k,l],n)=>`<button class="view ${S.photos[k]?'done':''}" onclick="S.camStep=${n};go('camera')" aria-label="${l} ${S.photos[k]?'aufgenommen':'aufnehmen'}">${S.photos[k]?'':ic('cam')}<span>${l}</span></button>`).join('')}
       </div>
-      <button class="btn" style="margin-top:14px" onclick="${done===6?"S.sheet='sendPhotos';render()":`S.camStep=${VIEWS.findIndex(([k])=>!S.photos[k])};go('camera')`}">${done===6?ic('send')+' An Praxis senden':done?'Weiter aufnehmen':'Geführte Aufnahme starten'}</button>
+      <button class="btn" style="margin-top:14px" onclick="${done===VIEWS.length?"S.sheet='sendPhotos';render()":`S.camStep=${VIEWS.findIndex(([k])=>!S.photos[k])};go('camera')`}">${done===VIEWS.length?ic('send')+' An Praxis senden':done?'Weiter aufnehmen':'Geführte Aufnahme starten'}</button>
     </div>
     <div class="hint" style="margin-bottom:12px">${ic('lock','style="width:18px;height:18px;flex-shrink:0"')}<span>Fotos werden verschlüsselt nur in dieser App gespeichert, nicht in Ihrer Galerie. Standortdaten werden entfernt.</span></div>
     <div class="section-t">Vorher / Nachher</div>
@@ -575,7 +600,7 @@ function scrFotos(){
     </div>
     <div class="section-t">Gesendet</div>
     <div class="card list">
-      ${S.photoSets.map(p=>`<div class="item"><span class="ic">${ic('cam')}</span><span class="grow"><b>Aligner ${p.aligner}</b><br><span class="muted">${p.date} · 6 Fotos</span></span><span class="chip ${p.status==='angesehen'?'ok':''}">${p.status}</span></div>`).join('')}
+      ${S.photoSets.map(p=>`<div class="item"><span class="ic">${ic('cam')}</span><span class="grow"><b>Aligner ${p.aligner}</b><br><span class="muted">${p.date} · ${p.n||3} Fotos</span></span><span class="chip ${p.status==='erhalten'?'ok':''}">${p.status}</span></div>`).join('')}
     </div>
   </div>`;
 }
@@ -596,7 +621,7 @@ function scrCamera(){
     : k==='smile' ? '<path d="M80 260 Q195 360 310 260" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><path d="M80 260 Q195 230 310 260" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/>'
     : '<rect x="60" y="200" width="270" height="140" rx="70" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><line x1="195" y1="190" x2="195" y2="350" stroke="#fff" stroke-width="1.5" opacity=".6"/>';
   return `<div class="camera" role="dialog" aria-label="Kamera ${l}">
-    <div class="cam-top"><button onclick="back()" aria-label="Schließen" style="color:#fff">${ic('x')}</button><b>${l} · ${S.camStep+1}/6</b><button style="color:#fff" aria-label="Blitz">${ic('flash')}</button></div>
+    <div class="cam-top"><button onclick="back()" aria-label="Schließen" style="color:#fff">${ic('x')}</button><b>${l} · ${S.camStep+1}/${VIEWS.length}</b><button style="color:#fff" aria-label="Blitz">${ic('flash')}</button></div>
     <div class="steps">${VIEWS.map(([kk],n)=>`<i class="${S.photos[kk]||n===S.camStep?'on':''}"></i>`).join('')}</div>
     <div class="cam-view">
       <svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${guide}</svg>
@@ -604,9 +629,9 @@ function scrCamera(){
       <div class="cam-tip"><b>${l}</b><br>${TIPS[k]}</div>
     </div>
     <div class="cam-bottom">
-      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+5)%6;render()">‹ Zurück</button>
+      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+VIEWS.length-1)%VIEWS.length;render()">‹ Zurück</button>
       <button class="shutter" aria-label="Foto aufnehmen" onclick="shoot()"></button>
-      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+1)%6;render()">Weiter ›</button>
+      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+1)%VIEWS.length;render()">Weiter ›</button>
     </div>
   </div>`;
 }
@@ -619,21 +644,145 @@ function shoot(){
 function sheetSendPhotos(){
   return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Fotos senden">
     <div class="grab"></div>
-    <h2>Fotoserie an Praxis senden</h2>
-    <p class="muted" style="margin-bottom:12px">An: Kieferorthopädie Dr. Weber · 6 Fotos · Aligner ${S.aligner}</p>
+    <h2>Passform-Check senden</h2>
+    <p class="muted" style="margin-bottom:12px">An: Kieferorthopädie Dr. Weber · ${VIEWS.length} Fotos · Aligner ${S.aligner}</p>
     <div class="views" style="margin-bottom:12px">${VIEWS.map(([k,l])=>`<div class="view done"><span>${l}</span></div>`).join('')}</div>
     <label class="field"><span>Kommentar (optional)</span><textarea rows="2" placeholder="z. B. Aligner sitzt vorne gut, hinten rechts drückt er etwas."></textarea></label>
-    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Ende-zu-Ende-verschlüsselt. Ihre Praxis erhält nur einen Hinweis per E-Mail, nicht die Fotos selbst.</span></div>
+    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Ende-zu-Ende-verschlüsselt. Ihre Praxis sieht sich die Fotos an und meldet sich, falls etwas zu tun ist. Die App bewertet die Fotos nicht automatisch.</span></div>
     <button class="btn" onclick="sendPhotos()">${ic('send')} Sicher senden</button>
     <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Später</button>
   </div></div>`;
 }
 function sendPhotos(){
-  S.photoSets.unshift({date:'13.11.2026',aligner:S.aligner,status:'gesendet'});
+  S.photoSets.unshift({date:'13.11.2026',aligner:S.aligner,status:'gesendet',n:VIEWS.length});
   S.photos={}; S.sheet=null;
-  S.threads.unshift({id:'t'+Date.now(),title:'Fotoserie Aligner '+S.aligner,msgs:[{from:'out',text:'Fotoserie gesendet (6 Ansichten).',t:'jetzt',photos:6}]});
-  render(); toast('Fotoserie gesendet','Sie werden benachrichtigt, sobald die Praxis sie angesehen hat.');
-  setTimeout(()=>{ S.photoSets[0].status='angekommen'; render(); },2500);
+  S.threads.unshift({id:'t'+Date.now(),title:'Passform-Check Aligner '+S.aligner,msgs:[{from:'out',text:'Passform-Check gesendet (3 Fotos).',t:'jetzt',photos:3}]});
+  render(); toast('Passform-Check gesendet','Ihre Praxis meldet sich, falls etwas zu tun ist.');
+  setTimeout(()=>{ S.photoSets[0].status='erhalten'; render(); },2500);
+}
+
+/* ----- Hilfe ----- */
+/* Inhalte und Regeln sind Platzhalter und müssen von Behandelnden freigegeben werden. */
+const SY={
+  'Schmerz / Druck':{ic:'tooth',tip:'Druck in den ersten 2–3 Tagen nach einem Wechsel ist normal und zeigt, dass der Aligner arbeitet. Chewies, kühle Getränke und weiche Kost helfen.',
+    q:[['Seit wann spüren Sie das?',[['Seit dem letzten Wechsel (1–3 Tage)',0],['Länger als 3 Tage',1],['Über eine Woche und es wird stärker',2]]],
+       ['Wie stark ist es?',[['Spürbarer Druck',0],['Stört beim Essen',1],['Stark, Schmerzmittel helfen kaum',2]]],
+       ['Bemerken Sie zusätzlich etwas davon?',[['Nein',0],['Ein Zahn wackelt deutlich',1],['Schwellung im Gesicht oder Fieber',3]]]]},
+  'Wange / Zunge gereizt':{ic:'warn',tip:'Scharfe Kanten reiben anfangs oft. Etwas Kieferorthopädie-Wachs auf die Kante hilft meist.',
+    q:[['Was bemerken Sie?',[['Leichte Reibung an einer Kante',0],['Eine wunde Stelle',1],['Offene Wunde, die blutet',2]]],
+       ['Seit wann?',[['1–2 Tage',0],['Mehr als 3 Tage',1],['Über eine Woche',2]]]]},
+  'Sprechen / Lispeln':{ic:'chat',tip:'Ein leichtes Lispeln verschwindet bei den meisten nach wenigen Tagen. Laut vorlesen beschleunigt die Gewöhnung.',
+    q:[['Seit wann?',[['Seit ein paar Tagen',0],['Seit über 2 Wochen unverändert',1]]]]},
+  'Attachment abgefallen':{ic:'spark',tip:'Bewahren Sie Ruhe: Ein fehlendes Attachment ist kein Notfall, sollte aber von der Praxis ersetzt werden.',
+    q:[['Wie viele Attachments fehlen?',[['Eines',1],['Mehrere',2]]],['Wie sitzt der Aligner?',[['Weiterhin gut',1],['Locker oder anders als sonst',2]]]]},
+  'Zahnfleisch':{ic:'tooth',tip:'Leichtes Zahnfleischbluten beim Putzen kommt vor. Gründliche, sanfte Reinigung hilft.',
+    q:[['Was bemerken Sie?',[['Leichtes Bluten beim Putzen',0],['Gerötet und empfindlich',1],['Geschwollen und schmerzhaft',2]]]]},
+  'Passform / Lücke':{ic:'cam',tip:'Kleine Lücken am Schneidezahn-Rand nach einem Wechsel schließen sich meist in wenigen Tagen. Chewies 2× täglich helfen.',
+    q:[['Wo sehen Sie eine Lücke?',[['An einem Zahn, kleiner als 1 mm',0],['An mehreren Zähnen',1],['Deutlich über 1 mm oder seit mehr als 3 Tagen',2]]],
+       ['Nutzen Sie Chewies?',[['Ja, täglich',0],['Selten oder nie',1]]]]}
+};
+const RG={
+  'Essen & Trinken':['cup','<p>Zum Essen immer herausnehmen. Wasser dürfen Sie mit Alignern trinken.</p><p><b>Kaffee, Tee, Rotwein, Cola:</b> nur ohne Aligner oder mit Strohhalm, danach Mund ausspülen. Sonst verfärben sich die Aligner und Zucker bleibt an den Zähnen.</p><p><b>Nach dem Essen:</b> Zähne putzen oder mindestens gründlich spülen, dann Aligner wieder einsetzen.</p>'],
+  'Reinigen':['spark','<p>Aligner morgens und abends mit weicher Bürste und kaltem Wasser reinigen. Kein heißes Wasser, keine Zahnpasta mit Schleifpartikeln.</p><p>Etui regelmäßig reinigen und trocknen lassen.</p>'],
+  'Reisen & Unterwegs':['bag','<p><b>Checkliste:</b></p><ul style="padding-left:18px;line-height:1.7"><li>Etui und Ersatz-Aligner (vorheriger)</li><li>Reise-Zahnbürste und Zahnseide</li><li>Chewies</li><li>Wachs für scharfe Kanten</li><li>Kontakt der Praxis</li></ul><p>Bei Zeitzonenwechsel passt die App Ihre Tragezeit automatisch an.</p>'],
+  'Attachments, IPR & Chewies':['book','<p><b>Attachments</b> sind kleine zahnfarbene Haltepunkte, damit der Aligner die Zähne gezielt bewegt.</p><p><b>IPR</b> heißt, dass zwischen einzelnen Zähnen minimal Schmelz abgetragen wird, um Platz zu schaffen.</p><p><b>Chewies</b> sind Kauhilfen, die den Aligner vollständig an die Zähne drücken.</p>'],
+  'Refinements':['info','<p>Viele Behandlungen brauchen gegen Ende eine zusätzliche Serie Korrekturschienen. Das ist <b>kein Rückschritt</b>, sondern ein normaler Teil der Behandlung, damit das Ergebnis genau passt.</p>']
+};
+function scrHilfe(){
+  return `${appbar('Hilfe')}
+  <div class="screen">
+    <button class="card" style="width:100%;text-align:left;background:var(--ds-primary);color:#fff" onclick="S.sy={topic:null,step:0,ans:[]};go('symptom')">
+      <div class="row"><span>${ic('help','style="width:30px;height:30px"')}</span><span class="grow"><b style="font-size:18px">Ist das normal?</b><br><span style="opacity:.85;font-size:13px">Beschwerden in 1 Minute einordnen</span></span>${ic('chev')}</div>
+    </button>
+    <button class="card row" style="width:100%;text-align:left" onclick="S.lost={kind:null,photo:false};go('lost')">
+      <span class="ic" style="width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--ds-warning) 15%,transparent);color:var(--ds-warning);display:grid;place-items:center;flex-shrink:0">${ic('warn')}</span>
+      <span class="grow"><b>Aligner verloren oder gebrochen</b><br><span class="muted">So geht es jetzt weiter</span></span>${ic('chev')}
+    </button>
+    <div class="section-t">Ratgeber</div>
+    <div class="card list">
+      ${Object.entries(RG).map(([k,[i]])=>`<button class="item" onclick="S.sheet='rg:${k}';render()"><span class="ic">${ic(i)}</span><span class="grow"><b>${k}</b></span>${ic('chev')}</button>`).join('')}
+    </div>
+    <div class="hint warn">${ic('phone','style="width:18px;height:18px;flex-shrink:0"')}<span>Bei Notfällen (starke Schwellung, Verletzung, Fieber) bitte die Praxis anrufen: <b>030 123 45 67</b>, außerhalb der Sprechzeiten 116 117.</span></div>
+  </div>`;
+}
+function sheetRatgeber(k){
+  const [i,html]=RG[k];
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="${k}">
+    <div class="grab"></div><div class="row" style="margin-bottom:10px;color:var(--ds-primary)">${ic(i)}<h2 style="margin:0;color:var(--text)">${k}</h2></div>
+    <div style="font-size:15px;line-height:1.55;display:grid;gap:10px">${html}</div>
+    <p class="muted" style="font-size:11px;margin:14px 0">Von Behandelnden freigegeben (Platzhaltertext)</p>
+    <button class="btn secondary" onclick="S.sheet=null;render()">Schließen</button></div></div>`;
+}
+function scrSymptom(){
+  const y=S.sy;
+  if(!y.topic) return `${appbar('Ist das normal?',{back:true})}
+  <div class="screen">
+    <p class="muted" style="margin-bottom:12px">Worum geht es?</p>
+    <div class="card list">
+      ${Object.entries(SY).map(([k,v])=>`<button class="item" onclick="S.sy.topic='${k}';render()"><span class="ic">${ic(v.ic)}</span><span class="grow"><b>${k}</b></span>${ic('chev')}</button>`).join('')}
+      <button class="item" onclick="S.lost={kind:'gebrochen',photo:false};go('lost')"><span class="ic">${ic('warn')}</span><span class="grow"><b>Aligner gebrochen oder verloren</b></span>${ic('chev')}</button>
+    </div>
+    <p class="muted" style="font-size:12px">Allgemeine Information, ersetzt keine Untersuchung. Inhalte von Behandelnden freigegeben (Platzhalter, Version 0.1).</p>
+  </div>`;
+  const t=SY[y.topic];
+  if(y.step<t.q.length){
+    const [q,opts]=t.q[y.step];
+    return `${appbar(y.topic,{back:true})}
+    <div class="screen">
+      <div class="steps" style="padding:0 0 14px">${t.q.map((_,n)=>`<i class="${n<=y.step?'on':''}" style="background:${n<=y.step?'var(--ds-primary)':'var(--line)'}"></i>`).join('')}</div>
+      <h2 style="font-size:20px;margin-bottom:14px">${q}</h2>
+      ${opts.map(([l,v])=>`<button class="card" style="width:100%;text-align:left;font-size:15px;font-weight:600" onclick="S.sy.ans.push(${v});S.sy.step++;render()">${l}</button>`).join('')}
+    </div>`;
+  }
+  const r=Math.max(...y.ans);
+  const R=[['normal','Das ist in der Regel normal','ok','check',t.tip],
+           ['beobachten','Bitte beobachten','warn','info',t.tip+' Wenn es in 2–3 Tagen nicht besser wird, machen Sie den Check erneut oder schreiben Sie Ihrer Praxis.'],
+           ['kontakt','Bitte informieren Sie Ihre Praxis','warn','chat','Das sollte sich Ihre Praxis ansehen. Senden Sie Ihre Antworten mit einem Tipp, die Praxis meldet sich bei Ihnen.'],
+           ['notfall','Bitte rufen Sie Ihre Praxis an','warn','phone','Diese Anzeichen sollten zeitnah untersucht werden. Rufen Sie Ihre Praxis an, außerhalb der Sprechzeiten den ärztlichen Bereitschaftsdienst 116 117.']][r];
+  const col=r===0?'var(--ds-success)':r===1?'var(--ds-warning)':'var(--ds-danger)';
+  return `${appbar('Ergebnis',{back:true})}
+  <div class="screen">
+    <div class="card" style="text-align:center;padding:24px 16px">
+      <div style="width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;color:${col};background:color-mix(in srgb,${col} 14%,transparent)">${ic(R[3],'style="width:32px;height:32px"')}</div>
+      <span class="chip" style="color:${col};background:color-mix(in srgb,${col} 14%,transparent)">${R[0]}</span>
+      <h2 style="font-size:20px;margin:10px 0 8px">${R[1]}</h2>
+      <p style="font-size:15px;line-height:1.5;color:var(--text-2)">${R[4]}</p>
+    </div>
+    ${r===2?`<button class="btn" onclick="symptomSend()">${ic('send')} Antworten an Praxis senden</button>`:''}
+    ${r===3?`<a class="btn" style="text-decoration:none;background:var(--ds-danger)" href="tel:+49301234567">${ic('phone')} Praxis anrufen</a>`:''}
+    ${r<2?`<button class="btn secondary" onclick="symptomSend()">Trotzdem Praxis fragen</button>`:''}
+    <button class="btn ghost" style="margin-top:10px" onclick="S.stack=[];tab('hilfe')">Fertig</button>
+    <p class="muted" style="font-size:12px;margin-top:12px">Allgemeine Information, ersetzt keine Untersuchung.</p>
+  </div>`;
+}
+function symptomSend(){
+  const y=S.sy, t=SY[y.topic];
+  const txt='Symptom-Check „'+y.topic+'“: '+t.q.map(([q,o],n)=>q+' '+(o.find(x=>x[1]===y.ans[n])||['–'])[0]).join(' · ');
+  S.threads.unshift({id:'t'+Date.now(),title:'Ist das normal? '+y.topic,msgs:[{from:'out',text:txt,t:'jetzt'}]});
+  S.stack=[]; S.screen='tabs'; S.tab='praxis'; render();
+  toast('An Praxis gesendet','Ihre Praxis meldet sich bei Ihnen.');
+}
+function scrLost(){
+  const L=S.lost, dayIn=S.interval-S.daysLeft, next=dayIn>=7;
+  const opt=(k,l,i)=>`<button class="card" style="flex:1;margin:0;text-align:center;border:2px solid ${L.kind===k?'var(--ds-primary)':'transparent'}" onclick="S.lost.kind='${k}';render()"><div style="color:var(--ds-primary)">${ic(i,'style="width:28px;height:28px"')}</div><b>${l}</b></button>`;
+  return `${appbar('Verloren oder gebrochen',{back:true})}
+  <div class="screen">
+    <p class="muted" style="margin-bottom:12px">Aligner Nr. ${S.aligner} · seit ${dayIn} Tagen getragen</p>
+    <div class="row" style="margin-bottom:12px;align-items:stretch">${opt('verloren','Verloren','pin')}${opt('gebrochen','Gebrochen','warn')}</div>
+    ${L.kind==='gebrochen'?`<button class="card row" style="width:100%;text-align:left" onclick="S.lost.photo=true;render()"><span class="ic" style="color:var(--ds-primary)">${ic(L.photo?'check':'cam')}</span><span class="grow"><b>${L.photo?'Foto aufgenommen':'Foto vom Bruch aufnehmen'}</b><br><span class="muted">Hilft der Praxis beim Ersatz</span></span></button>`:''}
+    ${L.kind?`<div class="card" style="border-left:4px solid var(--ds-primary)">
+      <div class="muted" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Anweisung Ihrer Praxis</div>
+      <p style="margin:6px 0 10px;font-size:14px;line-height:1.5">Wenn der aktuelle Aligner seit mindestens 7 Tagen getragen wird, setzen Sie den nächsten ein, sonst den vorherigen. Tragen Sie in jedem Fall weiter einen Aligner.</p>
+      <div class="hint"><span><b>Für Sie heißt das:</b> Bitte jetzt Aligner Nr. ${next?S.aligner+1:S.aligner-1} einsetzen.</span></div>
+    </div>
+    <button class="btn" ${L.kind==='gebrochen'&&!L.photo?'disabled':''} onclick="lostSend(${next})">${ic('send')} Praxis informieren</button>`:''}
+  </div>`;
+}
+function lostSend(next){
+  const L=S.lost;
+  S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' '+L.kind,msgs:[{from:'out',text:'Mein Aligner Nr. '+S.aligner+' ist '+L.kind+'. Ich trage laut Anweisung jetzt Nr. '+(next?S.aligner+1:S.aligner-1)+'.',t:'jetzt',photos:L.photo?1:0}]});
+  S.stack=[]; S.screen='tabs'; S.tab='praxis'; render();
+  toast('Praxis informiert','Ihre Praxis kümmert sich um einen Ersatz.');
 }
 
 /* ----- Praxis ----- */
@@ -775,14 +924,19 @@ function scrProfil(){
     <div class="card list">
       <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Tragezeitziel</b><br><span class="muted">22 h pro Tag · von Ihrer Praxis festgelegt</span></span></div>
       <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Wechselintervall</b><br><span class="muted">alle ${S.interval} Tage · ${S.alignerTotal} Aligner</span></span></div>
+      <div class="item"><span class="ic">${ic('spark')}</span><span class="grow"><b>Attachments & IPR</b><br><span class="muted">Attachments 15.08. ✓ · IPR 12.09. ✓ · nächster Schritt bei Aligner 12</span></span></div>
       <button class="item" onclick="go('vpro')"><span class="ic">${ic('vib')}</span><span class="grow"><b>SureSmile® VPro™</b><br><span class="muted">${S.vpro.paired?'Verbunden':'Nicht gekoppelt'}</span></span>${ic('chev')}</button>
+    </div>
+    <div class="section-t">Familie</div>
+    <div class="card list">
+      <button class="item" onclick="toast('Elternansicht','Einladung erstellt. Sie, Ihre Eltern und die Praxis legen fest, was sichtbar ist.')"><span class="ic">${ic('family')}</span><span class="grow"><b>Elternansicht einladen</b><br><span class="muted">z. B. nur Tragezeit-Status und Termine, keine Nachrichten</span></span>${ic('chev')}</button>
     </div>
     <div class="section-t">Erinnerungen</div>
     <div class="card list">
-      ${tg('wear','Aligner wieder einsetzen','nach 30 min Pause')}
+      ${tg('wear','Aligner wieder einsetzen','nach 45 min Pause · Praxis erlaubt bis 60 min')}
       ${tg('change','Aligner-Wechsel','am Wechseltag um 20:00')}
       ${tg('vpro','VPro-Sitzung','täglich um 21:00')}
-      ${tg('photo','Fotoserie','bei jedem Wechsel')}
+      ${tg('photo','Passform-Check','bei jedem Wechsel · von Ihrer Praxis festgelegt')}
     </div>
     <div class="section-t">Sicherheit & Datenschutz</div>
     <div class="card list">
@@ -805,7 +959,7 @@ function scrProfil(){
 function scrNotifs(){
   return `${appbar('Mitteilungen',{back:true})}
   <div class="screen"><div class="card list">
-    ${[['bell','Aligner wieder einsetzen','Heute 12:58'],['cam','Fotoserie fällig','Gestern 20:00'],['chat','Neue Nachricht Ihrer Praxis','31.10. 09:15'],['vib','Zeit für Ihre VPro-Sitzung','30.10. 21:00']].map(([i,t,d])=>`
+    ${[['bell','Aligner wieder einsetzen','Heute 12:58'],['cam','Passform-Check fällig','Gestern 20:00'],['chat','Neue Nachricht Ihrer Praxis','31.10. 09:15'],['vib','Zeit für Ihre VPro-Sitzung','30.10. 21:00']].map(([i,t,d])=>`
     <div class="item"><span class="ic">${ic(i)}</span><span class="grow"><b>${t}</b><br><span class="muted">${d}</span></span></div>`).join('')}
   </div>
   <p class="muted" style="font-size:12px;padding:0 4px">Mitteilungen auf dem Sperrbildschirm enthalten nie Gesundheitsdaten oder Nachrichteninhalte.</p></div>`;
@@ -824,13 +978,17 @@ function render(){
     case 'thread': h=scrThread(); break;
     case 'newmsg': h=scrNewMsg(); break;
     case 'notifs': h=scrNotifs(); break;
+    case 'verlauf': h=scrVerlauf(); break;
+    case 'symptom': h=scrSymptom(); break;
+    case 'lost': h=scrLost(); break;
     case 'camera': h=scrFotos()+tabbar()+scrCamera(); break;
     default:
-      h={heute:scrHeute,verlauf:scrVerlauf,fotos:scrFotos,praxis:scrPraxis,profil:scrProfil}[S.tab]()+tabbar();
+      h={heute:scrHeute,fotos:scrFotos,hilfe:scrHilfe,praxis:scrPraxis,profil:scrProfil}[S.tab]()+tabbar();
   }
   if(S.sheet==='change') h+=sheetChange();
   if(S.sheet==='sendPhotos') h+=sheetSendPhotos();
   if(S.sheet==='insecure') h+=sheetInsecure();
+  if(S.sheet&&S.sheet.startsWith('rg:')) h+=sheetRatgeber(S.sheet.slice(3));
   const sc=$('.screen'), top=sc?sc.scrollTop:0, same=render.last===S.screen+S.tab;
   $('#app').innerHTML=h;
   if(same && $('.screen')) $('.screen').scrollTop=top;
