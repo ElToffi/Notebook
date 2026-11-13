@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aligner Companion Klickdummy</title>
+<style>
+/* =========================================================================
+   DESIGN-TOKENS
+   Platzhalterwerte! Vor Freigabe durch die offiziellen Werte aus den
+   Dentsply Sirona Brand Guidelines ersetzen (Farben, Schrift, Radien).
+   ========================================================================= */
+:root{
+  --ds-primary:#0B5FA5;        /* Platzhalter DS-Primärblau */
+  --ds-primary-dark:#07467C;
+  --ds-primary-soft:#E6F0F8;
+  --ds-accent:#00A3AD;         /* Platzhalter Sekundärfarbe */
+  --ds-success:#1E7F4F;
+  --ds-warning:#B25E00;
+  --ds-danger:#B3261E;
+  --bg:#F4F6F8;
+  --surface:#FFFFFF;
+  --text:#1B2430;
+  --text-2:#5A6676;
+  --line:#DDE3EA;
+  --radius:16px;
+  --radius-s:10px;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 2px 8px rgba(16,24,40,.06);
+  --font:"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif; /* Platzhalter DS-Schrift */
+  --stage:#E9EDF1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ds-primary:#5AA6E6;--ds-primary-dark:#8CC3F0;--ds-primary-soft:#14304A;--ds-accent:#3CC7CF;
+    --ds-success:#5CC08C;--ds-warning:#F0A24A;--ds-danger:#F08A84;
+    --bg:#0F151C;--surface:#18212B;--text:#E8EDF2;--text-2:#9FACBA;--line:#2A3642;--stage:#0A0F14;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --ds-primary:#5AA6E6;--ds-primary-dark:#8CC3F0;--ds-primary-soft:#14304A;--ds-accent:#3CC7CF;
+  --ds-success:#5CC08C;--ds-warning:#F0A24A;--ds-danger:#F08A84;
+  --bg:#0F151C;--surface:#18212B;--text:#E8EDF2;--text-2:#9FACBA;--line:#2A3642;--stage:#0A0F14;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--stage);font-family:var(--font);color:var(--text);display:flex;justify-content:center;align-items:center;gap:32px;padding:24px 16px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ds-accent);outline-offset:2px;border-radius:6px}
+
+/* ---------- Telefonrahmen (Desktop) ---------- */
+.phone{width:390px;height:812px;background:var(--bg);border-radius:44px;box-shadow:0 0 0 10px #1c232b,0 30px 60px rgba(0,0,0,.25);overflow:hidden;position:relative;display:flex;flex-direction:column;flex-shrink:0}
+.statusbar{height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600;flex-shrink:0}
+.side{max-width:300px;font-size:14px;color:var(--text-2);line-height:1.5}
+.side h1{font-size:20px;color:var(--text);margin-bottom:8px}
+.side h2{font-size:14px;color:var(--text);margin:16px 0 6px}
+.side ul{padding-left:18px}
+.side .tag{display:inline-block;background:var(--ds-primary-soft);color:var(--ds-primary-dark);border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;margin-bottom:12px}
+.side .btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.side .btnrow button{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;color:var(--text)}
+@media (max-width:760px){
+  body{padding:0;display:block}
+  .side{display:none}
+  .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}
+}
+
+/* ---------- App-Gerüst ---------- */
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 16px 24px;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.appbar{display:flex;align-items:center;gap:8px;padding:6px 16px 10px;flex-shrink:0;min-height:52px}
+.appbar h1{font-size:22px;font-weight:700;flex:1}
+.appbar .back{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;margin-left:-8px}
+.appbar .back:hover{background:var(--ds-primary-soft)}
+.brand{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);font-weight:600;letter-spacing:.02em}
+.brand-mark{width:26px;height:26px;border-radius:7px;background:var(--ds-primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+.tabbar{display:flex;border-top:1px solid var(--line);background:var(--surface);padding:6px 4px 18px;flex-shrink:0}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--text-2);padding:6px 0;border-radius:12px;min-height:48px}
+.tabbar button[aria-current="page"]{color:var(--ds-primary)}
+.tabbar button[aria-current="page"] .ico{background:var(--ds-primary-soft)}
+.tabbar .ico{width:52px;height:28px;border-radius:14px;display:grid;place-items:center;position:relative}
+.badge{position:absolute;top:0;right:10px;background:var(--ds-danger);color:#fff;font-size:10px;font-weight:700;border-radius:8px;padding:0 5px;line-height:16px}
+svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Bausteine ---------- */
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.card h2{font-size:15px;font-weight:700;margin-bottom:4px}
+.muted{color:var(--text-2);font-size:13px}
+.row{display:flex;align-items:center;gap:12px}
+.row .grow{flex:1;min-width:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:26px;font-weight:700;font-size:16px;background:var(--ds-primary);color:#fff;transition:transform .08s}
+.btn:active{transform:scale(.98)}
+.btn.secondary{background:var(--ds-primary-soft);color:var(--ds-primary-dark)}
+.btn.ghost{background:transparent;color:var(--ds-primary);border:1.5px solid var(--line)}
+.btn.warn{background:var(--ds-warning)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:12px;background:var(--ds-primary-soft);color:var(--ds-primary-dark)}
+.chip.ok{background:color-mix(in srgb,var(--ds-success) 14%,transparent);color:var(--ds-success)}
+.chip.warn{background:color-mix(in srgb,var(--ds-warning) 16%,transparent);color:var(--ds-warning)}
+.list .item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);width:100%;text-align:left;min-height:56px}
+.list .item:last-child{border-bottom:0}
+.list .item .ic{width:40px;height:40px;border-radius:12px;background:var(--ds-primary-soft);color:var(--ds-primary);display:grid;place-items:center;flex-shrink:0}
+.section-t{font-size:13px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em;margin:18px 4px 8px}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input,.field textarea{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--radius-s);padding:13px 14px;font-size:16px}
+.field input:focus,.field textarea:focus{border-color:var(--ds-primary);outline:none}
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}
+.check input{width:22px;height:22px;accent-color:var(--ds-primary);flex-shrink:0;margin-top:1px}
+.hint{display:flex;gap:10px;font-size:13px;line-height:1.4;padding:12px;border-radius:var(--radius-s);background:var(--ds-primary-soft);color:var(--ds-primary-dark)}
+.hint.warn{background:color-mix(in srgb,var(--ds-warning) 14%,transparent);color:var(--ds-warning)}
+.toggle{width:50px;height:30px;border-radius:15px;background:var(--line);position:relative;flex-shrink:0;transition:background .2s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle[aria-checked="true"]{background:var(--ds-primary)}
+.toggle[aria-checked="true"]::after{left:23px}
+
+/* ---------- Heute ---------- */
+.ring-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
+.ring{position:relative;width:220px;height:220px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .big{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.state-pill{margin-top:6px;font-size:13px;font-weight:700;padding:4px 12px;border-radius:12px}
+.inout{margin:16px 0 12px;min-height:60px;font-size:17px}
+.inout.out{background:var(--ds-warning)}
+.aligner-bar{display:flex;gap:3px;margin-top:10px}
+.aligner-bar i{flex:1;height:8px;border-radius:4px;background:var(--line)}
+.aligner-bar i.done{background:var(--ds-primary)}
+.aligner-bar i.cur{background:var(--ds-accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid2 .card{margin:0}
+.kpi{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ---------- Verlauf ---------- */
+.seg{display:flex;background:var(--surface);border-radius:12px;padding:4px;box-shadow:var(--shadow);margin-bottom:12px}
+.seg button{flex:1;padding:8px;border-radius:9px;font-size:14px;font-weight:600;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--ds-primary);color:#fff}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px;position:relative}
+.bars .goal{position:absolute;left:0;right:0;border-top:2px dashed var(--ds-accent)}
+.bars .goal span{position:absolute;right:0;top:-18px;font-size:11px;color:var(--ds-accent);font-weight:700}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.bars .b div{width:100%;border-radius:6px 6px 2px 2px;background:var(--ds-primary)}
+.bars .b div.low{background:var(--ds-warning)}
+.bars .b span{font-size:11px;color:var(--text-2)}
+
+/* ---------- Fotos ---------- */
+.views{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.view{aspect-ratio:1;border-radius:12px;background:var(--ds-primary-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:var(--ds-primary-dark);position:relative;text-align:center;padding:4px}
+.view.done{background:linear-gradient(135deg,#f3d6cf,#e8b9ae);color:#5a2d24}
+.view.done::after{content:"✓";position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--ds-success);color:#fff;font-size:12px;display:grid;place-items:center}
+.camera{position:absolute;inset:0;background:#0b0f13;color:#fff;display:flex;flex-direction:column;z-index:20}
+.cam-top{display:flex;justify-content:space-between;align-items:center;padding:52px 16px 10px}
+.cam-view{flex:1;position:relative;margin:0 12px;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse at 50% 55%,#5b3a35 0%,#2a1d1b 55%,#120d0c 100%)}
+.cam-view svg{position:absolute;inset:0;width:100%;height:100%}
+.cam-tip{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(0,0,0,.55);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.4}
+.cam-q{position:absolute;top:12px;left:12px;display:flex;gap:6px;flex-wrap:wrap}
+.cam-q span{background:rgba(0,0,0,.55);border-radius:10px;padding:4px 8px;font-size:11px}
+.cam-bottom{display:flex;align-items:center;justify-content:space-around;padding:18px 16px 30px}
+.shutter{width:74px;height:74px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center}
+.shutter::after{content:"";width:58px;height:58px;border-radius:50%;background:#fff}
+.steps{display:flex;gap:4px;padding:0 16px 8px}
+.steps i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.25)}
+.steps i.on{background:#fff}
+.compare{position:relative;height:200px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#f3d6cf,#e8b9ae)}
+.compare .after{position:absolute;inset:0;background:linear-gradient(135deg,#f7e4df,#efc9bf);clip-path:inset(0 0 0 50%)}
+.compare .lbl{position:absolute;bottom:8px;font-size:11px;font-weight:700;background:rgba(0,0,0,.5);color:#fff;border-radius:6px;padding:2px 6px}
+.compare input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize}
+.compare .handle{position:absolute;top:0;bottom:0;width:3px;background:#fff;left:50%}
+.teeth{position:absolute;inset:0}
+
+/* ---------- Chat ---------- */
+.msgs{display:flex;flex-direction:column;gap:8px;padding-bottom:8px}
+.msg{max-width:80%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.4}
+.msg.in{background:var(--surface);box-shadow:var(--shadow);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.out{background:var(--ds-primary);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg .meta{font-size:11px;opacity:.7;margin-top:4px}
+.msg .thumbs{display:flex;gap:4px;margin-top:6px}
+.msg .thumbs i{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#f3d6cf,#e8b9ae)}
+.composer{display:flex;gap:8px;padding:10px 12px 14px;border-top:1px solid var(--line);background:var(--surface);flex-shrink:0;align-items:center}
+.composer input{flex:1;border:1.5px solid var(--line);border-radius:22px;padding:11px 14px;background:var(--bg);min-width:0}
+.composer .send{width:44px;height:44px;border-radius:50%;background:var(--ds-primary);color:#fff;display:grid;place-items:center;flex-shrink:0}
+.composer .att{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--ds-primary);flex-shrink:0}
+.templates{display:flex;gap:8px;overflow-x:auto;padding:0 12px 8px;flex-shrink:0;scrollbar-width:none}
+.templates button{white-space:nowrap;border:1.5px solid var(--line);border-radius:18px;padding:7px 12px;font-size:13px;background:var(--surface)}
+
+/* ---------- Overlays ---------- */
+.toast{position:absolute;left:10px;right:10px;top:46px;background:var(--surface);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px 14px;display:flex;gap:12px;align-items:center;z-index:50;transform:translateY(-200%);opacity:0;visibility:hidden;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .2s,visibility .35s}
+.toast.show{transform:none;opacity:1;visibility:visible}
+.toast .brand-mark{width:36px;height:36px;border-radius:9px;flex-shrink:0}
+.toast b{font-size:14px;display:block}
+.toast p{font-size:13px;color:var(--text-2)}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:30;display:flex;align-items:flex-end}
+.sheet{background:var(--surface);width:100%;border-radius:24px 24px 0 0;padding:10px 16px 28px;max-height:85%;overflow-y:auto}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
+.sheet h2{font-size:19px;margin-bottom:6px}
+.sheet .btn+.btn{margin-top:10px}
+.lock{position:absolute;inset:0;background:var(--ds-primary);color:#fff;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px}
+.lock .fp{width:84px;height:84px;border-radius:50%;border:2px solid rgba(255,255,255,.5);display:grid;place-items:center}
+.lock .fp svg{width:44px;height:44px;stroke:#fff}
+
+/* ---------- Onboarding ---------- */
+.ob{flex:1;display:flex;flex-direction:column;padding:12px 24px 28px;overflow-y:auto}
+.ob h1{font-size:28px;line-height:1.2;margin:18px 0 10px}
+.ob p.lead{color:var(--text-2);font-size:16px;line-height:1.5}
+.ob .spacer{flex:1}
+.hero{height:230px;border-radius:24px;background:linear-gradient(160deg,var(--ds-primary),var(--ds-accent));display:grid;place-items:center;margin-top:8px}
+.hero svg{width:130px;height:130px;stroke:#fff;fill:none;stroke-width:1.5}
+.dots{display:flex;gap:6px;justify-content:center;margin:18px 0}
+.dots i{width:8px;height:8px;border-radius:4px;background:var(--line)}
+.dots i.on{width:22px;background:var(--ds-primary)}
+.qr{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px;width:100%;text-align:left}
+
+/* ---------- VPro ---------- */
+.vpro-dev{display:flex;flex-direction:column;align-items:center;padding:12px 0}
+.vpro-dev .dev{width:92px;height:150px;border-radius:30px 30px 40px 40px;background:linear-gradient(180deg,#fdfdfd,#d9dee4);box-shadow:inset 0 -6px 12px rgba(0,0,0,.08),0 8px 20px rgba(0,0,0,.12);position:relative}
+.vpro-dev .dev::before{content:"";position:absolute;left:18px;right:18px;top:-26px;height:34px;border-radius:12px 12px 6px 6px;background:#c9d0d8}
+.vpro-dev .dev .led{position:absolute;left:50%;top:60px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#9aa5b1}
+.vpro-dev.on .dev .led{background:#25c46a;box-shadow:0 0 10px #25c46a;animation:pulse 1s infinite}
+.vpro-dev.on .dev{animation:buzz .08s infinite}
+@keyframes buzz{0%{transform:translateX(0)}50%{transform:translateX(1px)}100%{transform:translateX(-1px)}}
+@keyframes pulse{50%{opacity:.4}}
+.batt{display:inline-flex;align-items:center;gap:6px}
+.batt i{display:inline-block;width:26px;height:13px;border:2px solid currentColor;border-radius:3px;position:relative}
+.batt i::after{content:"";position:absolute;left:1px;top:1px;bottom:1px;background:currentColor;border-radius:1px;width:var(--lvl)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone" aria-live="polite">
+  <div class="statusbar" aria-hidden="true"><span id="clock">9:41</span><span>●●● 5G ▮</span></div>
+  <div id="app" style="flex:1;display:flex;flex-direction:column;min-height:0"></div>
+  <div class="toast" id="toast" role="status"><div class="brand-mark">DS</div><div><b id="toastT"></b><p id="toastB"></p></div></div>
+</div>
+
+<aside class="side">
+  <span class="tag">Klickdummy v0.1</span>
+  <h1>Aligner Companion</h1>
+  <p>Interaktiver Prototyp zur Spezifikation (<code>aligner-app/SPEZIFIKATION.md</code>). Keine echten Daten, nichts wird gespeichert oder gesendet.</p>
+  <h2>Ausprobieren</h2>
+  <ul>
+    <li>Onboarding mit Praxiscode und Einwilligungen</li>
+    <li>„Aligner raus/rein“ auf <b>Heute</b></li>
+    <li>VPro koppeln und Sitzung starten</li>
+    <li>Geführte Fotoserie aufnehmen und senden</li>
+    <li>Nachricht/E-Mail an die Praxis</li>
+  </ul>
+  <h2>Demo-Steuerung</h2>
+  <div class="btnrow">
+    <button onclick="demoPush('wear')">Erinnerung: wieder einsetzen</button>
+    <button onclick="demoPush('change')">Erinnerung: Wechsel</button>
+    <button onclick="demoPush('reply')">Praxis antwortet</button>
+    <button onclick="go('lock')">App sperren</button>
+    <button onclick="restart()">Neu starten</button>
+    <button onclick="toggleTheme()">Hell/Dunkel</button>
+  </div>
+  <h2>Hinweis Design</h2>
+  <p>Farben und Schrift sind Platzhalter-Tokens. Vor Freigabe durch Werte aus den Dentsply Sirona Brand Guidelines ersetzen; Logo-Platzhalter „DS“ durch das offizielle Asset.</p>
+</aside>
+
+<script>
+/* ======================= Icons ======================= */
+const I = {
+  home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  chev:'<path d="M9 5l7 7-7 7"/>',
+  phone:'<path d="M5 4h4l2 5-3 2a11 11 0 005 5l2-3 5 2v4a2 2 0 01-2 2A17 17 0 013 6a2 2 0 012-2z"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  pin:'<path d="M12 21s-7-6-7-12a7 7 0 0114 0c0 6-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  bell:'<path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/>',
+  shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  bt:'<path d="M7 7l10 10-5 4V3l5 4L7 17"/>',
+  vib:'<rect x="8" y="4" width="8" height="16" rx="3"/><path d="M4 9v6M20 9v6"/>',
+  send:'<path d="M4 12l16-8-6 16-2-7z"/>',
+  clip:'<path d="M20 11l-8 8a5 5 0 01-7-7l8-8a3.5 3.5 0 015 5l-8 8a2 2 0 01-3-3l7-7"/>',
+  doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+  fp:'<path d="M12 11v4M8 13c0-3 2-5 4-5s4 2 4 5v2M5 12a7 7 0 0114 0v3M9 20c-1-2-1-4-1-5M15 20c.5-1.5 1-3 1-5"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h0"/>',
+  tooth:'<path d="M7 3c-3 0-4 3-3.5 6 .5 3 1.5 4 2 7s1 5 2.5 5 1.5-3 2-5 1-2 2-2 1.5 0 2 2 .5 5 2 5 2-2 2.5-5 1.5-4 2-7S20 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/>',
+  warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h0"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  flash:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'
+};
+const ic = (n,s='') => `<svg class="i" viewBox="0 0 24 24" ${s} aria-hidden="true">${I[n]}</svg>`;
+
+/* ======================= State ======================= */
+const H = 3600e3, M = 60e3;
+function fresh(){
+  const now = Date.now();
+  return {
+    screen:'welcome', obStep:0, tab:'heute', stack:[],
+    consents:{health:false,share:false,analytics:false},
+    code:'PRX-4821-KZ', bio:true,
+    out:false, outSince:null,
+    wornBase: 14*H + 37*M,           // bis jetzt heute getragen
+    dayStart: now,
+    aligner:7, alignerTotal:24, daysLeft:3, interval:14,
+    vpro:{paired:false, pairing:false, running:false, remain:300, battery:72, today:false, streak:9},
+    photos:{}, photoSets:[{date:'30.10.2026',aligner:6,status:'angesehen'}],
+    camStep:0, period:'woche',
+    unread:1,
+    threads:[
+      {id:'t1',title:'Schiene Nr. 6 sitzt locker',msgs:[
+        {from:'out',text:'Hallo, die Schiene Nr. 6 sitzt hinten links etwas locker. Ist das normal?',t:'28.10. 18:12'},
+        {from:'in',text:'Guten Tag, das ist zu Beginn normal. Bitte nutzen Sie die Chewies 2× täglich. Senden Sie uns in 3 Tagen eine Fotoserie. Ihr Praxisteam',t:'29.10. 08:40'}]},
+      {id:'t2',title:'Fotoserie Aligner 6',msgs:[
+        {from:'out',text:'Fotoserie gesendet (6 Ansichten).',t:'30.10. 19:02',photos:6},
+        {from:'in',text:'Danke, alles im Plan. Weiter so!',t:'31.10. 09:15'}],unread:true}
+    ],
+    curThread:null,
+    reminders:{wear:true,change:true,vpro:true,photo:true},
+    sheet:null
+  };
+}
+let S = fresh();
+
+/* ======================= Helpers ======================= */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2,'0');
+const fmtHM = ms => { const m = Math.max(0,Math.floor(ms/M)); return `${Math.floor(m/60)}:${pad(m%60)}`; };
+const fmtMS = s => `${Math.floor(s/60)}:${pad(s%60)}`;
+function worn(){ return S.wornBase + (S.out ? 0 : Date.now()-S.dayStart) }
+function outFor(){ return S.out ? Date.now()-S.outSince : 0 }
+
+function go(screen, push=true){
+  if(push && S.screen!==screen) S.stack.push(S.screen);
+  S.screen = screen; S.sheet=null; render();
+  const sc = $('.screen'); if(sc) sc.scrollTop=0;
+}
+function back(){ S.screen = S.stack.pop() || 'tabs'; S.sheet=null; render(); }
+function tab(t){ S.tab=t; S.screen='tabs'; S.stack=[]; render(); }
+function restart(){ clearInterval(vproTimer); S = fresh(); render(); }
+function toggleTheme(){
+  const r=document.documentElement, cur=r.dataset.theme;
+  const dark = cur ? cur==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+}
+let toastTO;
+function toast(t,b){
+  $('#toastT').textContent=t; $('#toastB').textContent=b;
+  $('#toast').classList.add('show'); clearTimeout(toastTO);
+  toastTO=setTimeout(()=>$('#toast').classList.remove('show'),3800);
+}
+function demoPush(k){
+  if(k==='wear'){ if(!S.out){S.out=true;S.outSince=Date.now()-34*M;} toast('Aligner wieder einsetzen','Ihre Pause dauert bereits 34 Minuten.'); }
+  if(k==='change'){ toast('Heute ist Wechseltag','Zeit für Aligner Nr. '+(S.aligner+1)+'.'); }
+  if(k==='reply'){
+    S.threads[0].msgs.push({from:'in',text:'Kurze Rückmeldung: Bitte kommen Sie zum Kontrolltermin am 20.11. um 10:30.',t:'jetzt'});
+    S.threads[0].unread=true; S.unread++;
+    toast('Neue Nachricht Ihrer Praxis','Öffnen Sie die App, um sie zu lesen.'); }
+  render();
+}
+
+/* ======================= Screens ======================= */
+const appbar = (title, opts={}) => `
+  <div class="appbar">
+    ${opts.back?`<button class="back" onclick="back()" aria-label="Zurück">${ic('back')}</button>`:''}
+    <h1>${title}</h1>${opts.right||''}
+  </div>`;
+
+function tabbar(){
+  const t = [['heute','Heute','home'],['verlauf','Verlauf','chart'],['fotos','Fotos','cam'],['praxis','Praxis','chat'],['profil','Profil','user']];
+  return `<nav class="tabbar" aria-label="Hauptnavigation">${t.map(([k,l,i])=>`
+    <button onclick="tab('${k}')" ${S.tab===k?'aria-current="page"':''}>
+      <span class="ico">${ic(i)}${k==='praxis'&&S.unread?`<span class="badge">${S.unread}</span>`:''}</span>${l}
+    </button>`).join('')}</nav>`;
+}
+
+/* ----- Onboarding ----- */
+function scrWelcome(){
+  const slides=[
+    ['Ihr Begleiter für die Aligner-Behandlung','Tragezeit im Blick, Erinnerungen zur richtigen Zeit und ein direkter, sicherer Draht zu Ihrer Praxis.','tooth'],
+    ['Sicher und vertraulich','Ihre Gesundheitsdaten werden verschlüsselt gespeichert und nur mit Ihrer Praxis geteilt. Server in Deutschland.','shield'],
+    ['Alles an einem Ort','Aligner, SureSmile® VPro™, Fotos und Nachrichten: in einer App.','vib']];
+  const [h,p,i]=slides[S.obStep];
+  return `<div class="ob">
+    <div class="brand"><span class="brand-mark">DS</span>Dentsply Sirona</div>
+    <div class="hero"><svg viewBox="0 0 24 24">${I[i]}</svg></div>
+    <h1>${h}</h1><p class="lead">${p}</p>
+    <div class="spacer"></div>
+    <div class="dots">${slides.map((_,k)=>`<i class="${k===S.obStep?'on':''}"></i>`).join('')}</div>
+    <button class="btn" onclick="${S.obStep<2?'S.obStep++;render()':"go('code')"}">${S.obStep<2?'Weiter':'Los geht’s'}</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="go('code')">Ich habe bereits ein Konto</button>
+  </div>`;
+}
+function scrCode(){
+  return `${appbar('Praxis verbinden',{back:true})}
+  <div class="screen">
+    <p class="muted" style="margin-bottom:16px">Ihre Praxis hat Ihnen einen Einladungscode gegeben. So wird Ihr Konto sicher mit Ihrer Behandlung verknüpft.</p>
+    <button class="qr" onclick="S.code='PRX-4821-KZ';toast('QR-Code erkannt','Praxis Dr. Weber verknüpft.');render()">
+      <span class="ic" style="width:48px;height:48px;border-radius:12px;background:var(--ds-primary-soft);color:var(--ds-primary);display:grid;place-items:center">${ic('cam')}</span>
+      <span><b>QR-Code scannen</b><br><span class="muted">Vom Behandlungsplan oder aus der Einladungs-E-Mail</span></span>
+    </button>
+    <label class="field"><span>Oder Code eingeben</span><input value="${S.code}" oninput="S.code=this.value" autocomplete="one-time-code"></label>
+    <div class="card" style="box-shadow:none;border:1px solid var(--line)">
+      <div class="row"><div class="brand-mark" style="width:40px;height:40px">KFO</div><div class="grow"><b>Kieferorthopädie Dr. Weber</b><div class="muted">Musterstraße 12, 10115 Berlin</div></div><span class="chip ok">Gefunden</span></div>
+    </div>
+    <label class="field"><span>E-Mail</span><input type="email" value="lena.muster@example.com"></label>
+    <label class="field"><span>Passwort</span><input type="password" value="••••••••••••"></label>
+    <button class="btn" onclick="go('consent')">Weiter</button>
+  </div>`;
+}
+function scrConsent(){
+  const c=S.consents, ok=c.health&&c.share;
+  const box=(k,t,d,req)=>`<label class="check"><input type="checkbox" ${c[k]?'checked':''} onchange="S.consents.${k}=this.checked;render()"><span><b>${t}</b>${req?' <span class="chip" style="font-size:10px;padding:1px 6px">erforderlich</span>':' <span class="muted">(optional)</span>'}<br><span class="muted">${d}</span></span></label>`;
+  return `${appbar('Einwilligungen',{back:true})}
+  <div class="screen">
+    <div class="hint" style="margin-bottom:8px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Sie können jede Einwilligung jederzeit unter Profil › Datenschutz widerrufen.</span></div>
+    ${box('health','Verarbeitung von Gesundheitsdaten','Tragezeiten, VPro-Nutzung und Fotos werden zur Begleitung Ihrer Behandlung gespeichert (Art. 9 Abs. 2 lit. a DSGVO).',true)}
+    ${box('share','Übermittlung an meine Praxis','Ihre Praxis sieht Tragezeiten, Fotos und Nachrichten.',true)}
+    ${box('analytics','Anonyme Nutzungsstatistik','Hilft uns, die App zu verbessern. Ohne Gesundheitsdaten.',false)}
+    <p class="muted" style="margin:14px 0">Mit „Zustimmen“ akzeptieren Sie die <u>Nutzungsbedingungen</u> und haben die <u>Datenschutzerklärung</u> gelesen.</p>
+    <button class="btn" ${ok?'':'disabled'} onclick="go('secure')">Zustimmen</button>
+  </div>`;
+}
+function scrSecure(){
+  return `${appbar('App absichern',{back:true})}
+  <div class="screen">
+    <div class="card"><div class="row"><span class="ic" style="color:var(--ds-primary)">${ic('fp')}</span><div class="grow"><b>Mit Fingerabdruck entsperren</b><div class="muted">Schneller Zugang, sicher auf dem Gerät gespeichert</div></div>
+      <button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrie" onclick="S.bio=!S.bio;render()"></button></div></div>
+    <div class="card"><div class="row"><span style="color:var(--ds-primary)">${ic('lock')}</span><div class="grow"><b>Zwei-Faktor-Anmeldung</b><div class="muted">Bestätigungscode per Authenticator-App</div></div><span class="chip ok">Aktiv</span></div></div>
+    <div class="card"><div class="row"><span style="color:var(--ds-primary)">${ic('bell')}</span><div class="grow"><b>Mitteilungen erlauben</b><div class="muted">Für Trage-, Wechsel- und VPro-Erinnerungen. Inhalte Ihrer Nachrichten erscheinen nie im Sperrbildschirm.</div></div></div></div>
+    <button class="btn" style="margin-top:8px" onclick="S.stack=[];S.screen='tabs';S.tab='heute';render();toast('Willkommen, Lena','Ihre Behandlung wurde übernommen: Aligner 7 von 24.')">Fertig</button>
+  </div>`;
+}
+function scrLock(){
+  return `<div class="lock">
+    <div class="brand" style="color:#fff"><span class="brand-mark" style="background:#fff;color:var(--ds-primary)">DS</span>Aligner Companion</div>
+    <div class="fp">${ic('fp')}</div>
+    <div><b style="font-size:18px">Gesperrt</b><p style="opacity:.85;font-size:14px;margin-top:4px">Zum Entsperren Finger auflegen</p></div>
+    <button class="btn" style="background:#fff;color:var(--ds-primary);max-width:260px" onclick="back()">Entsperren (Demo)</button>
+    <button style="color:#fff;text-decoration:underline;font-size:14px">PIN verwenden</button>
+  </div>`;
+}
+
+/* ----- Heute ----- */
+function scrHeute(){
+  const goal=22*H, w=worn(), pct=Math.min(1,w/goal), r=96, C=2*Math.PI*r;
+  const o=outFor(), longOut=o>30*M;
+  const bars=Array.from({length:S.alignerTotal},(_,k)=>`<i class="${k+1<S.aligner?'done':k+1===S.aligner?'cur':''}"></i>`).join('');
+  return `${appbar('Hallo Lena',{right:`<button class="back" onclick="go('notifs')" aria-label="Erinnerungen">${ic('bell')}</button>`})}
+  <div class="screen">
+    <div class="card" style="padding-bottom:18px">
+      <div class="ring-wrap">
+        <div class="ring" role="img" aria-label="Heute ${fmtHM(w)} Stunden getragen von 22 Stunden Ziel">
+          <svg viewBox="0 0 220 220"><circle cx="110" cy="110" r="${r}" stroke="var(--line)" stroke-width="16" fill="none"/>
+          <circle cx="110" cy="110" r="${r}" stroke="${S.out?'var(--ds-warning)':'var(--ds-primary)'}" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}" style="transition:stroke-dashoffset .6s"/></svg>
+          <div class="center">
+            <span class="muted">Heute getragen</span>
+            <span class="big" id="wornTxt">${fmtHM(w)}</span>
+            <span class="muted">von 22:00 h</span>
+          </div>
+        </div>
+        <span class="state-pill ${S.out?'chip warn':'chip ok'}" id="statePill">${S.out?`Pause seit <span id="outTxt">${fmtHM(o)}</span> h`:'Aligner eingesetzt'}</span>
+      </div>
+      <button class="btn inout ${S.out?'':'out'}" onclick="toggleOut()">${S.out?'Aligner wieder eingesetzt':'Aligner herausnehmen'}</button>
+      ${longOut?`<div class="hint warn">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Pause dauert länger als 30 Minuten. Bitte setzen Sie die Aligner bald wieder ein.</span></div>`:''}
+    </div>
+
+    <div class="card">
+      <div class="row"><div class="grow"><h2>Aligner ${S.aligner} von ${S.alignerTotal}</h2><div class="muted">${S.daysLeft===0?'Heute ist Wechseltag':`Wechsel in ${S.daysLeft} Tagen · Fr., 16.11.`}</div></div>
+      <button class="chip" onclick="S.sheet='change';render()">Wechseln</button></div>
+      <div class="aligner-bar" aria-hidden="true">${bars}</div>
+    </div>
+
+    <div class="grid2">
+      <button class="card" style="text-align:left" onclick="go('vpro')">
+        <div class="row" style="gap:8px;color:var(--ds-primary)">${ic('vib')}<b style="color:var(--text)">VPro</b></div>
+        <div class="kpi" style="margin-top:8px">${S.vpro.today?'✓ erledigt':'5 min'}</div>
+        <div class="muted">${S.vpro.paired?`Verbunden · <span class="batt" style="--lvl:${S.vpro.battery}%"><i></i>${S.vpro.battery}%</span>`:'Nicht gekoppelt'}</div>
+      </button>
+      <button class="card" style="text-align:left" onclick="tab('fotos')">
+        <div class="row" style="gap:8px;color:var(--ds-primary)">${ic('cam')}<b style="color:var(--text)">Fotos</b></div>
+        <div class="kpi" style="margin-top:8px">fällig</div>
+        <div class="muted">Fotoserie zum Wechsel</div>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="row"><span style="color:var(--ds-accent)">${ic('flash')}</span><div class="grow"><b>9 Tage in Folge</b><div class="muted">Tagesziel erreicht. Weiter so!</div></div></div>
+    </div>
+  </div>`;
+}
+function toggleOut(){
+  if(S.out){ const p=outFor(); S.wornBase = worn(); S.dayStart = Date.now(); S.out=false; toast('Aligner eingesetzt','Pause von '+Math.max(1,Math.round(p/M))+' min erfasst.'); }
+  else { S.wornBase = worn(); S.out=true; S.outSince=Date.now(); }
+  render();
+}
+
+/* ----- Wechsel-Sheet ----- */
+function sheetChange(){
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Aligner wechseln">
+    <div class="grab"></div>
+    <h2>Zu Aligner ${S.aligner+1} wechseln?</h2>
+    <p class="muted" style="margin-bottom:14px">Setzen Sie die neuen Aligner ein und bewahren Sie die alten in der Box auf.</p>
+    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Praxis wünscht bei jedem Wechsel eine Fotoserie.</span></div>
+    <button class="btn" onclick="S.aligner++;S.daysLeft=S.interval;S.sheet=null;toast('Aligner '+S.aligner+' gestartet','Nächster Wechsel in 14 Tagen.');tab('fotos')">Wechsel bestätigen & Fotos machen</button>
+    <button class="btn secondary" onclick="S.daysLeft+=3;S.sheet=null;toast('Tragedauer verlängert','Ihre Praxis wird informiert.');render()">Aligner sitzt noch nicht: 3 Tage verlängern</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Abbrechen</button>
+  </div></div>`;
+}
+
+/* ----- Verlauf ----- */
+function scrVerlauf(){
+  const data={woche:[[ 'Mo',22.4],['Di',21.1],['Mi',22.6],['Do',23.0],['Fr',20.2],['Sa',22.1],['So',worn()/H]],
+              monat:[['KW41',22.0],['KW42',21.6],['KW43',22.3],['KW44',21.9],['KW45',22.2]]}[S.period];
+  const max=24, goal=22;
+  return `${appbar('Verlauf')}
+  <div class="screen">
+    <div class="seg" role="group" aria-label="Zeitraum">
+      ${['woche','monat'].map(p=>`<button aria-pressed="${S.period===p}" onclick="S.period='${p}';render()">${p==='woche'?'Woche':'Monat'}</button>`).join('')}
+    </div>
+    <div class="card">
+      <div class="row"><div class="grow"><h2>Tragezeit</h2><div class="muted">Stunden pro ${S.period==='woche'?'Tag':'Tag (Ø je Woche)'}</div></div><span class="chip ok">Ø 22:01 h</span></div>
+      <div class="bars" role="img" aria-label="Balkendiagramm Tragezeit">
+        <div class="goal" style="bottom:${goal/max*100}%"><span>Ziel 22 h</span></div>
+        ${data.map(([l,v])=>`<div class="b"><div class="${v<goal?'low':''}" style="height:${v/max*100}%" title="${v.toFixed(1)} h"></div><span>${l}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="muted">Ziel erreicht</div><div class="kpi">6 / 7</div><div class="muted">Tage diese Woche</div></div>
+      <div class="card"><div class="muted">Ø Pause</div><div class="kpi">23 min</div><div class="muted">pro Mahlzeit</div></div>
+      <div class="card"><div class="muted">VPro</div><div class="kpi">${S.vpro.streak}/10</div><div class="muted">Tage genutzt</div></div>
+      <div class="card"><div class="muted">Behandlung</div><div class="kpi">${Math.round(S.aligner/S.alignerTotal*100)} %</div><div class="muted">abgeschlossen</div></div>
+    </div>
+    <div class="section-t">Pausen heute</div>
+    <div class="card list">
+      ${[['07:05 – 07:24','Frühstück','19 min'],['12:30 – 12:58','Mittagessen','28 min'],['15:10 – 15:22','Kaffee','12 min']].map(([t,l,d])=>`
+      <button class="item" onclick="toast('Pause bearbeiten','Änderungen werden für Ihre Praxis gekennzeichnet.')"><span class="ic">${ic('tooth')}</span><span class="grow"><b>${t}</b><br><span class="muted">${l}</span></span><span class="muted">${d}</span></button>`).join('')}
+    </div>
+    <button class="btn secondary" onclick="toast('PDF-Bericht erstellt','Bericht für Ihren Termin liegt sicher in der App.')">${ic('doc')} PDF-Bericht für Termin</button>
+  </div>`;
+}
+
+/* ----- Fotos ----- */
+const VIEWS=[['front','Frontal'],['right','Rechts'],['left','Links'],['upper','Oberkiefer'],['lower','Unterkiefer'],['smile','Lächeln']];
+const TIPS={
+  front:'Wangenhalter einsetzen, Zähne zusammenbeißen und gerade in die Kamera schauen.',
+  right:'Kopf leicht nach links drehen, rechte Wange mit dem Halter zur Seite ziehen.',
+  left:'Kopf leicht nach rechts drehen, linke Wange mit dem Halter zur Seite ziehen.',
+  upper:'Spiegel nutzen, Mund weit öffnen und Oberkiefer von unten fotografieren.',
+  lower:'Spiegel nutzen, Mund weit öffnen und Unterkiefer von oben fotografieren.',
+  smile:'Ohne Wangenhalter natürlich lächeln.'};
+function scrFotos(){
+  const done=Object.keys(S.photos).length;
+  return `${appbar('Fotos')}
+  <div class="screen">
+    <div class="card">
+      <div class="row"><div class="grow"><h2>Fotoserie Aligner ${S.aligner}</h2><div class="muted">${done} von 6 Ansichten aufgenommen</div></div>${done===6?'<span class="chip ok">Vollständig</span>':'<span class="chip warn">Fällig</span>'}</div>
+      <div class="views" style="margin-top:14px">
+        ${VIEWS.map(([k,l],n)=>`<button class="view ${S.photos[k]?'done':''}" onclick="S.camStep=${n};go('camera')" aria-label="${l} ${S.photos[k]?'aufgenommen':'aufnehmen'}">${S.photos[k]?'':ic('cam')}<span>${l}</span></button>`).join('')}
+      </div>
+      <button class="btn" style="margin-top:14px" onclick="${done===6?"S.sheet='sendPhotos';render()":`S.camStep=${VIEWS.findIndex(([k])=>!S.photos[k])};go('camera')`}">${done===6?ic('send')+' An Praxis senden':done?'Weiter aufnehmen':'Geführte Aufnahme starten'}</button>
+    </div>
+    <div class="hint" style="margin-bottom:12px">${ic('lock','style="width:18px;height:18px;flex-shrink:0"')}<span>Fotos werden verschlüsselt nur in dieser App gespeichert, nicht in Ihrer Galerie. Standortdaten werden entfernt.</span></div>
+    <div class="section-t">Vorher / Nachher</div>
+    <div class="card">
+      <div class="compare" id="cmp">
+        <svg class="teeth" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">${teethSVG(8)}</svg>
+        <div class="after" id="cmpAfter"><svg class="teeth" viewBox="0 0 300 200" preserveAspectRatio="none">${teethSVG(0)}</svg></div>
+        <div class="handle" id="cmpH"></div>
+        <span class="lbl" style="left:8px">Aligner 1</span><span class="lbl" style="right:8px">Aligner ${S.aligner-1}</span>
+        <input type="range" min="0" max="100" value="50" aria-label="Vergleich verschieben" oninput="$('#cmpAfter').style.clipPath='inset(0 0 0 '+this.value+'%)';$('#cmpH').style.left=this.value+'%'">
+      </div>
+      <div class="row" style="margin-top:10px"><span class="muted grow">Ansicht: Frontal</span><button class="chip" onclick="toast('Zeitraffer','Wird aus allen Fotoserien erstellt (Demo).')">Zeitraffer ▶</button></div>
+    </div>
+    <div class="section-t">Gesendet</div>
+    <div class="card list">
+      ${S.photoSets.map(p=>`<div class="item"><span class="ic">${ic('cam')}</span><span class="grow"><b>Aligner ${p.aligner}</b><br><span class="muted">${p.date} · 6 Fotos</span></span><span class="chip ${p.status==='angesehen'?'ok':''}">${p.status}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+function teethSVG(shift){
+  let s='<rect width="300" height="200" fill="#b5675d"/><path d="M0 70 Q150 30 300 70 L300 0 L0 0Z" fill="#d98c80"/><path d="M0 135 Q150 175 300 135 L300 200 L0 200Z" fill="#d98c80"/>';
+  for(let k=0;k<8;k++){
+    const x=30+k*30, off=(k===3||k===4)?shift:shift/3*(k%2?1:-1);
+    s+=`<rect x="${x}" y="${62+Math.abs(k-3.5)*3+off}" width="26" height="${38-Math.abs(k-3.5)*2}" rx="6" fill="#fbf8f2" stroke="#e6dccd"/>`;
+    s+=`<rect x="${x+2}" y="${104-off/2}" width="24" height="${32-Math.abs(k-3.5)*2}" rx="6" fill="#f6f1e8" stroke="#e6dccd"/>`;
+  }
+  return s;
+}
+function scrCamera(){
+  const [k,l]=VIEWS[S.camStep];
+  const occl = k==='upper'||k==='lower';
+  const guide = occl
+    ? '<path d="M70 360 Q195 120 320 360" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8" opacity=".9"/>'
+    : k==='smile' ? '<path d="M80 260 Q195 360 310 260" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><path d="M80 260 Q195 230 310 260" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/>'
+    : '<rect x="60" y="200" width="270" height="140" rx="70" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="10 8"/><line x1="195" y1="190" x2="195" y2="350" stroke="#fff" stroke-width="1.5" opacity=".6"/>';
+  return `<div class="camera" role="dialog" aria-label="Kamera ${l}">
+    <div class="cam-top"><button onclick="back()" aria-label="Schließen" style="color:#fff">${ic('x')}</button><b>${l} · ${S.camStep+1}/6</b><button style="color:#fff" aria-label="Blitz">${ic('flash')}</button></div>
+    <div class="steps">${VIEWS.map(([kk],n)=>`<i class="${S.photos[kk]||n===S.camStep?'on':''}"></i>`).join('')}</div>
+    <div class="cam-view">
+      <svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${guide}</svg>
+      <div class="cam-q"><span>✓ Schärfe</span><span>✓ Licht</span><span>${occl?'↻ Spiegel':'✓ Gerade'}</span></div>
+      <div class="cam-tip"><b>${l}</b><br>${TIPS[k]}</div>
+    </div>
+    <div class="cam-bottom">
+      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+5)%6;render()">‹ Zurück</button>
+      <button class="shutter" aria-label="Foto aufnehmen" onclick="shoot()"></button>
+      <button style="color:#fff;font-size:13px;width:70px" onclick="S.camStep=(S.camStep+1)%6;render()">Weiter ›</button>
+    </div>
+  </div>`;
+}
+function shoot(){
+  S.photos[VIEWS[S.camStep][0]]=true;
+  const next=VIEWS.findIndex(([k])=>!S.photos[k]);
+  if(next<0){ back(); S.tab='fotos'; S.sheet='sendPhotos'; render(); }
+  else { S.camStep=next; render(); }
+}
+function sheetSendPhotos(){
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Fotos senden">
+    <div class="grab"></div>
+    <h2>Fotoserie an Praxis senden</h2>
+    <p class="muted" style="margin-bottom:12px">An: Kieferorthopädie Dr. Weber · 6 Fotos · Aligner ${S.aligner}</p>
+    <div class="views" style="margin-bottom:12px">${VIEWS.map(([k,l])=>`<div class="view done"><span>${l}</span></div>`).join('')}</div>
+    <label class="field"><span>Kommentar (optional)</span><textarea rows="2" placeholder="z. B. Aligner sitzt vorne gut, hinten rechts drückt er etwas."></textarea></label>
+    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Ende-zu-Ende-verschlüsselt. Ihre Praxis erhält nur einen Hinweis per E-Mail, nicht die Fotos selbst.</span></div>
+    <button class="btn" onclick="sendPhotos()">${ic('send')} Sicher senden</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Später</button>
+  </div></div>`;
+}
+function sendPhotos(){
+  S.photoSets.unshift({date:'13.11.2026',aligner:S.aligner,status:'gesendet'});
+  S.photos={}; S.sheet=null;
+  S.threads.unshift({id:'t'+Date.now(),title:'Fotoserie Aligner '+S.aligner,msgs:[{from:'out',text:'Fotoserie gesendet (6 Ansichten).',t:'jetzt',photos:6}]});
+  render(); toast('Fotoserie gesendet','Sie werden benachrichtigt, sobald die Praxis sie angesehen hat.');
+  setTimeout(()=>{ S.photoSets[0].status='angekommen'; render(); },2500);
+}
+
+/* ----- Praxis ----- */
+function scrPraxis(){
+  return `${appbar('Meine Praxis')}
+  <div class="screen">
+    <div class="card">
+      <div class="row"><div class="brand-mark" style="width:52px;height:52px;border-radius:14px;font-size:13px">KFO</div>
+      <div class="grow"><h2 style="margin:0">Kieferorthopädie Dr. Weber</h2><div class="muted">Dr. med. dent. A. Weber</div><span class="chip ok" style="margin-top:6px">● Geöffnet bis 18:00</span></div></div>
+      <div class="grid2" style="margin:14px 0 0;grid-template-columns:1fr 1fr 1fr">
+        <a class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px;text-decoration:none" href="tel:+49301234567">${ic('phone')}Anrufen</a>
+        <button class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px" onclick="go('newmsg')">${ic('mail')}E-Mail</button>
+        <button class="btn secondary" style="flex-direction:column;gap:2px;font-size:12px;min-height:64px;border-radius:14px" onclick="toast('Route','Öffnet die Karten-App (Demo).')">${ic('pin')}Route</button>
+      </div>
+    </div>
+    <div class="hint warn" style="margin-bottom:12px">${ic('warn','style="width:18px;height:18px;flex-shrink:0"')}<span>Kein Notfallkanal. Bei starken Schmerzen oder Verletzungen bitte anrufen: <b>030 123 45 67</b>, außerhalb der Sprechzeiten 116 117.</span></div>
+    <div class="row" style="margin:18px 4px 8px"><div class="section-t grow" style="margin:0">Nachrichten</div><button class="chip" onclick="go('newmsg')">+ Neu</button></div>
+    <div class="card list">
+      ${S.threads.map(t=>{const last=t.msgs[t.msgs.length-1];return `
+      <button class="item" onclick="openThread('${t.id}')"><span class="ic">${ic(last.photos?'cam':'chat')}</span>
+        <span class="grow" style="min-width:0"><b>${t.title}</b><br><span class="muted" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.from==='in'?'Praxis: ':'Sie: '}${last.text}</span></span>
+        ${t.unread?'<span class="badge" style="position:static">neu</span>':`<span class="muted" style="font-size:11px">${last.t}</span>`}</button>`}).join('')}
+    </div>
+    <div class="section-t">Nächster Termin</div>
+    <div class="card"><div class="row"><div style="text-align:center;min-width:48px"><div class="muted" style="font-size:11px">NOV</div><div class="kpi">20</div></div><div class="grow"><b>Kontrolltermin</b><div class="muted">Do., 10:30 Uhr · ca. 20 min</div></div><button class="chip" onclick="go('newmsg');S.draft='Termin verschieben';render()">Verschieben</button></div></div>
+  </div>`;
+}
+function openThread(id){ S.curThread=id; const t=S.threads.find(x=>x.id===id); if(t.unread){t.unread=false;S.unread=Math.max(0,S.unread-1);} go('thread'); }
+function scrThread(){
+  const t=S.threads.find(x=>x.id===S.curThread);
+  return `${appbar(t.title,{back:true})}
+  <div class="screen"><div class="msgs">
+    <div class="muted" style="text-align:center;font-size:12px;margin:4px 0 8px">${ic('lock','style="width:12px;height:12px;vertical-align:-1px"')} Ende-zu-Ende-verschlüsselt</div>
+    ${t.msgs.map(m=>`<div class="msg ${m.from}">${m.text}${m.photos?`<div class="thumbs">${'<i></i>'.repeat(Math.min(4,m.photos))}</div>`:''}<div class="meta">${m.t}${m.from==='out'?' · ✓✓ gelesen':''}</div></div>`).join('')}
+  </div></div>
+  <div class="composer">
+    <button class="att" aria-label="Foto anhängen" onclick="toast('Anhang','Foto aus der sicheren App-Galerie wählen (Demo).')">${ic('clip')}</button>
+    <input id="reply" placeholder="Nachricht schreiben" aria-label="Nachricht" onkeydown="if(event.key==='Enter')sendReply()">
+    <button class="send" aria-label="Senden" onclick="sendReply()">${ic('send')}</button>
+  </div>`;
+}
+function sendReply(){
+  const v=$('#reply').value.trim(); if(!v) return;
+  S.threads.find(x=>x.id===S.curThread).msgs.push({from:'out',text:v,t:'jetzt'}); render();
+  const sc=$('.screen'); sc.scrollTop=sc.scrollHeight;
+}
+const TEMPL={
+  'Aligner passt nicht':'Mein Aligner Nr. {n} sitzt nicht richtig. Betroffener Bereich: ',
+  'Aligner verloren/gebrochen':'Mein Aligner Nr. {n} ist verloren gegangen / gebrochen. Ich trage jetzt: ',
+  'Schmerzen':'Ich habe seit ___ Tagen Schmerzen im Bereich: ',
+  'Attachment abgefallen':'Ein Attachment ist abgefallen, Zahn/Bereich: ',
+  'Termin verschieben':'Ich möchte meinen Termin am 20.11. verschieben. Mögliche Zeiten: '};
+function scrNewMsg(){
+  return `${appbar('Neue Nachricht',{back:true})}
+  <div class="screen">
+    <p class="muted" style="margin-bottom:10px">An: Kieferorthopädie Dr. Weber (praxis@kfo-weber.de)</p>
+    <div class="section-t" style="margin-top:4px">Häufige Anliegen</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      ${Object.keys(TEMPL).map(k=>`<button class="chip" style="padding:8px 12px;font-size:13px" onclick="useTpl('${k}')">${k}</button>`).join('')}
+    </div>
+    <label class="field"><span>Betreff</span><input id="subj" value="${S.draft||''}"></label>
+    <label class="field"><span>Nachricht</span><textarea id="body" rows="5">${S.draftBody||''}</textarea></label>
+    <button class="btn ghost" style="margin-bottom:12px" onclick="toast('Anhang','Fotos aus der sicheren App-Galerie hinzufügen (Demo).')">${ic('clip')} Fotos anhängen</button>
+    <div class="hint" style="margin-bottom:14px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Ihre Nachricht wird verschlüsselt übertragen. Die Praxis erhält per E-Mail nur einen Hinweis ohne Inhalt und liest die Nachricht im gesicherten Praxis-Portal.</span></div>
+    <button class="btn" onclick="sendNew()">${ic('send')} Sicher senden</button>
+    <button style="display:block;margin:14px auto 0;color:var(--text-2);font-size:13px;text-decoration:underline" onclick="S.sheet='insecure';render()">Stattdessen mit eigener E-Mail-App senden</button>
+  </div>`;
+}
+function useTpl(k){ S.draft=k; S.draftBody=TEMPL[k].replace('{n}',S.aligner); render(); }
+function sendNew(){
+  const s=$('#subj').value.trim()||'Allgemeine Anfrage', b=$('#body').value.trim()||'(ohne Text)';
+  S.threads.unshift({id:'t'+Date.now(),title:s,msgs:[{from:'out',text:b,t:'jetzt'}]});
+  S.draft=S.draftBody=''; S.stack=[]; S.screen='tabs'; S.tab='praxis'; render();
+  toast('Nachricht gesendet','Die Praxis wurde per E-Mail benachrichtigt.');
+}
+function sheetInsecure(){
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="alertdialog" aria-label="Warnung">
+    <div class="grab"></div>
+    <div style="color:var(--ds-warning)">${ic('warn','style="width:32px;height:32px"')}</div>
+    <h2>Unverschlüsselt senden?</h2>
+    <p class="muted" style="margin-bottom:14px;line-height:1.5">Normale E-Mails sind nicht sicher verschlüsselt. Gesundheitsdaten und Fotos könnten von Dritten gelesen werden und verbleiben in Ihrem E-Mail-Postfach. Wir empfehlen den sicheren Versand.</p>
+    <button class="btn" onclick="S.sheet=null;render()">Sicher senden (empfohlen)</button>
+    <button class="btn ghost" style="margin-top:10px;color:var(--ds-warning)" onclick="S.sheet=null;render();toast('E-Mail-App geöffnet','Export wurde im Datenschutz-Protokoll vermerkt.')">Trotzdem E-Mail-App öffnen</button>
+  </div></div>`;
+}
+
+/* ----- VPro ----- */
+let vproTimer;
+function scrVPro(){
+  const v=S.vpro;
+  if(!v.paired) return `${appbar('SureSmile® VPro™',{back:true})}
+  <div class="screen">
+    <div class="vpro-dev"><div class="dev"><div class="led"></div></div></div>
+    <div class="card" style="text-align:center">
+      <h2>Gerät koppeln</h2>
+      <p class="muted" style="margin:6px 0 14px">Halten Sie den Knopf am VPro 3 Sekunden gedrückt, bis die Leuchte blinkt. Bluetooth muss eingeschaltet sein.</p>
+      ${v.pairing?`<div class="muted" style="margin-bottom:12px">${ic('bt','style="vertical-align:-5px"')} Suche nach Geräten …</div>
+        <button class="list item card" style="box-shadow:none;border:1.5px solid var(--ds-primary);padding:12px" onclick="S.vpro.paired=true;S.vpro.pairing=false;toast('VPro verbunden','Sichere Kopplung abgeschlossen.');render()">
+          <span class="ic">${ic('vib')}</span><span class="grow" style="text-align:left"><b>VPro · 4F2A</b><br><span class="muted">Signal stark</span></span>${ic('chev')}</button>`
+      :`<button class="btn" onclick="S.vpro.pairing=true;render()">${ic('bt')} Gerät suchen</button>`}
+    </div>
+    <button class="btn ghost" onclick="S.vpro.today=true;toast('Sitzung erfasst','Heutige VPro-Sitzung manuell eingetragen.');back()">Ohne Gerät: Sitzung manuell eintragen</button>
+  </div>`;
+  return `${appbar('SureSmile® VPro™',{back:true})}
+  <div class="screen">
+    <div class="vpro-dev ${v.running?'on':''}"><div class="dev"><div class="led"></div></div></div>
+    <div class="card" style="text-align:center">
+      <div class="muted">${v.running?'Sitzung läuft · sanft zubeißen':v.today?'Heute erledigt':'Tägliche Sitzung'}</div>
+      <div class="big" style="font-size:52px;font-weight:800;font-variant-numeric:tabular-nums" id="vproTime">${fmtMS(v.remain)}</div>
+      <button class="btn ${v.running?'warn':''}" style="margin-top:10px" onclick="vproToggle()">${v.running?'Sitzung stoppen':v.today?'Erneut starten':'Sitzung starten'}</button>
+    </div>
+    <div class="card list">
+      <div class="item"><span class="ic">${ic('bt')}</span><span class="grow"><b>Verbunden</b><br><span class="muted">VPro · 4F2A · Firmware 2.4.1</span></span><span class="chip ok">●</span></div>
+      <div class="item"><span class="ic">${ic('flash')}</span><span class="grow"><b>Akku</b><br><span class="muted">reicht für ca. 14 Sitzungen</span></span><span class="batt" style="--lvl:${v.battery}%"><i></i>${v.battery}%</span></div>
+      <button class="item" onclick="toast('Gerät wird gesucht','VPro piept für 10 Sekunden.')"><span class="ic">${ic('pin')}</span><span class="grow"><b>Gerät finden</b><br><span class="muted">Zuletzt gesehen: vor 2 min</span></span>${ic('chev')}</button>
+      <div class="item"><span class="ic">${ic('bell')}</span><span class="grow"><b>Erinnerung</b><br><span class="muted">täglich 21:00 Uhr</span></span><button class="toggle" role="switch" aria-checked="${S.reminders.vpro}" aria-label="VPro-Erinnerung" onclick="S.reminders.vpro=!S.reminders.vpro;render()"></button></div>
+    </div>
+    <div class="hint">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Nutzungsdaten werden automatisch vom Gerät übernommen und Ihrer Praxis angezeigt.</span></div>
+  </div>`;
+}
+function vproToggle(){
+  const v=S.vpro;
+  if(v.running){ v.running=false; clearInterval(vproTimer); render(); return; }
+  v.running=true; v.remain=300; render();
+  vproTimer=setInterval(()=>{
+    v.remain-=10; // Demo: 10x schneller
+    if(v.remain<=0){ v.remain=0; v.running=false; v.today=true; v.streak=Math.min(10,v.streak+1); clearInterval(vproTimer); render(); toast('VPro-Sitzung abgeschlossen','5 Minuten. Super!'); return; }
+    const el=$('#vproTime'); if(el) el.textContent=fmtMS(v.remain);
+  },1000);
+}
+
+/* ----- Profil ----- */
+function scrProfil(){
+  const tg=(k,l,d)=>`<div class="item"><span class="ic">${ic('bell')}</span><span class="grow"><b>${l}</b><br><span class="muted">${d}</span></span><button class="toggle" role="switch" aria-checked="${S.reminders[k]}" aria-label="${l}" onclick="S.reminders.${k}=!S.reminders.${k};render()"></button></div>`;
+  return `${appbar('Profil')}
+  <div class="screen">
+    <div class="card row"><div class="brand-mark" style="width:52px;height:52px;border-radius:50%;font-size:16px;background:var(--ds-accent)">LM</div><div class="grow"><h2 style="margin:0">Lena Muster</h2><div class="muted">Behandlung seit 15.08.2026 · SureSmile®</div></div></div>
+    <div class="section-t">Behandlung</div>
+    <div class="card list">
+      <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Tragezeitziel</b><br><span class="muted">22 h pro Tag · von Ihrer Praxis festgelegt</span></span></div>
+      <div class="item"><span class="ic">${ic('tooth')}</span><span class="grow"><b>Wechselintervall</b><br><span class="muted">alle ${S.interval} Tage · ${S.alignerTotal} Aligner</span></span></div>
+      <button class="item" onclick="go('vpro')"><span class="ic">${ic('vib')}</span><span class="grow"><b>SureSmile® VPro™</b><br><span class="muted">${S.vpro.paired?'Verbunden':'Nicht gekoppelt'}</span></span>${ic('chev')}</button>
+    </div>
+    <div class="section-t">Erinnerungen</div>
+    <div class="card list">
+      ${tg('wear','Aligner wieder einsetzen','nach 30 min Pause')}
+      ${tg('change','Aligner-Wechsel','am Wechseltag um 20:00')}
+      ${tg('vpro','VPro-Sitzung','täglich um 21:00')}
+      ${tg('photo','Fotoserie','bei jedem Wechsel')}
+    </div>
+    <div class="section-t">Sicherheit & Datenschutz</div>
+    <div class="card list">
+      <div class="item"><span class="ic">${ic('fp')}</span><span class="grow"><b>Biometrisch entsperren</b><br><span class="muted">Automatische Sperre nach 5 min</span></span><button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrie" onclick="S.bio=!S.bio;render()"></button></div>
+      <button class="item" onclick="toast('Einwilligungen','Hier einzeln einsehen und widerrufen (Demo).')"><span class="ic">${ic('shield')}</span><span class="grow"><b>Einwilligungen</b><br><span class="muted">2 erteilt · zuletzt geändert 13.11.2026</span></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Datenexport','Ihre Daten werden als verschlüsselte Datei bereitgestellt (Art. 15/20 DSGVO).')"><span class="ic">${ic('doc')}</span><span class="grow"><b>Meine Daten exportieren</b></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Angemeldete Geräte','Pixel 9 (dieses Gerät) · Sitzungen widerrufen (Demo).')"><span class="ic">${ic('lock')}</span><span class="grow"><b>Angemeldete Geräte</b></span>${ic('chev')}</button>
+      <button class="item" onclick="toast('Konto löschen','Bestätigung per 2FA erforderlich. Aufbewahrungspflichten der Praxis bleiben bestehen.')"><span class="ic" style="color:var(--ds-danger)">${ic('trash')}</span><span class="grow"><b style="color:var(--ds-danger)">Konto löschen</b></span>${ic('chev')}</button>
+    </div>
+    <div class="section-t">Allgemein</div>
+    <div class="card list">
+      <div class="item"><span class="ic">${ic('globe')}</span><span class="grow"><b>Sprache</b></span><span class="muted">Deutsch</span></div>
+      <button class="item" onclick="toast('Hilfe','FAQ und Kontakt zum Support (Demo).')"><span class="ic">${ic('info')}</span><span class="grow"><b>Hilfe & Support</b></span>${ic('chev')}</button>
+      <button class="item" onclick="go('lock')"><span class="ic">${ic('lock')}</span><span class="grow"><b>App sperren</b></span>${ic('chev')}</button>
+      <button class="item" onclick="restart()"><span class="ic">${ic('back')}</span><span class="grow"><b>Abmelden</b></span></button>
+    </div>
+    <p class="muted" style="text-align:center;margin-top:8px;font-size:12px">Aligner Companion 0.1 (Klickdummy) · Impressum · Datenschutz</p>
+  </div>`;
+}
+function scrNotifs(){
+  return `${appbar('Mitteilungen',{back:true})}
+  <div class="screen"><div class="card list">
+    ${[['bell','Aligner wieder einsetzen','Heute 12:58'],['cam','Fotoserie fällig','Gestern 20:00'],['chat','Neue Nachricht Ihrer Praxis','31.10. 09:15'],['vib','Zeit für Ihre VPro-Sitzung','30.10. 21:00']].map(([i,t,d])=>`
+    <div class="item"><span class="ic">${ic(i)}</span><span class="grow"><b>${t}</b><br><span class="muted">${d}</span></span></div>`).join('')}
+  </div>
+  <p class="muted" style="font-size:12px;padding:0 4px">Mitteilungen auf dem Sperrbildschirm enthalten nie Gesundheitsdaten oder Nachrichteninhalte.</p></div>`;
+}
+
+/* ======================= Render ======================= */
+function render(){
+  let h='';
+  switch(S.screen){
+    case 'welcome': h=scrWelcome(); break;
+    case 'code': h=scrCode(); break;
+    case 'consent': h=scrConsent(); break;
+    case 'secure': h=scrSecure(); break;
+    case 'lock': h=scrLock(); break;
+    case 'vpro': h=scrVPro(); break;
+    case 'thread': h=scrThread(); break;
+    case 'newmsg': h=scrNewMsg(); break;
+    case 'notifs': h=scrNotifs(); break;
+    case 'camera': h=scrFotos()+tabbar()+scrCamera(); break;
+    default:
+      h={heute:scrHeute,verlauf:scrVerlauf,fotos:scrFotos,praxis:scrPraxis,profil:scrProfil}[S.tab]()+tabbar();
+  }
+  if(S.sheet==='change') h+=sheetChange();
+  if(S.sheet==='sendPhotos') h+=sheetSendPhotos();
+  if(S.sheet==='insecure') h+=sheetInsecure();
+  const sc=$('.screen'), top=sc?sc.scrollTop:0, same=render.last===S.screen+S.tab;
+  $('#app').innerHTML=h;
+  if(same && $('.screen')) $('.screen').scrollTop=top;
+  render.last=S.screen+S.tab;
+}
+/* Live-Aktualisierung von Uhr und Timer ohne Neuaufbau */
+setInterval(()=>{
+  const d=new Date(); $('#clock').textContent=d.getHours()+':'+pad(d.getMinutes());
+  const w=$('#wornTxt'); if(w) w.textContent=fmtHM(worn());
+  const o=$('#outTxt'); if(o) o.textContent=fmtHM(outFor());
+},1000);
+render();
+</script>
+</body>
+</html>
