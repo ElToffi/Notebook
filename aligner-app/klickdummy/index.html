@@ -225,6 +225,43 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .batt i::after{content:"";position:absolute;left:1px;top:1px;bottom:1px;background:currentColor;border-radius:1px;width:var(--lvl)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.adchip{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border:1.5px solid var(--text-2);color:var(--text-2);border-radius:6px;padding:0 6px;line-height:18px;flex-shrink:0}
+.linkbtn{color:var(--ds-primary);text-decoration:underline;font:inherit}
+.shop{margin:6px 0}
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.tile{aspect-ratio:1;border-radius:10px;position:relative;overflow:hidden;font-size:12px;font-weight:700;display:grid;place-items:center;background:var(--ds-primary-soft);color:var(--ds-primary-dark)}
+.tile i{position:absolute;left:0;right:0;bottom:0;background:var(--ds-primary);opacity:.35}
+.tile span{position:relative;z-index:1}
+.tile.done{background:var(--ds-primary);color:#fff}
+.tile.cur{outline:2.5px solid var(--ds-accent);outline-offset:1px}
+.tile.next{opacity:.55}
+.progbar{height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.progbar i{display:block;height:100%;background:var(--ds-primary);border-radius:5px}
+.faces{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.face{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:12px;border:2px solid transparent;background:var(--surface);font-size:11px;font-weight:600;box-shadow:var(--shadow)}
+.face svg{width:36px;height:36px;stroke:var(--text);fill:none;stroke-width:1.8;stroke-linecap:round}
+.face[aria-pressed="true"]{border-color:var(--ds-primary);background:var(--ds-primary-soft)}
+.opts{display:flex;gap:6px}
+.opts button{flex:1;padding:12px 4px;border-radius:12px;background:var(--surface);box-shadow:var(--shadow);border:2px solid transparent;font-weight:600;font-size:14px}
+.opts button[aria-pressed="true"]{border-color:var(--ds-primary);background:var(--ds-primary-soft)}
+.dots14{display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:10px}
+.dd{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;height:100%}
+.dd i{display:block;width:100%;border-radius:4px}
+.dd span{font-size:9px;height:10px;color:var(--text-2)}
+.achgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ach{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:10px 4px;border-radius:14px;background:var(--surface);box-shadow:var(--shadow);font-size:11px;font-weight:600;position:relative;line-height:1.25}
+.ach .ai{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--ds-primary-soft);color:var(--ds-primary)}
+.ach.locked .ai{background:var(--line);color:var(--text-2)}
+.ach.locked{opacity:.8}
+.ach .vf{position:absolute;top:6px;right:6px;color:var(--ds-success)}
+.ach .vf svg{width:14px;height:14px}
+.widget{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:12px}
+.slot{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px;border-radius:12px;border:2px solid var(--line);background:var(--surface);font-weight:600;margin-bottom:8px}
+.slot[aria-pressed="true"]{border-color:var(--ds-primary);background:var(--ds-primary-soft)}
+.radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--text-2);flex-shrink:0}
+.slot[aria-pressed="true"] .radio{border-color:var(--ds-primary);background:radial-gradient(var(--ds-primary) 45%,transparent 50%)}
+.mount svg{display:block;width:100%;height:auto}
+.faceico svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
 </style>
 </head>
 <body>
@@ -236,7 +273,7 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 </div>
 
 <aside class="side">
-  <span class="tag">Prototype v0.2</span>
+  <span class="tag">Prototype v0.3</span>
   <h1>Aligner Companion</h1>
   <p>Interactive prototype for the product specification. No real data; nothing is stored or sent.</p>
   <h2>Try it</h2>
@@ -255,6 +292,11 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
     <button onclick="demoPush('reply')">Practice replies</button>
     <button onclick="demoPush('photoreq')">Practice requests photos</button>
     <button onclick="demoPush('extend')">Practice extends aligner</button>
+    <button onclick="demoPush('appt')">Practice proposes appointment</button>
+    <button onclick="demoPush('kudos')">Practice sends kudos</button>
+    <button onclick="demoRefine()">Practice adds refinement</button>
+    <button onclick="demoLast()">Jump to last tray</button>
+    <button onclick="demoUnlock()">Unlock achievements to 20</button>
     <button onclick="go('lock')">Lock app</button>
     <button onclick="restart()">Restart</button>
     <button onclick="toggleTheme()">Light/Dark</button>
@@ -305,7 +347,17 @@ const I = {
   bag:'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a3 3 0 016 0v2"/>',
   spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
   family:'<circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c.5-4 3-6 6-6s5.5 2 6 6M14 20c.3-2.5 1.5-4 3-4s3 1.5 3.5 4"/>',
-  check:'<path d="M5 12l5 5 9-10"/>'
+  check:'<path d="M5 12l5 5 9-10"/>',
+  star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  flame:'<path d="M12 3c1 3 4 5 4 9a4 4 0 01-8 0c0-2 1-3 2-4 0 2 1 2 1 2 0-3 0-5 1-7z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  mountain:'<path d="M3 19l6-10 4 6 3-4 5 8z"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  gift:'<rect x="3" y="8" width="18" height="4"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2-4-6-3-5 0 .5 1.5 3 1.5 5 0zM12 8c2-4 6-3 5 0-.5 1.5-3 1.5-5 0z"/>',
+  brush:'<path d="M14 4l6 6-8 8-6-6zM6 12l-2 6 6-2"/>',
+  award:'<circle cx="12" cy="9" r="5"/><path d="M8.5 13.5L7 21l5-3 5 3-1.5-7.5"/>',
+  heart:'<path d="M12 20s-8-5-8-10.5A4.5 4.5 0 0112 7a4.5 4.5 0 018 2.5C20 15 12 20 12 20z"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'
 };
 const ic = (n,s='') => `<svg class="i" viewBox="0 0 24 24" ${s} aria-hidden="true">${I[n]}</svg>`;
 
@@ -336,6 +388,13 @@ function fresh(){
     ],
     curThread:null,
     reminders:{wear:true,change:true,vpro:true,photo:true},
+    refs:[], finished:false,
+    ach:['welcome','first_tap','perfect_day','streak3','streak7','perfect_week','first_change','first_fit'], kit:null,
+    diary:[1,2,3,2,1,1,0,1,0,0,1,0].map((p,k)=>({d:'Nov '+(k+1),pain:p,chg:k===1})), diaryToday:null, checkins:0,
+    ci:{pain:null,fit:null,chewies:false,brushed:false,flossed:false,note:''},
+    proposal:null, appts:[{id:'a1',title:'Check-up',date:'Fri, Nov 20',time:'10:30',dur:20,start:'20261120T103000',end:'20261120T105000',sIso:'2026-11-20T10:30:00',eIso:'2026-11-20T10:50:00'}], calAppt:0,
+    shopLinks:true, calm:false, guides:[], pause:null,
+    widgets:{hide:true,tile:true,control:true,live:true,voice:false},
     sheet:null
   };
 }
@@ -376,6 +435,12 @@ function demoPush(k){
     S.threads[0].unread=true; S.unread++;
     toast('New message from your practice','Open the app to read it.'); }
   if(k==='photoreq'){ S.photos={}; S.threads.unshift({id:'t'+Date.now(),title:'New photos, please',msgs:[{from:'in',text:'Please send us a fit check (3 photos) today. Thank you! Your practice team',t:'now'}],unread:true}); S.unread++; toast('Your practice requests photos','Open the fit check in the app.'); }
+  if(k==='appt'){ S.proposal={title:'Check-up with IPR',dur:30,note:'We would like to check your progress and polish between two teeth.',sel:null,slots:[
+      {label:'Mon, Nov 23 · 09:00',date:'Mon, Nov 23',time:'09:00',start:'20261123T090000',end:'20261123T093000',sIso:'2026-11-23T09:00:00',eIso:'2026-11-23T09:30:00'},
+      {label:'Tue, Nov 24 · 15:30',date:'Tue, Nov 24',time:'15:30',start:'20261124T153000',end:'20261124T160000',sIso:'2026-11-24T15:30:00',eIso:'2026-11-24T16:00:00'},
+      {label:'Thu, Nov 26 · 11:00',date:'Thu, Nov 26',time:'11:00',start:'20261126T110000',end:'20261126T113000',sIso:'2026-11-26T11:00:00',eIso:'2026-11-26T11:30:00'}]};
+    S.unread++; toast('Appointment proposal','Your practice suggested 3 times. Open Practice to answer.'); }
+  if(k==='kudos'){ toast('Dr. Weber: Great job!','3 weeks in a row on target. Keep it up.'); }
   if(k==='extend'){ S.daysLeft+=7; S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' extended',msgs:[{from:'in',text:'Please wear aligner '+S.aligner+' for 7 more days so it can fully seat. This is completely normal.',t:'now'}],unread:true}); S.unread++; toast('New message from your practice','Open the app to read it.'); }
   render();
 }
@@ -388,7 +453,7 @@ const appbar = (title, opts={}) => `
   </div>`;
 
 function tabbar(){
-  const t = [['today','Today','home'],['photos','Photos','cam'],['help','Help','help'],['practice','Practice','chat'],['profile','Profile','user']];
+  const t = [['today','Today','home'],['journey','Journey','mountain'],['photos','Photos','cam'],['help','Help','help'],['practice','Practice','chat']];
   return `<nav class="tabbar" aria-label="Main navigation">${t.map(([k,l,i])=>`
     <button onclick="tab('${k}')" ${S.tab===k?'aria-current="page"':''}>
       <span class="ico">${ic(i)}${k==='practice'&&S.unread?`<span class="badge">${S.unread}</span>`:''}</span>${l}
@@ -463,13 +528,121 @@ function scrLock(){
   </div>`;
 }
 
+/* ----- Progress helpers ----- */
+const dayFrac=()=>Math.max(0,Math.min(1,(S.interval-S.daysLeft)/S.interval));
+function progress(){ if(S.finished) return 1; return Math.min(1,((S.aligner-1)+dayFrac())/S.alignerTotal); }
+function trayStats(i){
+  const target=S.interval*22;
+  if(S.finished||i<S.aligner){ const h=300+((i*37)%25); return {state:'done',hours:h,target,days:S.interval,pct:Math.min(100,Math.round(h/target*100))}; }
+  if(i===S.aligner){ const d=Math.max(1,S.interval-S.daysLeft); const h=Math.round((d-1)*21.8+worn()/H); return {state:'cur',hours:h,target,days:d,pct:Math.min(100,Math.round(h/target*100))}; }
+  return {state:'next',hours:0,target,days:0,pct:0};
+}
+function totalHours(){ let t=0; for(let i=1;i<=S.alignerTotal;i++){const x=trayStats(i); if(x.state!=='next') t+=x.hours;} return t; }
+function mountainSVG(){
+  const refs=S.refs;
+  const P=[[0,160],[35,142],[62,150],[100,108],[128,122],[172,40],[204,96],[226,118]];
+  let x=226;
+  refs.forEach(()=>{P.push([x+22,134],[x+48,100],[x+74,134]);x+=74;});
+  P.push([x+34,150]);
+  const W=x+60,H2=190;
+  const along=(path,t)=>{let L=[0];for(let i=1;i<path.length;i++)L.push(L[i-1]+Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    const d=Math.max(0,Math.min(1,t))*L[L.length-1];let i=1;while(i<L.length-1&&L[i]<d)i++;
+    const r=(d-L[i-1])/((L[i]-L[i-1])||1);const pt=[path[i-1][0]+(path[i][0]-path[i-1][0])*r,path[i-1][1]+(path[i][1]-path[i-1][1])*r];
+    return {pt,done:path.slice(0,i).concat([pt])};};
+  let route,t;
+  if(!S.finished){route=P.slice(0,6);t=progress();}
+  else{ const k=refs.findIndex(r=>r.done<r.total);
+    if(!refs.length){route=[P[5]];t=1;}
+    else if(k<0){route=[P[9+3*(refs.length-1)]];t=1;}
+    else {route=[P[7+3*k],P[8+3*k],P[9+3*k]];t=refs[k].done/refs[k].total;} }
+  let cur,trail;
+  if(route.length===1){cur=route[0];trail=P.slice(0,P.indexOf(route[0])+1);}
+  else{const a=along(route,t);cur=a.pt;trail=P.slice(0,P.indexOf(route[0])).concat(a.done);}
+  const pts=a=>a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const sm=P[5], pct=Math.round(progress()*100);
+  return `<svg viewBox="0 0 ${W} ${H2}" role="img" aria-label="Journey: ${pct} percent of the planned trays, ${refs.length} fine-tuning hills ahead">
+    <polygon points="0,${H2} ${pts(P)} ${P[P.length-1][0]},${H2}" fill="var(--ds-primary-soft)"/>
+    <polygon points="${sm[0]-12},${sm[1]+20} ${sm[0]},${sm[1]} ${sm[0]+11},${sm[1]+18} ${sm[0]+4},${sm[1]+15} ${sm[0]-3},${sm[1]+20}" fill="var(--surface)" opacity=".9"/>
+    <polyline points="${pts(P)}" fill="none" stroke="var(--ds-primary)" stroke-width="2.5" stroke-linejoin="round" opacity=".45"/>
+    <polyline points="${pts(trail)}" fill="none" stroke="var(--ds-accent)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="${sm[0]}" y1="${sm[1]}" x2="${sm[0]}" y2="${sm[1]-20}" stroke="var(--text)" stroke-width="2"/>
+    <polygon points="${sm[0]},${sm[1]-20} ${sm[0]+14},${sm[1]-15} ${sm[0]},${sm[1]-10}" fill="${S.finished?'var(--ds-success)':'var(--ds-accent)'}"/>
+    <polygon points="4,160 12,146 20,160" fill="var(--ds-primary)" opacity=".7"/>
+    <polygon points="${P[P.length-1][0]-8},150 ${P[P.length-1][0]},136 ${P[P.length-1][0]+8},150" fill="var(--ds-success)" opacity=".8"/>
+    <g transform="translate(${cur[0].toFixed(1)},${cur[1].toFixed(1)})"><circle cx="0" cy="-14" r="3.6" fill="var(--text)"/><rect x="-5.5" y="-11" width="4" height="6" rx="1.2" fill="var(--ds-accent)"/><path d="M0 -10.5V-3M0 -8L-4 -4M0 -8L4.5 -10.5M0 -3L-3 3M0 -3L3 3" stroke="var(--text)" stroke-width="2" stroke-linecap="round" fill="none"/></g>
+  </svg>`;
+}
+const avatarBtn=()=>`<button class="back" onclick="go('profile')" aria-label="Profile"><span class="brand-mark" style="width:32px;height:32px;border-radius:50%;background:var(--ds-accent);font-size:12px">LM</span></button>`;
+const bellBtn=()=>`<button class="back" onclick="go('notifs')" aria-label="Notifications">${ic('bell')}</button>`;
+const PAINL=['None','Mild','Moderate','Strong','Severe'];
+function face(n){
+  const m=['M12 24 Q20 33 28 24','M12 25 Q20 30 28 25','M12 28 L28 28','M12 31 Q20 25 28 31','M12 33 Q20 22 28 33'][n];
+  return `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17"/><circle cx="14" cy="16" r="1.4" fill="currentColor"/><circle cx="26" cy="16" r="1.4" fill="currentColor"/><path d="${m}"/></svg>`;
+}
+const DAY_TIPS=[
+ ['Cleaning','Brush before you put them back in','Food left on your teeth stays trapped under the aligners. A quick brush, or at least a good rinse, keeps your teeth clean.','Brushing & flossing'],
+ ['Care','Cool water, never hot','Hot water can warp your aligners. Rinse them with cool or lukewarm water.','Cleaning'],
+ ['Habits','Pair it with your meals','Put the case next to your plate. When the meal ends, the aligners go back in.',null],
+ ['Cleaning','Floss once a day','Cleaning between your teeth matters even more with aligners on.','Brushing & flossing'],
+ ['Care','Chewies for a snug fit','Bite on them for a few minutes after each tray change.','Attachments, IPR & chewies'],
+ ['Cleaning','A weekly deep clean','Once a week, soak aligners or retainers with a cleaning tablet, then rinse.','Cleaning'],
+ ['Habits','Water is fine, sugar is not','Sip water with aligners in. Take them out for anything sweet.','Eating & drinking'],
+ ['Care','Always carry the case','Wrapping aligners in a napkin is the most common way they get lost.',null]];
+
+/* ----- Achievements ----- */
+/* [id, icon, name, description, group, verified source] Placeholder catalogue, approved by product and legal before release. */
+const ACH=[
+ ['first_tap','tooth','First tap','Log your first break','Wear'],
+ ['perfect_day','check','Perfect day','Reach your daily target','Wear'],
+ ['streak3','flame','3-day streak','3 days in a row on target','Wear'],
+ ['streak7','flame','7-day streak','7 days in a row on target','Wear'],
+ ['streak30','flame','30-day streak','30 days in a row on target','Wear'],
+ ['perfect_week','star','Perfect week','7 of 7 days on target','Wear'],
+ ['quick_return','clock','Quick return','Back in within 30 min after 10 meals','Wear'],
+ ['welcome','heart','Welcome aboard','You joined your practice’s journey','Milestones'],
+ ['first_change','tooth','First change','Confirm your first tray change','Milestones',1],
+ ['five_changes','tooth','5 changes on time','Confirm 5 tray changes on time','Milestones',1],
+ ['halfway','mountain','Halfway','Reach 50 % of the way','Milestones',1],
+ ['summit','mountain','Summit','Reach 100 % of your plan','Milestones',1],
+ ['first_fit','cam','First fit check','Send your first fit check','Photos',1],
+ ['five_fit','cam','5 fit checks','Send 5 fit checks','Photos',1],
+ ['perfect_photo','cam','Perfect photo','All three views right the first time','Photos'],
+ ['clean7','brush','Clean routine','Brush before putting aligners in, 7 days','Care'],
+ ['chewies7','spark','Chewies champion','Use chewies 7 days','Care'],
+ ['floss7','spark','Floss master','Floss 7 days','Care'],
+ ['retainer_shine','shield','Retainer shine','Clean your retainer 7 times','Care'],
+ ['first_checkin','doc','First check-in','Complete your first daily check-in','Check-ins'],
+ ['checkin7','doc','7 check-ins','Complete 7 daily check-ins','Check-ins'],
+ ['checkin30','doc','30 check-ins','Complete 30 daily check-ins','Check-ins'],
+ ['first_vpro','vib','First VPro session','Finish a VPro session','VPro',1],
+ ['vpro10','vib','10 VPro sessions','Finish 10 VPro sessions','VPro',1],
+ ['vpro_week','vib','VPro week','Use VPro 7 days in a row','VPro',1],
+ ['reader','book','Guide reader','Read 5 guides','Learning'],
+ ['asked','chat','Asked a question','Use “Is this normal?” or message your practice','Learning'],
+ ['appt_kept','cal','Appointment kept','Keep 3 appointments','Learning',1],
+ ['holiday','globe','Holiday hero','Wear logged across a time-zone change','Hidden'],
+ ['night_owl','star','Night owl','Retainer worn every night for 30 days','Hidden']];
+function earn(id){
+  if(S.ach.includes(id)) return;
+  S.ach.push(id); const a=ACH.find(x=>x[0]===id);
+  setTimeout(()=>toast('Achievement unlocked: '+a[2], S.ach.length>=20&&!S.kit?'You can now claim your free care kit!':a[3]),1100);
+}
+function demoUnlock(){ for(const a of ACH){ if(S.ach.length>=20) break; if(!S.ach.includes(a[0])) S.ach.push(a[0]); } toast('20 achievements','Demo: your care kit is ready to claim.'); render(); }
+function demoRefine(){ S.refs.push({total:6,done:0}); toast('Practice added a refinement','A small fine-tuning hill appeared on your journey.'); tab('journey'); }
+function demoLast(){ S.finished=false; S.aligner=S.alignerTotal; S.daysLeft=0; toast('Last tray','Demo: you are at the end of tray 24.'); tab('journey'); }
+function changeTray(){ S.aligner++; S.daysLeft=S.interval; S.sheet=null; if(S.aligner>S.alignerTotal/2) earn('halfway'); toast('Aligner '+S.aligner+' started','New chapter: next change in '+S.interval+' days.'); tab('photos'); }
+function finishTreatment(){ S.finished=true; S.sheet=null; earn('summit'); tab('journey'); }
+function openGuide(k){ if(!S.guides.includes(k)) S.guides.push(k); if(S.guides.length>=5) earn('reader'); S.sheet='rg:'+k; render(); }
+function claimKit(){ S.kit='claimed'; S.sheet=null; toast('Care kit on its way','Estimated delivery 5–7 working days. Your address is used only to ship the kit.'); render(); }
+
 /* ----- Today ----- */
 function scrToday(){
   const goal=22*H, w=worn(), pct=Math.min(1,w/goal), r=96, C=2*Math.PI*r;
-  const o=outFor(), longOut=o>45*M;
-  const bars=Array.from({length:S.alignerTotal},(_,k)=>`<i class="${k+1<S.aligner?'done':k+1===S.aligner?'cur':''}"></i>`).join('');
-  return `${appbar('Hi Lena',{right:`<button class="back" onclick="go('notifs')" aria-label="Notifications">${ic('bell')}</button>`})}
+  const o=outFor(), longOut=o>45*M, t=trayStats(S.aligner);
+  const tip=DAY_TIPS[new Date().getDate()%DAY_TIPS.length], dt=S.diaryToday, n=S.ach.length;
+  return `${appbar('Hi Lena',{right:bellBtn()+avatarBtn()})}
   <div class="screen">
+    ${S.pause?`<div class="hint warn" style="margin-bottom:12px">${ic('clock','style="width:18px;height:18px;flex-shrink:0"')}<span>Tracking paused (${S.pause.reason}) until ${S.pause.until}. Streaks are kept. <button class="linkbtn" onclick="S.pause=null;toast('Welcome back','Tracking resumed.');render()">Resume now</button></span></div>`:''}
     <button class="card row" style="width:100%;text-align:left" onclick="go('history')">
       <span class="ic" style="width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--ds-success) 15%,transparent);color:var(--ds-success);display:grid;place-items:center;flex-shrink:0">${ic('check')}</span>
       <span class="grow"><b>Your treatment is on track</b><br><span class="muted">This week 6 of 7 days on target · week 13 of ~48</span></span>${ic('chev')}
@@ -492,10 +665,28 @@ function scrToday(){
     </div>
 
     <div class="card">
-      <div class="row"><div class="grow"><h2>Aligner ${S.aligner} of ${S.alignerTotal}</h2><div class="muted">${S.daysLeft===0?'Today is change day':`Change in ${S.daysLeft} days · Fri, Nov 16`}</div></div>
-      <button class="chip" onclick="S.sheet='change';render()">Change</button></div>
-      <div class="aligner-bar" aria-hidden="true">${bars}</div>
+      <div class="row">
+        <button class="row grow" style="text-align:left;gap:12px;min-width:0" onclick="tab('journey')">
+          ${S.calm?'':`<span style="width:112px;flex-shrink:0">${mountainSVG()}</span>`}
+          <span class="grow"><h2>Aligner ${S.aligner} of ${S.alignerTotal}</h2><span class="muted" style="display:block">Day ${t.days} of ${S.interval} · ${t.hours} h worn</span><span class="progbar" style="display:block;margin-top:8px"><i style="width:${t.pct}%"></i></span></span>
+        </button>
+        <button class="chip" onclick="S.sheet='change';render()">Change</button>
+      </div>
+      <div class="muted" style="margin-top:10px">${S.finished?'You completed all trays.':S.daysLeft===0?'Today is change day':`Change in ${S.daysLeft} days · Mon, Nov 16`}</div>
     </div>
+
+    ${dt?`<div class="card row"><span class="faceico" style="width:44px;height:44px;color:var(--ds-primary)">${face(dt.pain)}</span><span class="grow"><b>Checked in today</b><br><span class="muted">Comfort: ${PAINL[dt.pain].toLowerCase()} · fit: ${dt.fit}</span></span><span class="chip ok">Done</span></div>`
+    :`<button class="card row" style="width:100%;text-align:left" onclick="go('checkin')"><span style="color:var(--ds-primary)">${ic('doc')}</span><span class="grow"><b>How was your day?</b><br><span class="muted">Daily check-in · about 15 seconds</span></span>${ic('chev')}</button>`}
+
+    ${S.calm?'':`<button class="card" style="width:100%;text-align:left" onclick="go('achievements')">
+      <div class="row"><span style="color:var(--ds-accent)">${ic('award')}</span><span class="grow"><b>${S.kit?'Care kit on its way':n>=20?'Claim your free care kit':`${n} of 20 achievements`}</b><br><span class="muted">${S.kit?'Thank you for your journey':'Free Dentsply Sirona care kit at 20'}</span></span>${ic('chev')}</div>
+      <div class="progbar" style="margin-top:10px"><i style="width:${Math.min(100,n/20*100)}%;background:var(--ds-accent)"></i></div>
+    </button>
+    <div class="card">
+      <div class="row" style="margin-bottom:6px"><span class="chip">Tip of the day · ${tip[0]}</span></div>
+      <b>${tip[1]}</b><p class="muted" style="margin:4px 0 8px">${tip[2]}</p>
+      ${tip[3]?`<button class="chip" onclick="openGuide('${tip[3]}')">Read more</button>`:''}
+    </div>`}
 
     <div class="grid2">
       <button class="card" style="text-align:left" onclick="go('vpro')">
@@ -515,6 +706,179 @@ function scrToday(){
     </button>
   </div>`;
 }
+
+/* ----- Journey ----- */
+function scrJourney(){
+  const pr=Math.round(progress()*100), t=trayStats(S.aligner), tot=totalHours(), n=S.ach.length;
+  const rem=S.finished?0:(S.alignerTotal-S.aligner+1-dayFrac());
+  const fin=new Date(Date.now()+rem*S.interval*86400000).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+  const k=S.refs.findIndex(r=>r.done<r.total);
+  const next=S.finished?(S.refs.length&&k>=0?`Next: fine-tuning hill ${k+1}`:'Next: retainer base camp'):'';
+  return `${appbar('Journey',{right:avatarBtn()})}
+  <div class="screen">
+    ${S.calm?'':`<div class="card">
+      <div class="mount">${mountainSVG()}</div>
+      <div class="row" style="margin-top:8px"><div class="grow"><div class="kpi">${pr} %</div><div class="muted">${S.finished?'Summit reached':'of the way to the summit'}</div></div>
+      <div style="text-align:right"><b>${S.finished?'Well done!':'Est. '+fin}</b><div class="muted">${S.finished?next:'estimate from your plan'}</div></div></div>
+      ${S.refs.length?`<div class="hint" style="margin-top:12px">${ic('mountain','style="width:18px;height:18px;flex-shrink:0"')}<span><b>${S.refs.length} fine-tuning hill${S.refs.length>1?'s':''}</b> after the summit. Refinements are a normal part of treatment and help the result fit exactly. They are never a setback.</span></div>`
+        :!S.finished?`<p class="muted" style="font-size:12px;margin-top:10px">Some treatments add a small fine-tuning hill after the summit. If your practice plans one, it appears here.</p>`:''}
+    </div>`}
+    <div class="card">
+      <div class="row"><div class="grow"><h2>This tray · aligner ${S.aligner}</h2><div class="muted">${S.finished?'All trays completed':`Day ${t.days} of ${S.interval}`}</div></div><span class="chip ${t.pct>=95?'ok':''}">${t.pct} %</span></div>
+      <div class="progbar" style="margin:10px 0 6px"><i style="width:${t.pct}%"></i></div>
+      <div class="muted"><b style="color:var(--text)">${t.hours} h</b> worn of ${t.target} h target (${S.interval} days × 22 h)</div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="muted">Total hours worn</div><div class="kpi">${tot.toLocaleString('en-US')} h</div><div class="muted">about ${Math.round(tot/24)} days</div></div>
+      <div class="card"><div class="muted">Trays done</div><div class="kpi">${S.finished?S.alignerTotal:S.aligner-1} / ${S.alignerTotal}</div><div class="muted">week 13 of ~48</div></div>
+    </div>
+    ${S.calm?'':`<button class="card" style="width:100%;text-align:left" onclick="go('achievements')">
+      <div class="row"><span style="color:var(--ds-accent)">${ic('award')}</span><span class="grow"><b>${S.kit?'Care kit on its way':n>=20?'Claim your free care kit':`${n} of 20 achievements`}</b><br><span class="muted">${S.kit?'Thank you for your journey':'Free Dentsply Sirona care kit at 20'}</span></span>${ic('chev')}</div>
+      <div class="progbar" style="margin-top:10px"><i style="width:${Math.min(100,n/20*100)}%;background:var(--ds-accent)"></i></div>
+    </button>`}
+    <div class="section-t">All trays</div>
+    <div class="card"><div class="tiles">
+      ${Array.from({length:S.alignerTotal},(_,i)=>{const x=trayStats(i+1);return `<button class="tile ${x.state}" onclick="S.sheet='tray:${i+1}';render()" aria-label="Aligner ${i+1}, ${x.state==='done'?'done':x.state==='cur'?'current':'upcoming'}">${x.state==='cur'?`<i style="height:${x.pct}%"></i>`:''}<span>${i+1}</span></button>`}).join('')}
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:10px">Filled = done · outlined = current (fill shows progress) · faded = upcoming. Tap a tray for details.</div></div>
+    <button class="card row" style="width:100%;text-align:left" onclick="go('history')"><span style="color:var(--ds-primary)">${ic('chart')}</span><span class="grow"><b>Wear-time history</b><br><span class="muted">Days, weeks, comfort diary</span></span>${ic('chev')}</button>
+  </div>`;
+}
+function sheetTray(i){
+  const x=trayStats(i), st=x.state==='done'?'Completed':x.state==='cur'?'In progress':'Upcoming';
+  return shell(`Aligner ${i}`,`<div class="row" style="margin-bottom:10px"><span class="chip ${x.state==='done'?'ok':''}">${st}</span></div>
+    ${x.state==='next'?`<p class="muted">Starts after aligner ${i-1}. Planned: ${S.interval} days · target ${x.target} h.</p>`:`
+    <div class="progbar" style="margin:6px 0 10px"><i style="width:${x.pct}%"></i></div>
+    <div class="grid2" style="margin-bottom:10px"><div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="muted">Hours worn</div><div class="kpi">${x.hours} h</div><div class="muted">of ${x.target} h target</div></div>
+    <div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="muted">Average per day</div><div class="kpi">${(x.hours/x.days).toFixed(1)} h</div><div class="muted">${x.days} day${x.days>1?'s':''}</div></div></div>
+    <div class="muted">Fit check: ${x.state==='done'?'received by your practice':'due at tray change'}</div>`}`);
+}
+
+/* ----- Achievements ----- */
+function scrAchievements(){
+  const n=S.ach.length, groups=['Wear','Milestones','Photos','Care','Check-ins','VPro','Learning','Hidden'];
+  return `${appbar('Achievements',{back:true})}
+  <div class="screen">
+    <div class="card" style="background:linear-gradient(160deg,var(--ds-primary),var(--ds-accent));color:#fff">
+      <div class="row"><span>${ic('gift','style="width:34px;height:34px"')}</span><span class="grow"><b style="font-size:18px">${S.kit?'Your care kit is on its way':n>=20?'Your care kit is ready':'Free Dentsply Sirona care kit'}</b><br><span style="opacity:.9;font-size:13px">${S.kit?'Thank you for your journey':`${Math.max(0,20-n)>0?Math.max(0,20-n)+' more achievements to unlock it':'You collected 20 achievements'}`}</span></span></div>
+      <div style="height:10px;border-radius:5px;background:rgba(255,255,255,.3);margin:12px 0 6px;overflow:hidden"><div style="height:100%;width:${Math.min(100,n/20*100)}%;background:#fff;border-radius:5px"></div></div>
+      <div style="font-size:13px;opacity:.9">${n} of 20 collected</div>
+      ${!S.kit&&n>=20?`<button class="btn" style="background:#fff;color:var(--ds-primary);margin-top:12px" onclick="S.sheet='kit';render()">Claim your care kit</button>`:''}
+    </div>
+    <p class="muted" style="font-size:12px;margin:-4px 4px 12px">Kit: appliance case, Chewies™ and Retainer Brite® (contents may change). One kit per patient. Terms apply. At least 5 of the 20 must come from verified sources (marked <span style="color:var(--ds-success)">✓</span>).</p>
+    ${groups.map(g=>`<div class="section-t">${g}</div><div class="achgrid">
+      ${ACH.filter(a=>a[4]===g).map(a=>{const got=S.ach.includes(a[0]), hid=g==='Hidden'&&!got;return `<button class="ach ${got?'':'locked'}" onclick="toast('${hid?'Hidden achievement':a[2]}','${hid?'A surprise. Keep going!':a[3]}')">
+        ${a[5]&&got?`<span class="vf" title="Verified">${ic('check')}</span>`:''}
+        <span class="ai">${ic(hid?'lock':a[1],'style="width:22px;height:22px"')}</span><span>${hid?'???':a[2]}</span></button>`}).join('')}
+    </div>`).join('')}
+    <div class="hint" style="margin-top:16px">${ic('info','style="width:18px;height:18px;flex-shrink:0"')}<span>Achievements are never taken away and never depend on pain or symptoms. <button class="linkbtn" onclick="S.sheet='motivate';render()">How the app motivates you</button></span></div>
+  </div>`;
+}
+function sheetKit(){
+  return shell('Claim your care kit',`<div class="card" style="box-shadow:none;border:1px solid var(--line)"><b>What’s inside</b><ul style="padding-left:18px;margin-top:6px;line-height:1.7"><li>Appliance case</li><li>Chewies™ Aligner Tray Seaters</li><li>Retainer Brite® cleaning tablets</li></ul><div class="muted" style="font-size:12px">Contents per the current patient kit; may change.</div></div>
+    <label class="field" style="margin-top:12px"><span>Name</span><input value="Lena Muster"></label>
+    <label class="field"><span>Street and number</span><input value="12 Sample Street"></label>
+    <div class="row" style="gap:8px"><label class="field grow"><span>Postcode</span><input value="10115"></label><label class="field grow"><span>City</span><input value="Berlin"></label></div>
+    <label class="check"><input type="checkbox" onchange="document.getElementById('kitBtn').disabled=!this.checked"><span>I agree that my address is passed to the shipping partner only to send my kit and deleted after delivery. <span class="muted">Not linked to your health data.</span></span></label>
+    <p class="muted" style="font-size:12px;margin:8px 0 12px">One kit per patient. <u>Terms</u> apply. Available in selected countries.</p>
+    <button id="kitBtn" class="btn" disabled onclick="claimKit()">Send my care kit</button>`);
+}
+
+/* ----- Daily check-in ----- */
+function scrCheckin(){
+  const c=S.ci;
+  const tg=(k,l)=>`<div class="item"><span class="grow"><b>${l}</b></span><button class="toggle" role="switch" aria-checked="${c[k]}" aria-label="${l}" onclick="S.ci.${k}=!S.ci.${k};render()"></button></div>`;
+  return `${appbar('Daily check-in',{back:true})}
+  <div class="screen">
+    <p class="muted" style="margin-bottom:6px">About 15 seconds. Only you and your practice can see this.</p>
+    <div class="section-t">Comfort today</div>
+    <div class="faces">${PAINL.map((l,n)=>`<button class="face" aria-pressed="${c.pain===n}" onclick="S.ci.pain=${n};render()">${face(n)}<span>${l}</span></button>`).join('')}</div>
+    <div class="section-t">Aligner fit</div>
+    <div class="opts">${['Snug','Loose','Too tight'].map(l=>`<button aria-pressed="${c.fit===l.toLowerCase()}" onclick="S.ci.fit='${l.toLowerCase()}';render()">${l}</button>`).join('')}</div>
+    <div class="section-t">Today I …</div>
+    <div class="card list">${tg('chewies','used my chewies')}${tg('brushed','brushed before putting aligners in')}${tg('flossed','flossed')}</div>
+    <label class="field"><span>Note (optional)</span><textarea rows="2" oninput="S.ci.note=this.value" placeholder="Anything your practice should know?">${c.note}</textarea></label>
+    <button class="btn" ${c.pain===null||c.fit===null?'disabled':''} onclick="saveCheckin()">Save check-in</button>
+  </div>`;
+}
+function saveCheckin(){
+  const c=S.ci; S.diaryToday={...c}; S.diary.push({d:'Nov 13',pain:c.pain,chg:false}); S.checkins++;
+  earn('first_checkin'); if(S.checkins>=7) earn('checkin7');
+  S.sheet='ci_done'; render();
+}
+function sheetCiDone(){
+  const c=S.diaryToday, high=c.pain>=3||c.fit==='too tight';
+  const msg=high?'Strong discomfort or a tight fit can happen after a tray change, but it is worth a look. You can check “Is this normal?” or message your practice.'
+    :c.pain>=1?'Mild pressure is common in the first days after a tray change. It usually fades within a few days.':'Lovely. Little or no discomfort today.';
+  return shell('Check-in saved',`<div style="text-align:center;margin-bottom:12px"><span class="faceico" style="display:inline-block;width:56px;height:56px;color:var(--ds-primary)">${face(c.pain)}</span></div>
+    <p style="text-align:center;line-height:1.5;margin-bottom:6px">${msg}</p>
+    <p class="muted" style="text-align:center;font-size:12px;margin-bottom:14px">General information, not a diagnosis. Your practice can see your check-in.</p>
+    ${high?`<button class="btn" onclick="S.sheet=null;S.sy={topic:null,step:0,ans:[]};S.stack=['tabs'];S.screen='symptom';render()">Is this normal?</button>
+      <button class="btn secondary" onclick="S.sheet=null;S.draft='Comfort check-in';S.draftBody='Today I felt '+PAINL[S.diaryToday.pain].toLowerCase()+' discomfort and my aligner feels '+S.diaryToday.fit+'. ';S.stack=['tabs'];S.screen='newmsg';render()">Message my practice</button>`:''}
+    <button class="btn ${high?'ghost':''}" onclick="S.sheet=null;back()">Done</button>`);
+}
+function comfortCard(){
+  const d=S.diary.slice(-14), col=['var(--ds-success)','color-mix(in srgb,var(--ds-success) 50%,var(--ds-warning))','var(--ds-warning)','color-mix(in srgb,var(--ds-warning) 50%,var(--ds-danger))','var(--ds-danger)'];
+  return `<div class="card"><div class="row"><div class="grow"><h2>Comfort diary</h2><div class="muted">Last ${d.length} days · ▲ tray change</div></div></div>
+    <div class="dots14" role="img" aria-label="Comfort over the last ${d.length} days">${d.map(e=>`<div class="dd" title="${e.d}: ${PAINL[e.pain].toLowerCase()}"><i style="background:${col[e.pain]};height:${14+e.pain*14}px"></i><span>${e.chg?'▲':''}</span></div>`).join('')}</div>
+    <p class="muted" style="margin-top:6px;font-size:12px">Discomfort is usually highest in the first 2–3 days after a tray change. Taller bars mean more discomfort.</p></div>`;
+}
+
+/* ----- Widgets ----- */
+function scrWidgets(){
+  const W=S.widgets, w=worn(), pct=Math.min(1,w/(22*H)), C=2*Math.PI*30, pr=Math.round(progress()*100), t=trayStats(S.aligner);
+  const tg=(k,l,d)=>`<div class="item"><span class="grow"><b>${l}</b><br><span class="muted">${d}</span></span><button class="toggle" role="switch" aria-checked="${W[k]}" aria-label="${l}" onclick="S.widgets.${k}=!S.widgets.${k};render()"></button></div>`;
+  return `${appbar('Widgets & shortcuts',{back:true})}
+  <div class="screen">
+    <p class="muted" style="margin-bottom:10px">Preview of your home screen widgets (Android and iOS). Tap the button on the wear widget.</p>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="widget" style="text-align:center"><svg viewBox="0 0 80 80" width="84" height="84"><circle cx="40" cy="40" r="30" fill="none" stroke="var(--line)" stroke-width="8"/><circle cx="40" cy="40" r="30" fill="none" stroke="${S.out?'var(--ds-warning)':'var(--ds-primary)'}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">${fmtHM(w)}</text></svg>
+        <div><button class="chip" style="margin-top:4px" onclick="toggleOut()">${S.out?'Back in':'Take out'}</button></div><div class="muted" style="font-size:11px;margin-top:4px">Wear widget</div></div>
+      <div class="widget"><div class="mount">${mountainSVG()}</div><b>${pr} %</b><div class="muted" style="font-size:11px">Journey widget</div></div>
+    </div>
+    <div class="widget" style="margin-bottom:12px"><div class="row"><span style="color:var(--ds-primary)">${ic('cal')}</span><span class="grow"><b>Change in ${S.daysLeft} days</b><br><span class="muted">${t.hours} h worn this tray · Check-up Fri 10:30</span></span></div><div class="muted" style="font-size:11px;margin-top:6px">Next widget</div></div>
+    <div class="section-t">Lock screen preview</div>
+    <div class="widget" style="background:#15202b;color:#fff;text-align:center"><div style="font-size:34px;font-weight:300">9:41</div><div style="font-size:12px;opacity:.7;margin-bottom:10px">Fri, Nov 13</div>
+      <div style="display:inline-flex;gap:8px;background:rgba(255,255,255,.12);border-radius:18px;padding:8px 14px;font-size:13px">${W.hide?`Aligners`:`${S.out?'Out '+fmtHM(outFor())+' h':'In'} · ${fmtHM(w)} h`}</div>
+      <div style="font-size:11px;opacity:.7;margin-top:8px">${W.hide?'Details hidden until unlocked':'Details shown on lock screen'}</div></div>
+    <div class="section-t">Settings</div>
+    <div class="card list">
+      ${tg('hide','Hide details on lock screen','Only “Aligners” is shown until you unlock (recommended)')}
+      ${tg('tile','Quick settings tile (Android)','Out/in from the notification shade')}
+      ${tg('control','Lock screen control and Action Button (iOS)','Out/in without opening the app')}
+      ${tg('live','Ongoing notification while aligners are out','Shows the break time with a “Back in” button')}
+      ${tg('voice','Voice shortcut','“Hey Siri / Hey Google, aligners out”')}
+    </div>
+    <div class="hint" style="margin-top:12px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>Widgets show only numbers and progress. They never show names, messages or appointment details on the lock screen.</span></div>
+  </div>`;
+}
+
+/* ----- Generic sheet shell and info sheets ----- */
+function shell(title,inner){
+  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="${title}"><div class="grab"></div><h2 style="margin-bottom:10px">${title}</h2>${inner}</div></div>`;
+}
+function sheetAdInfo(){
+  return shell('About ads and product links',`<p style="line-height:1.55;margin-bottom:10px">Links marked <span class="adchip">Ad</span> are <b>advertising</b>. They lead to Amazon. If you buy through them, Dentsply Sirona may earn a commission from Amazon. <b>It costs you nothing extra.</b></p>
+    <ul style="padding-left:18px;line-height:1.6;margin-bottom:10px"><li>Retainer Brite® and Chewies™ are Dentsply Sirona products.</li><li>Toothbrush, floss and toothpaste links are brand-neutral searches. We do not rank brands.</li><li>No health data, name or practice is sent with a link.</li><li>You never need to buy anything to use the app.</li></ul>
+    <button class="btn" onclick="S.shopLinks=false;S.sheet=null;toast('Product links off','You will not see product links any more.');render()">Turn product links off</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Close</button>`);
+}
+function sheetMotivate(){
+  return shell('How the app motivates you',`<div style="line-height:1.55;display:grid;gap:10px">
+    <p><b>Progress you can see.</b> The mountain, tray bars and hours show real progress, nothing more.</p>
+    <p><b>Small steps.</b> The daily check-in takes seconds. Streaks have rest days, and pausing keeps them.</p>
+    <p><b>Recognition.</b> Achievements are never taken away. Your practice can send you a word of thanks.</p>
+    <p><b>Reminders at good moments.</b> At most 4 a day, never during quiet hours.</p>
+    <p><b>No pressure.</b> We never shame you for a bad day, and nothing rewards ignoring pain.</p>
+    <p class="muted">Not for you? Switch on <b>Calm mode</b> in Profile for plain tracking only.</p></div>
+    <button class="btn secondary" style="margin-top:14px" onclick="S.sheet=null;render()">Close</button>`);
+}
+function sheetPause(){
+  return shell('Pause tracking',`<p class="muted" style="margin-bottom:12px">Reminders and alerts stop for a while. Your streaks are kept. Your practice is informed.</p>
+    ${['Travel without aligners','Illness','Dental procedure','Other'].map(r=>`<button class="card" style="width:100%;text-align:left;font-weight:600;margin-bottom:8px" onclick="S.pause={reason:'${r.toLowerCase()}',until:'Nov 20'};S.sheet=null;toast('Tracking paused','Until Nov 20. Your practice was informed.');tab('today')">${r}</button>`).join('')}
+    <p class="muted" style="font-size:12px">Pauses longer than 14 days need your practice’s confirmation.</p>`);
+}
+
 function toggleOut(){
   if(S.out){ const p=outFor(); S.wornBase = worn(); S.dayStart = Date.now(); S.out=false; toast('Aligners back in','Break of '+Math.max(1,Math.round(p/M))+' min logged.'); }
   else { S.wornBase = worn(); S.out=true; S.outSince=Date.now(); }
@@ -523,19 +887,19 @@ function toggleOut(){
 
 /* ----- Change sheet ----- */
 function sheetChange(){
-  return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="Change aligner">
-    <div class="grab"></div>
-    <h2>Switch to aligner ${S.aligner+1}?</h2>
-    <p class="muted" style="margin-bottom:14px">Put in the new aligners and keep the old ones in their case.</p>
-    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Your practice asks for a fit check (3 photos) at every tray change.</span></div>
-    <button class="btn" onclick="S.aligner++;S.daysLeft=S.interval;S.sheet=null;toast('Aligner '+S.aligner+' started','Next change in 14 days.');tab('photos')">Confirm change & take photos</button>
+  if(S.aligner>=S.alignerTotal) return shell(`Finish tray ${S.aligner}?`,`<p class="muted" style="margin-bottom:14px">This is your last planned tray. Confirm when you have worn it for the full time.</p>
+    <button class="btn" onclick="finishTreatment()">Reach the summit</button>
     <button class="btn secondary" onclick="askExtend()">Aligner doesn’t fit yet: ask practice</button>
-    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Cancel</button>
-  </div></div>`;
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Cancel</button>`);
+  return shell(`Switch to aligner ${S.aligner+1}?`,`<p class="muted" style="margin-bottom:14px">Put in the new aligners and keep the old ones in their case.</p>
+    <div class="hint" style="margin-bottom:14px">${ic('cam','style="width:18px;height:18px;flex-shrink:0"')}<span>Your practice asks for a fit check (3 photos) at every tray change.</span></div>
+    <button class="btn" onclick="changeTray()">Confirm change & take photos</button>
+    <button class="btn secondary" onclick="askExtend()">Aligner doesn’t fit yet: ask practice</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="S.sheet=null;render()">Cancel</button>`);
 }
 function askExtend(){
   S.threads.unshift({id:'t'+Date.now(),title:'Aligner '+S.aligner+' doesn’t fit yet',msgs:[{from:'out',text:'My aligner '+S.aligner+' doesn’t fully fit yet. Should I wear it longer?',t:'now'}]});
-  S.sheet=null; render(); toast('Practice asked','Your practice decides on an extension and will get back to you.');
+  S.sheet=null; earn('asked'); render(); toast('Practice asked','Your practice decides on an extension and will get back to you.');
 }
 
 /* ----- History ----- */
@@ -561,6 +925,7 @@ function scrHistory(){
       <div class="card"><div class="muted">VPro</div><div class="kpi">${S.vpro.streak}/10</div><div class="muted">days used</div></div>
       <div class="card"><div class="muted">Treatment</div><div class="kpi">${Math.round(S.aligner/S.alignerTotal*100)} %</div><div class="muted">complete</div></div>
     </div>
+    ${comfortCard()}
     <div class="section-t">Breaks today</div>
     <div class="card list">
       ${[['07:05 – 07:24','Breakfast','19 min'],['12:30 – 12:58','Lunch','28 min'],['15:10 – 15:22','Coffee','12 min']].map(([t,l,d])=>`
@@ -652,7 +1017,7 @@ function sheetSendPhotos(){
   </div></div>`;
 }
 function sendPhotos(){
-  S.photoSets.unshift({date:'Nov 13, 2026',aligner:S.aligner,status:'sent',n:VIEWS.length});
+  S.photoSets.unshift({date:'Nov 13, 2026',aligner:S.aligner,status:'sent',n:VIEWS.length}); earn('perfect_photo');
   S.photos={}; S.sheet=null;
   S.threads.unshift({id:'t'+Date.now(),title:'Fit check aligner '+S.aligner,msgs:[{from:'out',text:'Fit check sent (3 photos).',t:'now',photos:3}]});
   render(); toast('Fit check sent','Your practice will get in touch if anything needs doing.');
@@ -663,12 +1028,25 @@ function sendPhotos(){
 /* Demo uses search links; production uses curated product pages per market from remote content. */
 const MARKETS={DE:'amazon.de',US:'amazon.com',UK:'amazon.co.uk',FR:'amazon.fr',IT:'amazon.it',ES:'amazon.es',NL:'amazon.nl',CA:'amazon.ca',AU:'amazon.com.au',JP:'amazon.co.jp',CH:null};
 let market='DE';
-const PRODUCTS={rb:{name:'Retainer Brite®',q:'Retainer+Brite+Dentsply'},ch:{name:'Chewies™',q:'Chewies+Dentsply+aligner+seaters'}};
+const LANG={DE:'de',US:'en',UK:'en',FR:'fr',IT:'it',ES:'es',NL:'nl',CA:'en',AU:'en',JP:'ja',CH:'de'};
+const PRODUCTS={
+  rb:{name:'Retainer Brite®',own:true,q:{all:'Retainer Brite Dentsply'}},
+  ch:{name:'Chewies™',own:true,q:{all:'Chewies Dentsply aligner seaters'}},
+  tb:{name:'Electric toothbrushes',q:{en:'electric toothbrush pressure sensor',de:'elektrische Zahnbürste Drucksensor',fr:'brosse à dents électrique',it:'spazzolino elettrico',es:'cepillo de dientes eléctrico',nl:'elektrische tandenborstel',ja:'電動歯ブラシ'}},
+  fl:{name:'Floss & interdental brushes',q:{en:'dental floss interdental brushes',de:'Zahnseide Interdentalbürsten',fr:'fil dentaire brossettes interdentaires',it:'filo interdentale scovolini',es:'hilo dental cepillos interdentales',nl:'flosdraad ragers',ja:'デンタルフロス 歯間ブラシ'}},
+  wf:{name:'Water flossers',q:{en:'water flosser',de:'Munddusche',fr:'hydropulseur',it:'idropulsore dentale',es:'irrigador dental',nl:'monddouche',ja:'口腔洗浄器'}},
+  tp:{name:'Fluoride toothpaste',q:{en:'fluoride toothpaste',de:'Zahnpasta Fluorid',fr:'dentifrice fluoré',it:'dentifricio al fluoro',es:'pasta de dientes con flúor',nl:'fluoride tandpasta',ja:'フッ素 歯磨き粉'}}
+};
+/* Every product link is labelled as an ad, with an affiliate disclosure (spec 3.8.1). */
 function shopBtn(p){
+  if(!S.shopLinks) return '';
   const x=PRODUCTS[p], host=MARKETS[market];
-  if(!host) return `<div class="hint" style="margin-top:6px"><span>${x.name} is available at your practice. Just ask at your next visit.</span></div>`;
-  return `<a class="btn secondary" style="text-decoration:none;margin-top:4px" href="https://www.${host}/s?k=${x.q}" target="_blank" rel="noopener noreferrer">Buy ${x.name} on ${host}</a>
-  <p class="muted" style="font-size:11px;margin-top:4px">Product by Dentsply Sirona · opens ${host} in your browser · no personal data is shared</p>`;
+  if(!host) return x.own?`<div class="hint" style="margin-top:6px"><span>${x.name} is available at your practice. Just ask at your next visit.</span></div>`:'';
+  const q=x.q.all||x.q[LANG[market]]||x.q.en;
+  const url=`https://www.${host}/s?k=${encodeURIComponent(q)}`;
+  return `<div class="shop"><div class="row" style="gap:8px;margin-bottom:6px"><span class="adchip">Ad</span><span class="muted" style="font-size:12px">${x.own?'Product by Dentsply Sirona':'Brand-neutral search'} · affiliate link</span></div>
+  <a class="btn secondary" style="text-decoration:none;min-height:46px;font-size:15px" href="${url}" target="_blank" rel="noopener noreferrer sponsored">${x.name} on ${host}</a>
+  <p class="muted" style="font-size:11px;margin-top:4px;line-height:1.4">If you buy through this link, Dentsply Sirona may earn a commission from Amazon at no extra cost to you.${market==='US'?' As an Amazon Associate we earn from qualifying purchases.':''} <button class="linkbtn" onclick="S.sheet='adinfo';render()">Why an ad?</button></p></div>`;
 }
 /* ----- Help ----- */
 /* Content and rules are placeholders and must be approved by clinicians. */
@@ -697,6 +1075,12 @@ const RG={
   'Attachments, IPR & chewies':['book','<p><b>Attachments</b> are small tooth-colored bumps that help the aligner move teeth precisely.</p><p><b>IPR</b> means a tiny amount of enamel is polished away between some teeth to create space.</p><p><b>Chewies</b> are soft bite aids that press the aligner fully onto your teeth. Bite on them for 5 minutes, twice a day, especially after a tray change.</p>{{shop:ch}}'],
   'Refinements':['info','<p>Many treatments need an extra set of correction aligners towards the end. That is <b>not a setback</b> but a normal part of treatment to make the result fit exactly.</p>']
 };
+const RG_ALL=Object.assign({'Brushing & flossing':['brush',`<p><b>Your routine in 4 steps</b></p>
+<ol style="padding-left:18px;line-height:1.7"><li>Take your aligners out and put them in the case.</li><li>Brush for 2 minutes with fluoride toothpaste, then clean between your teeth.</li><li>Rinse your aligners with cool water. No toothpaste on them.</li><li>Put the aligners back in.</li></ol>
+<p><b>Electric toothbrush.</b> A brush with a pressure sensor and a 2-minute timer makes thorough cleaning easier without brushing too hard.</p>{{shop:tb}}
+<p><b>Between your teeth.</b> Floss or small interdental brushes once a day. A water flosser helps where floss is hard to use.</p>{{shop:fl}}{{shop:wf}}
+<p><b>Toothpaste.</b> Choose a fluoride toothpaste that is gentle on enamel.</p>{{shop:tp}}
+<p class="muted" style="font-size:12px">Ask your practice which products suit you best.</p>`]},RG,{'Retainer care':['shield',`<p>Rinse your retainer with cool water every day. Once a week, soak it in lukewarm water with a cleaning tablet for 15 minutes, then rinse.</p>{{shop:rb}}<p>Keep it in its case when it is not in your mouth. Never use hot water or a dishwasher, and keep it away from pets.</p>`]});
 function scrHelp(){
   return `${appbar('Help')}
   <div class="screen">
@@ -709,13 +1093,13 @@ function scrHelp(){
     </button>
     <div class="section-t">Guides</div>
     <div class="card list">
-      ${Object.entries(RG).map(([k,[i]])=>`<button class="item" onclick="S.sheet='rg:${k}';render()"><span class="ic">${ic(i)}</span><span class="grow"><b>${k}</b></span>${ic('chev')}</button>`).join('')}
+      ${Object.entries(RG_ALL).map(([k,[i]])=>`<button class="item" onclick="openGuide('${k}')"><span class="ic">${ic(i)}</span><span class="grow"><b>${k}</b></span>${ic('chev')}</button>`).join('')}
     </div>
     <div class="hint warn">${ic('phone','style="width:18px;height:18px;flex-shrink:0"')}<span>In an emergency (severe swelling, injury, fever) please call your practice: <b>+49 30 123 45 67</b>. Outside opening hours, contact your local emergency dental service.</span></div>
   </div>`;
 }
 function sheetGuide(k){
-  const [i,html]=RG[k];
+  const [i,html]=RG_ALL[k];
   return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="${k}">
     <div class="grab"></div><div class="row" style="margin-bottom:10px;color:var(--ds-primary)">${ic(i)}<h2 style="margin:0;color:var(--text)">${k}</h2></div>
     <div style="font-size:15px;line-height:1.55;display:grid;gap:10px">${html.replace(/\{\{shop:(\w+)\}\}/g,(_,p)=>'<div>'+shopBtn(p)+'</div>')}</div>
@@ -768,7 +1152,7 @@ function scrSymptom(){
 function symptomSend(){
   const y=S.sy, t=SY[y.topic];
   const txt='Symptom check “'+y.topic+'”: '+t.q.map(([q,o],n)=>q+' '+(o.find(x=>x[1]===y.ans[n])||['–'])[0]).join(' · ');
-  S.threads.unshift({id:'t'+Date.now(),title:'Is this normal? '+y.topic,msgs:[{from:'out',text:txt,t:'now'}]});
+  S.threads.unshift({id:'t'+Date.now(),title:'Is this normal? '+y.topic,msgs:[{from:'out',text:txt,t:'now'}]}); earn('asked');
   S.stack=[]; S.screen='tabs'; S.tab='practice'; render();
   toast('Sent to practice','Your practice will get back to you.');
 }
@@ -795,10 +1179,53 @@ function lostSend(next){
   toast('Practice notified','Your practice will arrange a replacement.');
 }
 
+/* ----- Appointments ----- */
+function proposalCard(){
+  const p=S.proposal; if(!p) return '';
+  return `<div class="card" style="border:2px solid var(--ds-primary)">
+    <div class="row" style="margin-bottom:6px"><span class="chip">New</span><b class="grow">Appointment proposal</b></div>
+    <b>${p.title}</b><div class="muted" style="margin-bottom:8px">${p.dur} min · Dr. Weber Orthodontics</div>
+    <p style="font-size:14px;line-height:1.45;margin-bottom:10px">${p.note}</p>
+    ${p.slots.map((sl,i)=>`<button class="slot" aria-pressed="${p.sel===i}" onclick="S.proposal.sel=${i};render()"><span class="radio"></span>${sl.label}</button>`).join('')}
+    <button class="btn" ${p.sel===null?'disabled':''} onclick="acceptProposal()">Accept selected time</button>
+    <button class="btn secondary" style="margin-top:8px" onclick="S.draft='Appointment: other time';S.draftBody='None of the proposed times works for me. Possible times: ';go('newmsg')">None fits: suggest another time</button>
+    <button style="display:block;margin:10px auto 0;color:var(--text-2);text-decoration:underline;font-size:13px" onclick="S.sheet='decline';render()">Decline</button>
+    <p class="muted" style="font-size:11px;margin-top:8px">Valid until Nov 18. Your answer goes straight to your practice.</p></div>`;
+}
+function acceptProposal(){
+  const p=S.proposal, sl=p.slots[p.sel];
+  S.appts.push({id:'a'+Date.now(),title:p.title,date:sl.date,time:sl.time,dur:p.dur,start:sl.start,end:sl.end,sIso:sl.sIso,eIso:sl.eIso});
+  S.proposal=null; S.unread=Math.max(0,S.unread-1); S.calAppt=S.appts.length-1; S.sheet='cal'; render();
+  toast('Appointment confirmed',sl.label+'. Your practice was notified.');
+}
+function declineProposal(i){ S.proposal=null; S.sheet=null; S.unread=Math.max(0,S.unread-1); render(); toast('Declined',['Your practice knows you cannot attend.','Your practice will wait for your call.','Your practice was informed.'][i]); }
+function apptBlock(){
+  if(!S.appts.length) return `<div class="card muted">No upcoming appointments.</div>`;
+  return S.appts.map((a,i)=>`<div class="card"><div class="row"><div style="text-align:center;min-width:48px"><div class="muted" style="font-size:11px">NOV</div><div class="kpi">${a.date.replace(/\D/g,'')}</div></div><div class="grow"><b>${a.title}</b><div class="muted">${a.date} · ${a.time} · about ${a.dur} min</div></div></div>
+    <div class="row" style="margin-top:10px;gap:8px"><button class="chip" onclick="S.calAppt=${i};S.sheet='cal';render()">${ic('cal','style="width:14px;height:14px"')} Add to calendar</button><button class="chip" onclick="S.draft='Reschedule appointment';S.draftBody=TEMPL['Reschedule appointment'];go('newmsg')">Reschedule</button></div></div>`).join('');
+}
+function sheetCal(){
+  const a=S.appts[S.calAppt]||S.appts[0], loc='Dr. Weber Orthodontics, 12 Sample Street, Berlin';
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Aligner Companion//EN','BEGIN:VEVENT','UID:'+a.id+'@aligner-companion.example','DTSTAMP:20261113T090000','DTSTART:'+a.start,'DTEND:'+a.end,'SUMMARY:Dental appointment','LOCATION:'+loc.replace(/,/g,'\\,'),'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:Dental appointment tomorrow','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const g='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('Dental appointment')+'&dates='+a.start+'/'+a.end+'&location='+encodeURIComponent(loc);
+  const o='https://outlook.live.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&subject='+encodeURIComponent('Dental appointment')+'&startdt='+a.sIso+'&enddt='+a.eIso+'&location='+encodeURIComponent(loc);
+  return shell('Add to calendar',`<div class="card" style="box-shadow:none;border:1px solid var(--line);margin-bottom:12px"><b>${a.title}</b><div class="muted">${a.date} · ${a.time} · ${a.dur} min</div></div>
+    <a class="btn" style="text-decoration:none" download="appointment.ics" href="data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}">${ic('cal')} Calendar app (.ics)</a>
+    <a class="btn secondary" style="text-decoration:none;margin-top:8px" href="${g}" target="_blank" rel="noopener noreferrer">Google Calendar</a>
+    <a class="btn secondary" style="text-decoration:none;margin-top:8px" href="${o}" target="_blank" rel="noopener noreferrer">Outlook</a>
+    <button class="btn ghost" style="margin-top:8px" onclick="toast('Calendar feed','A private link for all your appointments was created (demo). You can revoke it in Profile.')">Subscribe to all appointments</button>
+    <div class="hint" style="margin-top:12px">${ic('shield','style="width:18px;height:18px;flex-shrink:0"')}<span>The entry only says “Dental appointment” with the practice address. No treatment details, no name.</span></div>`);
+}
+function sheetDecline(){
+  return shell('Decline this proposal?',`<p class="muted" style="margin-bottom:12px">Your practice sees your answer right away.</p>
+    ${['I cannot attend','I will book by phone','Other reason'].map((r,i)=>`<button class="card" style="width:100%;text-align:left;font-weight:600;margin-bottom:8px" onclick="declineProposal(${i})">${r}</button>`).join('')}
+    <button class="btn ghost" style="margin-top:4px" onclick="S.sheet=null;render()">Back</button>`);
+}
 /* ----- Practice ----- */
 function scrPractice(){
   return `${appbar('My practice')}
   <div class="screen">
+    ${proposalCard()}
     <div class="card">
       <div class="row"><div class="brand-mark" style="width:52px;height:52px;border-radius:14px;font-size:13px">ORT</div>
       <div class="grow"><h2 style="margin:0">Dr. Weber Orthodontics</h2><div class="muted">Dr. A. Weber, orthodontist</div><span class="chip ok" style="margin-top:6px">● Open until 18:00</span></div></div>
@@ -816,8 +1243,8 @@ function scrPractice(){
         <span class="grow" style="min-width:0"><b>${t.title}</b><br><span class="muted" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.from==='in'?'Practice: ':'You: '}${last.text}</span></span>
         ${t.unread?'<span class="badge" style="position:static">new</span>':`<span class="muted" style="font-size:11px">${last.t}</span>`}</button>`}).join('')}
     </div>
-    <div class="section-t">Next appointment</div>
-    <div class="card"><div class="row"><div style="text-align:center;min-width:48px"><div class="muted" style="font-size:11px">NOV</div><div class="kpi">20</div></div><div class="grow"><b>Check-up</b><div class="muted">Thu, 10:30 · about 20 min</div></div><button class="chip" onclick="S.draft='Reschedule appointment';S.draftBody=TEMPL['Reschedule appointment'];go('newmsg')">Reschedule</button></div></div>
+    <div class="section-t">Appointments</div>
+    ${apptBlock()}
   </div>`;
 }
 function openThread(id){ S.curThread=id; const t=S.threads.find(x=>x.id===id); if(t.unread){t.unread=false;S.unread=Math.max(0,S.unread-1);} go('thread'); }
@@ -864,7 +1291,7 @@ function scrNewMsg(){
 function useTpl(n){ const k=Object.keys(TEMPL)[n]; S.draft=k; S.draftBody=TEMPL[k]; render(); }
 function sendNew(){
   const s=$('#subj').value.trim()||'General question', b=$('#body').value.trim()||'(no text)';
-  S.threads.unshift({id:'t'+Date.now(),title:s,msgs:[{from:'out',text:b,t:'now'}]});
+  S.threads.unshift({id:'t'+Date.now(),title:s,msgs:[{from:'out',text:b,t:'now'}]}); earn('asked');
   S.draft=S.draftBody=''; S.stack=[]; S.screen='tabs'; S.tab='practice'; render();
   toast('Message sent','Your practice was notified by email.');
 }
@@ -919,7 +1346,7 @@ function vproToggle(){
   v.running=true; v.remain=300; render();
   vproTimer=setInterval(()=>{
     v.remain-=10; // demo: 10x faster
-    if(v.remain<=0){ v.remain=0; v.running=false; v.today=true; v.streak=Math.min(10,v.streak+1); clearInterval(vproTimer); render(); toast('VPro session complete','5 minutes. Great!'); return; }
+    if(v.remain<=0){ v.remain=0; v.running=false; v.today=true; v.streak=Math.min(10,v.streak+1); clearInterval(vproTimer); earn('first_vpro'); render(); toast('VPro session complete','5 minutes. Great!'); return; }
     const el=$('#vproTime'); if(el) el.textContent=fmtMS(v.remain);
   },1000);
 }
@@ -927,7 +1354,7 @@ function vproToggle(){
 /* ----- Profile ----- */
 function scrProfile(){
   const tg=(k,l,d)=>`<div class="item"><span class="ic">${ic('bell')}</span><span class="grow"><b>${l}</b><br><span class="muted">${d}</span></span><button class="toggle" role="switch" aria-checked="${S.reminders[k]}" aria-label="${l}" onclick="S.reminders.${k}=!S.reminders.${k};render()"></button></div>`;
-  return `${appbar('Profile')}
+  return `${appbar('Profile',{back:true})}
   <div class="screen">
     <div class="card row"><div class="brand-mark" style="width:52px;height:52px;border-radius:50%;font-size:16px;background:var(--ds-accent)">LM</div><div class="grow"><h2 style="margin:0">Lena Muster</h2><div class="muted">In treatment since Aug 15, 2026 · SureSmile®</div></div></div>
     <div class="section-t">Treatment</div>
@@ -941,6 +1368,13 @@ function scrProfile(){
     <div class="card list">
       <button class="item" onclick="toast('Parent view','Invite created. You, your parents and the practice agree on what is visible.')"><span class="ic">${ic('family')}</span><span class="grow"><b>Invite a parent</b><br><span class="muted">e.g. only wear-time status and appointments, no messages</span></span>${ic('chev')}</button>
     </div>
+    <div class="section-t">App experience</div>
+    <div class="card list">
+      <button class="item" onclick="go('widgets')"><span class="ic">${ic('grid')}</span><span class="grow"><b>Widgets & shortcuts</b><br><span class="muted">Home screen, lock screen, quick tile</span></span>${ic('chev')}</button>
+      <div class="item"><span class="ic">${ic('spark')}</span><span class="grow"><b>Calm mode</b><br><span class="muted">Plain tracking: no mountain, streaks, achievements or tips</span></span><button class="toggle" role="switch" aria-checked="${S.calm}" aria-label="Calm mode" onclick="S.calm=!S.calm;render()"></button></div>
+      <button class="item" onclick="S.sheet='motivate';render()"><span class="ic">${ic('info')}</span><span class="grow"><b>How the app motivates you</b></span>${ic('chev')}</button>
+      <button class="item" onclick="S.sheet='pause';render()"><span class="ic">${ic('clock')}</span><span class="grow"><b>Pause tracking</b><br><span class="muted">Travel, illness, dental procedure</span></span>${ic('chev')}</button>
+    </div>
     <div class="section-t">Reminders</div>
     <div class="card list">
       ${tg('wear','Put aligners back in','after a 45 min break · practice allows up to 60 min')}
@@ -951,6 +1385,8 @@ function scrProfile(){
     <div class="section-t">Security & privacy</div>
     <div class="card list">
       <div class="item"><span class="ic">${ic('fp')}</span><span class="grow"><b>Biometric unlock</b><br><span class="muted">Auto-lock after 5 min</span></span><button class="toggle" role="switch" aria-checked="${S.bio}" aria-label="Biometrics" onclick="S.bio=!S.bio;render()"></button></div>
+      <div class="item"><span class="ic">${ic('gift')}</span><span class="grow"><b>Show product links (ads)</b><br><span class="muted">Links to products, always marked as ads</span></span><button class="toggle" role="switch" aria-checked="${S.shopLinks}" aria-label="Show product links" onclick="S.shopLinks=!S.shopLinks;render()"></button></div>
+      <button class="item" onclick="S.sheet='adinfo';render()"><span class="ic">${ic('info')}</span><span class="grow"><b>About ads and product links</b></span>${ic('chev')}</button>
       <button class="item" onclick="toast('Consents','View and withdraw each one here (demo).')"><span class="ic">${ic('shield')}</span><span class="grow"><b>Consents</b><br><span class="muted">2 given · last changed Nov 13, 2026</span></span>${ic('chev')}</button>
       <button class="item" onclick="toast('Data export','Your data is provided as an encrypted file (GDPR Art. 15/20).')"><span class="ic">${ic('doc')}</span><span class="grow"><b>Export my data</b></span>${ic('chev')}</button>
       <button class="item" onclick="toast('Signed-in devices','Pixel 9 (this device) · revoke sessions (demo).')"><span class="ic">${ic('lock')}</span><span class="grow"><b>Signed-in devices</b></span>${ic('chev')}</button>
@@ -963,7 +1399,7 @@ function scrProfile(){
       <button class="item" onclick="go('lock')"><span class="ic">${ic('lock')}</span><span class="grow"><b>Lock app</b></span>${ic('chev')}</button>
       <button class="item" onclick="restart()"><span class="ic">${ic('back')}</span><span class="grow"><b>Sign out</b></span></button>
     </div>
-    <p class="muted" style="text-align:center;margin-top:8px;font-size:12px">Aligner Companion 0.2 (prototype) · Legal notice · Privacy</p>
+    <p class="muted" style="text-align:center;margin-top:8px;font-size:12px">Aligner Companion 0.3 (prototype) · Legal notice · Privacy</p>
   </div>`;
 }
 function scrNotifs(){
@@ -991,13 +1427,25 @@ function render(){
     case 'history': h=scrHistory(); break;
     case 'symptom': h=scrSymptom(); break;
     case 'lost': h=scrLost(); break;
+    case 'profile': h=scrProfile(); break;
+    case 'achievements': h=scrAchievements(); break;
+    case 'checkin': h=scrCheckin(); break;
+    case 'widgets': h=scrWidgets(); break;
     case 'camera': h=scrPhotos()+tabbar()+scrCamera(); break;
     default:
-      h={today:scrToday,photos:scrPhotos,help:scrHelp,practice:scrPractice,profile:scrProfile}[S.tab]()+tabbar();
+      h={today:scrToday,journey:scrJourney,photos:scrPhotos,help:scrHelp,practice:scrPractice}[S.tab]()+tabbar();
   }
   if(S.sheet==='change') h+=sheetChange();
   if(S.sheet==='sendPhotos') h+=sheetSendPhotos();
   if(S.sheet==='insecure') h+=sheetInsecure();
+  if(S.sheet==='adinfo') h+=sheetAdInfo();
+  if(S.sheet==='motivate') h+=sheetMotivate();
+  if(S.sheet==='pause') h+=sheetPause();
+  if(S.sheet==='kit') h+=sheetKit();
+  if(S.sheet==='ci_done') h+=sheetCiDone();
+  if(S.sheet==='cal') h+=sheetCal();
+  if(S.sheet==='decline') h+=sheetDecline();
+  if(S.sheet&&S.sheet.startsWith('tray:')) h+=sheetTray(+S.sheet.slice(5));
   if(S.sheet&&S.sheet.startsWith('rg:')) h+=sheetGuide(S.sheet.slice(3));
   const sc=$('.screen'), top=sc?sc.scrollTop:0, same=render.last===S.screen+S.tab;
   $('#app').innerHTML=h;

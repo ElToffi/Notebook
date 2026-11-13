@@ -1,10 +1,23 @@
 # Aligner Companion – Product Specification
 
-**Version:** 0.4 (draft) · **Date:** Nov 13, 2026
+**Version:** 0.5 (draft) · **Date:** Nov 13, 2026
 **Platforms:** patient app for Android (first) and iOS from one code base; practice dashboard as a web app
 **Design:** Dentsply Sirona corporate design
 **Inputs:** spec v0.1/v0.2 and the draft “Aligner Compliance Monitoring App – Option B” (v0.1)
 **Related:** `INFRASTRUKTUR.md` (infrastructure, security, onboarding; German), `klickdummy/` (clickable prototype)
+
+### Changes from v0.4
+- **Product links are advertising.** Every product link is clearly labelled as an ad with an affiliate disclosure (3.8.1). Patients can switch product links off.
+- **Oral hygiene guidance** with links to electric toothbrushes, floss and interdental brushes, water flossers and fluoride toothpaste (3.8, P-GU-08 to P-GU-12), plus a tip of the day.
+- **Journey (3.13):** visual progress as a climber on a mountain; every refinement adds a small hill after the summit; progress and hours worn per aligner.
+- **Achievements and care kit (3.14):** 30 achievements; 20 unlock a free Dentsply Sirona care kit.
+- **Daily check-in diary (3.15):** one-tap feedback on comfort, fit and care habits.
+- **Appointments (3.16):** the practice proposes slots, the patient accepts, declines or suggests another time; calendar export.
+- **Widgets, quick controls and shortcuts (3.17)**, **pause mode (3.18)**, **retainer journey (3.19)**.
+- **Practice dashboard:** digital lab orders and lab contact (4.3), appointment proposals (4.4), kudos, comfort diary view and new alert rule (4.5).
+- **New chapter 17: engagement and behavioural design** (nudges, gamification, guardrails for ethics, minors and dark patterns).
+- **New chapter 18: further gaps** found while reviewing the scope.
+- Navigation changed: Today, Journey, Photos, Help, Practice; Profile moves to the avatar (3.11).
 
 ### Changes from v0.3
 - **New chapter 16: updates without data loss** for the patient app, the practice dashboard, the backend, content and VPro firmware, including communication to patients and clinicians.
@@ -69,6 +82,7 @@ In 32,587 r/Invisalign posts (Oct 2024 – Oct 2026), patients mostly struggle w
 | Practice staff | Practice dashboard | Triage alerts, answer messages, book appointments |
 | Practice admin | Admin area | Users, permissions, alert thresholds, data export |
 | Organization admin (group / DSO) | Admin area | Locations, central policies, SSO |
+| Digital lab (Dentsply Sirona or partner) | Lab portal or integration | Receive orders and questions from practices with the minimum case data needed |
 | Dentsply Sirona operations | Operations console | Technical support **without** access to health data |
 
 ---
@@ -110,7 +124,7 @@ Priority: **M** = must (release 1), **S** = should, **C** = could. “Ref.” po
 | P-WT-04 | Statistics for day, week, month; streak of days on target. | M | |
 | P-WT-05 | **Weekly summary** in neutral, encouraging language, **no shaming**. Example: “6 of 7 days on target” rather than “you missed 1 day”. | S | P-13 |
 | P-WT-06 | Correct handling of time zones and daylight saving time; stored in UTC. | M | |
-| P-WT-07 | Widget (Android); widget and Live Activity (iOS). | S | |
+| P-WT-07 | Widgets, quick controls and shortcuts: see 3.17. | S | |
 | P-WT-08 | Optional wear logging via smart case (Bluetooth open/close) instead of taps. | C | P-15 |
 | P-WT-09 | Offline logging with later sync. | M | P-16 |
 
@@ -121,7 +135,7 @@ Priority: **M** = must (release 1), **S** = should, **C** = could. “Ref.” po
 | P-AL-02 | If the aligner does not fit yet: “ask the practice” instead of extending on their own. The practice can extend the current tray (D-05); the result appears in the app. | M | D-05 |
 | P-AL-03 | Progress: tray x of y, photo timeline, weeks remaining. **Refinements are explained as a normal part of treatment.** | S | P-11 |
 | P-AL-04 | Attachment and IPR dates in the timeline, with explanations. | S | P-01 |
-| P-AL-05 | Retainer phase as a separate mode (e.g. nights only). | S | |
+| P-AL-05 | Retainer phase as a separate mode (e.g. nights only); see 3.19. | S | |
 | P-AL-06 | PDF report for the appointment. | S | |
 
 ### 3.4 Fit photos (P-FO)
@@ -177,6 +191,13 @@ Photos and health details are health data under GDPR Art. 9 and PHI under HIPAA 
 | P-GU-05 | **Cleaning guide (aligners and retainers):** recommends **Retainer Brite®** (Dentsply Sirona) with a “Buy on Amazon” button that opens the **local Amazon store** of the patient’s market (see 3.8.1). Also shown in retainer mode (P-AL-05). | S | |
 | P-GU-06 | **Chewies™ Aligner Tray Seaters** (Dentsply Sirona) with the same local Amazon button in the chewies guide, after a fit-related symptom check result (P-SY) and in the fit-check tips. | S | |
 | P-GU-07 | The practice can switch product links off or replace them with its own source (e.g. “available at our practice”). | S | |
+| P-GU-08 | **Brushing and flossing guide for aligner wearers:** take aligners out; brush 2 min twice a day with fluoride toothpaste; clean between the teeth daily; rinse or brush before putting aligners back in; do not brush aligners with toothpaste (scratches, stains). Step-by-step with short animations. | S | |
+| P-GU-09 | **Electric toothbrush** tips (pressure sensor, timer, small round head for brackets-free aligner wearers) with a labelled ad link to electric toothbrushes in the local Amazon store. Brand-neutral category link, no brand ranking. | S | |
+| P-GU-10 | **Floss, interdental brushes and water flosser:** how to choose and use; labelled ad links per category. | S | |
+| P-GU-11 | **Toothpaste:** fluoride content and low abrasiveness (RDA) explained; labelled ad link to fluoride toothpaste. Final wording and values approved by clinicians per market. | S | |
+| P-GU-12 | **Tip of the day** on Today: short, rotating tips (cleaning, care, habits), content approved by clinicians, at most one per day, can be switched off. | S | |
+| P-GU-13 | **Retainer cleaning** (retainer mode, 3.19): daily rinse, weekly deep clean with Retainer Brite®; labelled ad link. | S | |
+| P-GU-14 | No product links on screens with a “contact practice” or “urgent” result, or when the patient reports strong pain. | M | |
 
 #### 3.8.1 Product links to the local Amazon store
 | Topic | Rule |
@@ -185,7 +206,13 @@ Photos and health details are health data under GDPR Art. 9 and PHI under HIPAA 
 | Link targets | One curated product page per product and market (e.g. amazon.com, .ca, .com.mx, .com.br, .co.uk, .de, .fr, .it, .es, .nl, .se, .pl, .com.be, .com.tr, .ae, .sa, .in, .co.jp, .sg, .com.au). Kept as **remote content**, so links can be added or fixed without an app update. Preferably to the official Dentsply Sirona brand store or offers sold by Amazon or an authorized seller, because counterfeit and look-alike products are reported for both products. |
 | Fallback | If no curated page exists for a market: a search link on the local store (e.g. `https://www.amazon.de/s?k=Retainer+Brite+Dentsply`). If there is no Amazon store for the market: hide the button and show “ask your practice”. |
 | Privacy | The link opens in the external browser. No health data, patient ID or practice ID in the URL. Opening a link is counted only with analytics consent and only as “link opened, product, market”. |
-| Disclosure | The button states that the product is from Dentsply Sirona. If an Amazon Associates tag is used, the app shows the required disclosure. Legal checks advertising rules (e.g. German HWG, UCPD, FTC) and Apple/Google store rules before release. |
+| **Ad labelling** | **Every product link is clearly marked as an advertisement** (“Ad”, localized: “Anzeige” or “Werbung” in German, etc.) in a chip directly at the button, visible before the tap, not in a footnote. Below it: “Affiliate link: if you buy through it, Dentsply Sirona may earn a commission from Amazon at no extra cost to you.” Tapping “Why an ad?” explains this in plain language. |
+| **Amazon Associates** | If Amazon’s Associates programme is used, the statement required by Amazon for the market (e.g. “As an Amazon Associate we earn from qualifying purchases”) is shown in the app and in the legal notice, and the programme rules for links and price display are followed. |
+| Own vs third-party products | Retainer Brite® and Chewies™ are Dentsply Sirona products and are marked as “Product by Dentsply Sirona”. Toothbrush, floss and toothpaste links are brand-neutral category searches, marked as ads, with no brand ranking or sponsored placement. |
+| Patient control | Profile › Privacy has a switch “Show product links (ads)”. Switched off, no product links appear anywhere in the app. The practice can also turn links off for all its patients. |
+| Minors | Product links are hidden by default for patients under the age of digital consent (market-specific, 16 in Germany) unless the practice enables them and a parent has agreed. |
+| Context | The decision which link to show is made on the device. The URL contains only a generic product search; no health data, no patient, practice or diagnosis information. Opening a link is counted only with analytics consent. |
+| Legal review | Legal checks advertising and labelling rules per market (e.g. German UWG § 5a and HWG, EU unfair commercial practices rules, FTC endorsement guides, UK CAP code), Amazon programme terms and Apple/Google store rules before release. |
 | Link health | A weekly automated check reports broken or redirected links to the content team. |
 
 ### 3.9 Parent view (P-PA)
@@ -213,16 +240,118 @@ Photos and health details are health data under GDPR Art. 9 and PHI under HIPAA 
 
 ### 3.11 App navigation
 Bottom navigation with five areas:
-1. **Today:** “on track” status, wear-time ring, out/in switch, tray x of y, VPro, due tasks, weekly summary.
-2. **Photos:** fit check, gallery, sent sets.
-3. **Help:** “Is this normal?”, lost or broken aligner, guides.
-4. **Practice:** messages, contact, appointments.
-5. **Profile:** treatment, reminders, parent view, devices, privacy.
+1. **Today:** “on track” status, wear-time ring, out/in switch, tray x of y, daily check-in, tip of the day, achievements progress, VPro, due tasks.
+2. **Journey:** mountain progress, per-aligner progress and hours, achievements and care kit, statistics.
+3. **Photos:** fit check, gallery, sent sets.
+4. **Help:** “Is this normal?”, lost or broken aligner, guides (including cleaning and product links).
+5. **Practice:** messages, appointments (proposals, calendar export), contact.
 
-History (statistics) is reached from Today.
+**Profile** (treatment, reminders, widgets, parent view, devices, privacy, product links switch, pause mode) opens from the avatar at the top of Today and Journey.
 
 ### 3.12 Notifications
-Local reminders work offline. Push messages **never contain health data**. Quiet hours can be set. Behavior with several devices is defined in 5.2.
+Local reminders work offline. Push messages **never contain health data**. Quiet hours can be set. Behavior with several devices is defined in 5.2. A **notification budget** applies (17.4): at most 4 non-urgent notifications per day, adaptive timing, one notification centre in Profile where each type can be switched off.
+
+### 3.13 Journey and progress (P-JR)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-JR-01 | **Mountain view:** a small figure climbs a mountain; position = share of the treatment plan completed (trays completed plus part of the current tray, from days worn). **The summit is 100 % of the planned trays.** | S |
+| P-JR-02 | **Refinements:** when the practice adds a refinement, **a small extra hill appears after the summit** (one per refinement). The text calls it a “fine-tuning hill” and explains that refinements are a normal part of treatment, never a setback. Hills are shown only after the practice has added them. | S |
+| P-JR-03 | After the last hill: a flag and a retainer “base camp” that leads into the retainer journey (3.19). | S |
+| P-JR-04 | **Endowed progress:** the climber starts at base camp with the welcome achievement already collected, and the first day already shows movement after onboarding. | S |
+| P-JR-05 | **Per-aligner progress:** every tray shows how far along it is (days and hours worn against target). The current tray shows days elapsed, **hours worn so far**, target hours (days × daily target) and the share reached. Finished trays show their total hours; upcoming trays are shown greyed. | S |
+| P-JR-06 | Tapping a tray opens details: dates, hours worn, average per day, days on target, fit-check status. | S |
+| P-JR-07 | **Total hours worn** over the whole treatment, shown with a neutral comparison (“about 5,900 hours, roughly 245 days”). | S |
+| P-JR-08 | Estimated finish date from the plan; updated when the practice extends a tray or adds a refinement. Marked as an estimate. | S |
+| P-JR-09 | **Goal date:** optional personal goal (event, holiday) with a countdown; shown at milestones. | C |
+| P-JR-10 | Milestone celebrations (25, 50, 75, 100 %) with a short animation; animation off with reduced-motion setting and in “calm mode” (17.5). | S |
+| P-JR-11 | Optional share card (journey picture without health data or photos) via the OS share sheet; off by default. | C |
+
+### 3.14 Achievements and care kit (P-AC)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-AC-01 | A catalogue of **30 achievements** in six groups: wear routine, tray changes and milestones, fit photos, care and cleaning, check-ins, learning and contact (see 3.14.1). Two are hidden surprises. | S |
+| P-AC-02 | **Achievements are never taken away** and never depend on pain, symptoms or negative events. | M |
+| P-AC-03 | Each achievement has a name, a one-line description, an unlock date and, if locked, a hint. Unlocking shows a short celebration and a toast. | S |
+| P-AC-04 | **Care kit reward:** with **20 achievements** the patient can claim one **Dentsply Sirona care kit** free of charge (contents per the current SureSmile patient kit: appliance case, Chewies™ Aligner Tray Seaters, Retainer Brite® cleaning tablets; to be confirmed). Progress “8 of 20” is shown on Today and Journey. | S |
+| P-AC-05 | **Redemption:** the delivery address is asked only at redemption, in a separate form with its own consent line; passed to the fulfilment partner only to ship the kit and deleted after shipment (data minimisation). Order status is shown in the app. One kit per patient and treatment. | S |
+| P-AC-06 | **Anti-fraud and fairness:** at least 5 of the 20 must come from **verified sources** (VPro device data, practice-confirmed appointments, fit checks received by the practice, tray changes confirmed against the plan). Server-side plausibility checks on wear logs; implausible patterns (e.g. 24 h every day with no breaks) do not count towards wear achievements but never accuse the patient. | S |
+| P-AC-07 | Achievements never reward wearing aligners while eating or drinking, and never encourage skipping the daily breaks that cleaning needs. | M |
+| P-AC-08 | For minors the kit needs a parent’s agreement for the address, or is sent to the practice for hand-over (market-specific). | S |
+| P-AC-09 | Definitions, texts and thresholds are **remote content** (versioned), so they can be tuned without an app update (UP-B-07). | S |
+| P-AC-10 | Rewards, terms, availability by market and promotion rules are reviewed by Legal (3.14.2). Terms are shown before redemption. | M |
+
+#### 3.14.1 Achievement catalogue (draft)
+| Group | Achievements |
+|---|---|
+| Wear routine | First tap · Perfect day (target reached) · 3-day streak · 7-day streak · 14-day streak · 30-day streak · Perfect week (7 of 7 days on target) · Quick return (back in within 30 min after 10 meals) |
+| Tray changes and milestones | First change · 5 changes on time · Halfway · Summit (100 %) · Welcome (hidden at the start: given at onboarding) |
+| Fit photos | First fit check · 5 fit checks · Perfect photo (all three views right the first time) |
+| Care and cleaning | Clean routine (7 days brushed before putting aligners in) · Chewies champion (7 days) · Floss master (7 days) · Retainer shine (retainer cleaned 7 times) |
+| Check-ins | First check-in · 7 check-ins · 30 check-ins |
+| VPro | First VPro session · 10 VPro sessions · VPro week |
+| Learning and contact | Guide reader (5 guides) · Asked a question (symptom check or message to the practice) · Appointment kept (3 appointments) |
+| Hidden surprises | Holiday hero (wear logged across a time-zone change) · Night owl (retainer worn every night for 30 days) |
+
+#### 3.14.2 Care kit programme
+| Topic | Rule |
+|---|---|
+| Legal | Promotions to patients can be restricted for medical products. Legal checks per market, for example German HWG § 7 (gifts), US rules on gifts to patients of federal health programmes, UK and EU consumer promotion and prize rules. Terms and conditions, one kit per patient, market availability. |
+| Cost and logistics | Cost per kit, stock, fulfilment partner, shipping regions and lead time are set by Dentsply Sirona; open decision (chapter 15). |
+| Abuse | Account must be linked to a practice; minimum treatment time before redemption (proposal: 8 weeks); duplicates detected by account and address. |
+| Data | Address, name and phone for the courier only; processor agreement with the fulfilment partner; deleted after delivery confirmation plus statutory retention. No health data in the shipment order. |
+
+### 3.15 Daily check-in diary (P-DI)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-DI-01 | **One-tap daily check-in** taking about 15 seconds: comfort/pain on five faces (none, mild, moderate, strong, severe), aligner fit (snug, loose, too tight), and toggles for chewies used, brushed before putting aligners in, flossed. Optional short note. | S |
+| P-DI-02 | The check-in can be done at any time of the day; a gentle evening reminder (set by the patient). Missed days are never punished. | S |
+| P-DI-03 | **Feedback after saving:** general information only (for example “mild pressure is common in the first days after a tray change”), no diagnosis. With “strong” or “severe” comfort or “too tight” fit, it offers “Is this normal?” and “Message the practice”. Product links are not shown (P-GU-14). | S |
+| P-DI-04 | Comfort trend over 14 days in History, with tray-change days marked so patients see that discomfort follows changes. | S |
+| P-DI-05 | The practice sees the comfort trend in the patient detail (4.5). A rule can raise a watch alert (for example strong comfort rating on 2 days in a row). Release 1 shows the data and raises the alert for the team; it does not tell patients what to do beyond P-DI-03. | S |
+| P-DI-06 | The diary is health data (GDPR Art. 9), covered by the same consent as wear data; shown only to the patient and the practice. | M |
+| P-DI-07 | Diary entries can be edited for the same day, and exported with the patient’s data. | S |
+
+### 3.16 Appointments and calendar (P-AP)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-AP-01 | **Appointment proposal from the practice:** the practice sends 1–5 time slots with appointment type, duration and an optional note. Push notification without content. | S |
+| P-AP-02 | The patient can **accept one slot**, **decline** (with a reason: cannot attend, will book by phone, other) or **suggest another time**. The practice sees the answer immediately. A proposal expires after a time set by the practice (default 5 days) with a reminder after 2 days. | S |
+| P-AP-03 | Accepted appointments appear in Practice and Today, with a countdown on the day. Reminders: 1 day and 2 hours before, configurable. | S |
+| P-AP-04 | **Add to calendar:** native insert on Android (calendar intent) and iOS (EventKit with “add only” permission), plus download of an **.ics** file and web links for Google Calendar and Outlook. | S |
+| P-AP-05 | Optional **calendar feed** (subscription URL, secret token, revocable) for all appointments. | C |
+| P-AP-06 | **Privacy of calendar entries:** title “Dental appointment”, practice name and address as the location; no treatment details, no patient name. | M |
+| P-AP-07 | Changes by the practice (move, cancel) update the app, the feed and, where the OS allows, the inserted calendar entry; the patient is notified. | S |
+| P-AP-08 | Appointments created in the practice system (via integration, later) show as read-only entries. | C |
+| P-AP-09 | “Appointment kept” is confirmed by the practice and feeds an achievement (verified source). | S |
+
+### 3.17 Widgets, quick controls and shortcuts (P-WG)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-WG-01 | **Wear widget** (small): ring with today’s wear time and a button “out/in”. Android home screen and lock screen; iOS home screen, lock screen and StandBy. | S |
+| P-WG-02 | **Journey widget:** mountain with climber and percentage. | S |
+| P-WG-03 | **Next widget:** days until the tray change, hours worn for the current tray, next appointment. | S |
+| P-WG-04 | **Quick controls:** Android quick settings tile “Aligners out/in”; iOS lock screen control and Action Button shortcut; both work without opening the app. | S |
+| P-WG-05 | **Live Activity / ongoing notification** while the aligners are out, showing the elapsed break time with a button “Back in”. | S |
+| P-WG-06 | **Voice and shortcuts:** “Hey Siri / Hey Google, aligners out”, via App Shortcuts or App Actions. | C |
+| P-WG-07 | Wear OS tile and watchOS complication for out/in. | C |
+| P-WG-08 | **Privacy on the lock screen:** widgets show only counts and ring (no names, no appointment details) by default; a setting hides everything until unlock. | M |
+| P-WG-09 | Widgets update within 1 minute after a change on any device and work offline. | S |
+
+### 3.18 Pause mode (P-PM)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-PM-01 | “Pause tracking” for a period (travel without aligners, illness, dental procedure, wisdom-tooth removal, hospital stay) with a reason from a list and an end date. | S |
+| P-PM-02 | During a pause reminders stop, wear-time alerts are suppressed, and streaks are kept (no loss). The practice is informed and can confirm or end the pause. | S |
+| P-PM-03 | Pauses longer than 14 days need practice confirmation, because the tray plan may need adjusting. | S |
+
+### 3.19 Retainer journey (P-RT)
+| ID | Requirement | Prio |
+|---|---|---|
+| P-RT-01 | After the active phase the app switches to the retainer phase. The journey continues beyond the summit as a gentle long-term path (months and years), with a lighter set of reminders. | S |
+| P-RT-02 | Retainer plan from the practice: nights only, then fewer nights per week; a simple “worn last night” tap in the morning. | S |
+| P-RT-03 | Retainer care: cleaning guide and Retainer Brite® link (P-GU-13), replacement reminder, “retainer lost or broken” report (same flow as P-LB). | S |
+| P-RT-04 | Check-up reminders (for example 3, 6, 12 months) and an optional photo check for the practice. | S |
+| P-RT-05 | Retainer achievements (for example “Night owl”) and a yearly “smile anniversary” message. | C |
 
 ---
 
@@ -245,6 +374,9 @@ Local reminders work offline. Push messages **never contain health data**. Quiet
 | D-13 | Invite patients (code or QR); set targets and limits: wear time, break reminder, photo cadence, standing instruction for lost trays. | M | |
 | D-14 | Shared inbox with assignment, “in progress by …” marker and reply templates. Details in 5.3. | M | |
 | D-15 | Notifications to the practice by email or web push, **without content**. | M | |
+| D-16 | **Digital lab:** create orders and contact the lab (4.3). | M | D-09 |
+| D-17 | **Appointment proposals** to patients with accept/decline/suggest (4.4). | S | D-05 |
+| D-18 | **Kudos, comfort diary view, gamification settings** (4.5). | S | |
 
 ### 4.1 Alert flow (release 1)
 1. Patient data arrives: wear log, photo, symptom check or report.
@@ -265,6 +397,43 @@ Local reminders work offline. Push messages **never contain health data**. Quiet
 | Fit marked “not tracking” | immediately | action needed |
 | VPro not used | 5 days in a row | watch |
 | Alert unanswered | 1 working day | escalate (5.3) |
+| Comfort diary: strong or severe | 2 days in a row | watch |
+| Pause longer than 14 days | on request | action needed (confirm or end pause) |
+| Lab order late | 2 days after the estimated date | watch |
+| Appointment proposal unanswered | 5 days | watch |
+
+### 4.3 Digital lab: orders and contact (D-LB)
+Practices need to start lab processes from the dashboard, for example when a patient reports a lost or broken aligner, when a refinement is planned, or when retainers are needed.
+
+| ID | Requirement | Prio |
+|---|---|---|
+| D-LB-01 | **Create a lab order** from the patient detail or from an alert (a lost/broken report pre-fills the form). Types: replacement aligner, additional aligners, refinement set, retainer set, remake because of fit, other. Fields: patient, tray numbers and arch, urgency (standard or express), ship-to (practice or patient), note, optional attachments (for example the patient’s report photo). | M |
+| D-LB-02 | **Order status tracking:** submitted, accepted by lab, in production, shipped (with tracking number), delivered. Estimated date shown; a late order raises a watch alert. | M |
+| D-LB-03 | **Contact the lab:** a message thread per order and a general lab contact (questions on a case, design change request), with attachments and read receipts. | M |
+| D-LB-04 | **Approvals:** by default only clinicians can submit; the practice admin can allow staff, or require a second approval above a set value. Every step is in the audit trail. | M |
+| D-LB-05 | **Patient information:** the patient sees “replacement ordered, estimated delivery …” and the practice’s standing instruction in the meantime (P-LB-02). Prices are never shown to patients. | M |
+| D-LB-06 | **Data minimisation:** the lab receives only what it needs (case ID, tray numbers, notes, attachments added on purpose). Lab staff accounts are covered by processor agreements; orders are routed to the lab of the practice’s region. | M |
+| D-LB-07 | **Integration:** connect to the SureSmile ordering and lab systems via API or EDI. Until then, the order goes as a structured message with a PDF to the lab portal. | M |
+| D-LB-08 | Price, warranty and re-make rules are shown before submitting (from the Dentsply Sirona price and warranty rules). | S |
+| D-LB-09 | Order history per patient and per practice, search, reorder, export. | S |
+| D-LB-10 | An express order for a lost tray in the middle of treatment is flagged to the lab, and the patient receives the instruction “wear the previous tray” at once. | S |
+
+### 4.4 Appointment proposals (D-AP)
+| ID | Requirement | Prio |
+|---|---|---|
+| D-AP-01 | Propose **1–5 time slots** with type, duration and note. Later: pick slots from the practice calendar’s free times. | S |
+| D-AP-02 | Status per proposal: proposed, accepted, declined (with reason), counter-suggestion, expired. Notification to the assigned team member; a declined or countered proposal creates a task, not an alert. | S |
+| D-AP-03 | Automatic reminders to the patient; no-show tracking; “kept” confirmation feeds an achievement (verified source, P-AP-09). | S |
+| D-AP-04 | Calendar feed for staff (ICS, secret token); two-way sync with the practice system later. | C |
+
+### 4.5 Engagement tools for the practice (D-EN)
+| ID | Requirement | Prio |
+|---|---|---|
+| D-EN-01 | **Kudos:** one-tap praise (templates) to a patient, suggested automatically at milestones (for example three weeks on target) with a frequency cap. | S |
+| D-EN-02 | **Comfort diary view:** 14-day trend with tray-change days marked, next to wear time. | S |
+| D-EN-03 | **Milestones list** (verified achievements) so staff can congratulate patients at visits. | C |
+| D-EN-04 | **Gamification settings** per practice: enable or disable journey, achievements and care kit, kudos, product links. Patients can still choose calm mode (17.5). | S |
+| D-EN-05 | Confirm or end patient pauses (P-PM-02). | S |
 
 ---
 
@@ -359,6 +528,8 @@ This chapter covers situations beyond the simple “one patient, one phone, one 
 | NF-07 | Accessibility | **WCAG 2.2 AA** for app and dashboard; includes WCAG 2.1 AA and meets the EAA. | N-12 |
 | NF-08 | Languages | English and German at launch; more per market. | P-17 |
 | NF-09 | Tone | Supportive, never shaming; texts approved by UX writing and clinicians. | P-13 |
+| NF-10 | Motion and colour | Animations respect reduced-motion; progress is never shown by colour alone; the mountain has a text equivalent for screen readers (“tray 7 of 24, 29 % of the way”). | |
+| NF-11 | Remote content | Tips, achievements, guides, texts and product links are versioned remote content (UP-B-07), with a local fallback for offline use. | |
 
 ---
 
@@ -409,6 +580,10 @@ The **practice is the controller** and **Dentsply Sirona is the processor** (GDP
 | S-10 | Least privilege, tenant separation, session timeouts, device binding of sessions (chapter 5) |
 | S-11 | Secure development: threat modeling, SAST/DAST, SBOM, penetration test before launch and yearly |
 | S-12 | Deletion concept, data export (Art. 15 and 20), incident notification within 72 h |
+| S-13 | Care kit: delivery address only at redemption, held by the fulfilment partner under a processor agreement, deleted after delivery confirmation plus statutory retention; no health data in the order |
+| S-14 | Lab orders: minimum necessary data, regional routing, processor agreements, access logged; attachments only when added on purpose |
+| S-15 | Calendar exports (ICS, feed): generic title, no patient name or treatment data; feed token revocable |
+| S-16 | Product links: no health data in URLs; no third-party tracking SDKs for links; link opening counted only with consent |
 
 ---
 
@@ -445,6 +620,13 @@ Patient ── responsible clinician ── parent links (scope, approved by)
    ├── report (lost | broken, photo, instruction shown)
    ├── message (thread, attachments, status, assigned to, in progress by)
    ├── alert (rule, status, assigned to, escalated, resolved by, action)
+   ├── journey (progress share, summit reached, refinements [trays, done], retainer phase, goal date)
+   ├── tray stats (aligner no., hours worn, days on target)
+   ├── achievement (id, unlocked at, verified source?) ── care kit order (status, fulfilment reference; address held only by fulfilment partner)
+   ├── check-in (date, comfort 0–4, fit, chewies, brushed, flossed, note)
+   ├── appointment proposal (type, slots, status: proposed | accepted | declined | counter-suggested | expired, reason) ── appointment (time, location, kept?)
+   ├── pause (reason, from, to, confirmed by)
+   ├── lab order (type, trays, urgency, ship-to, status, tracking, thread) ── lab message
    ├── consent (type, version, given/withdrawn)
    └── audit entry (who, what, when, object, device)
 ```
@@ -477,6 +659,11 @@ Targets are placeholders until a baseline from the pilot is available.
 | Practice response time to “contact practice” alerts | ≤ 1 working day |
 | Patient agreement with “I know if my treatment is on track” | improvement vs. start |
 | Account recoveries handled without support involvement | ≥ 80 % |
+| Weekly active patients during active treatment | ≥ 80 % |
+| Days with a check-in (patients who started the diary) | ≥ 50 % |
+| Appointment proposals answered within 48 h | ≥ 70 % |
+| Patients who switch to calm mode or turn off product links (guard metric, watched, no target to push down) | monitored, reviewed monthly |
+| Wear-time adherence compared with a control group without gamification (primary outcome) | higher (baseline needed) |
 | Store rating | ≥ 4.3 |
 
 ---
@@ -485,8 +672,8 @@ Targets are placeholders until a baseline from the pilot is available.
 | Phase | Content |
 |---|---|
 | **0 – Clarify** | Intended-purpose workshop with RA (B1 or B2), data protection roles and DPIA, VPro protocol release, brand rules, threat model, first market, identity provider (reuse DS Core?) |
-| **1 – Release 1 (B1)** | App (Android): onboarding, wear time incl. multi-device sync, tray change, fit photo, symptom check, lost/broken report, messages, guides, device list and recovery. Dashboard: list, alerts, photo review, actions, assignment and delegation, audit, SureSmile import. Pilot with 2–3 practices |
-| **2 – Expansion** | VPro connection, iOS, parent view, weekly summary, widgets, ordering, practice statistics, organizations with several locations, SSO |
+| **1 – Release 1 (B1)** | App (Android): onboarding, wear time incl. multi-device sync, tray change, fit photo, symptom check, lost/broken report, messages, guides with labelled ad links, journey (mountain, per-tray progress), daily check-in, appointment proposals with calendar export, wear widget, device list and recovery. Dashboard: list, alerts, photo review, actions, assignment and delegation, audit, SureSmile import. Pilot with 2–3 practices |
+| **2 – Expansion** | VPro connection, iOS, parent view, weekly summary, full widget set, achievements and care kit, lab orders in the dashboard, kudos, pause mode, retainer journey, practice statistics, organizations with several locations, SSO |
 | **3 – B2** | Fit assist after clinical validation and clearance |
 | **4 – Options** | Smart case, video consultation, FHIR export, more markets, end-to-end encryption (MLS) |
 
@@ -507,6 +694,17 @@ Targets are placeholders until a baseline from the pilot is available.
 - **AC-R-03:** A revoked phone deletes local data on the next app start, even before sign-in.
 - **AC-R-07:** A practice whose two admins are unavailable regains admin access only after Dentsply Sirona verification with four-eyes approval; every step is in the audit log.
 - **D-07:** Every dashboard action appears in the audit trail with person, time, object and device.
+- **3.8.1:** Every product link has an “Ad” label in the same visual block; an automated UI test fails if a link lacks it.
+- **P-GU-14:** With a “contact practice” or “urgent” result, or strong pain in the check-in, no product link is shown.
+- **P-JR-02:** After the practice adds a refinement, one small hill appears in the app within 5 min; none appears before.
+- **P-JR-05:** Hours worn for the current tray equal the sum of its wear events (±1 min).
+- **P-AC-02:** No function or support action can remove an unlocked achievement.
+- **P-AC-04/05:** At 20 achievements the claim button appears; the address is deleted from Dentsply Sirona systems after delivery confirmation (plus statutory retention at the fulfilment partner).
+- **P-DI-01:** A check-in takes at most 4 taps.
+- **P-AP-02:** Accepting a slot shows in the dashboard within 5 s and creates exactly one appointment.
+- **P-AP-06:** The .ics file contains no patient name and no treatment data.
+- **D-LB-02/05:** A status change of a lab order shows in the dashboard within 5 min; the patient sees “replacement ordered” without a price.
+- **17.5:** Calm mode hides journey animation, streaks, achievements and tips; wear tracking and reminders are unchanged.
 - **S-05:** An automated check finds no health data in logs, push texts or crash reports.
 
 ---
@@ -529,6 +727,14 @@ Targets are placeholders until a baseline from the pilot is available.
 | Rooted devices | allowed with warning (proposal) · blocked |
 | Product links | Amazon only · Amazon plus DS webshop · practice’s own source; with or without Amazon Associates tag |
 | Hard minimum version | only for security issues (proposal) · also for major feature changes |
+| Product link programme | Amazon Associates affiliate links with commission · plain links without commission · own webshop |
+| Owner of the Associates account | Dentsply Sirona entity per market · central entity |
+| Care kit | threshold 20 achievements (given) · minimum of 5 verified (proposal) · minimum treatment time before redemption (proposal 8 weeks) · cost, stock and fulfilment partner |
+| Gamification default | on for adults with calm mode (proposal) · off until chosen |
+| Minors | no ads, no streak-loss messages, kit via parent or practice (proposal) |
+| Social proof | show aggregated norms from at least 50 patients (proposal) · not at all |
+| Lab integration | API/EDI to SureSmile ordering (target) · portal with structured message first |
+| Achievements visible to the practice | verified ones only (proposal) · all · none |
 
 ### Next steps
 - [ ] Check the Reddit topic counts on a hand sample; add a compliance tab to the dashboard
@@ -539,6 +745,11 @@ Targets are placeholders until a baseline from the pilot is available.
 - [ ] Request VPro protocol or SDK internally
 - [ ] DS e-commerce: curated Amazon product pages per market for Retainer Brite® and Chewies™; Legal: advertising and affiliate rules
 - [ ] Decide on identity provider together with DS IT (see INFRASTRUKTUR.md 7.2)
+- [ ] Legal: advertising labelling and affiliate disclosure per market, care kit promotion rules, minors
+- [ ] DS e-commerce: Amazon Associates set-up per market, product categories, local search terms and curated pages
+- [ ] Lab and operations: lab portal or API, order types, price and warranty rules, regional routing
+- [ ] Behavioural science and clinical review of nudges, achievements and copy; ethics review plan for experiments
+- [ ] Care kit: contents, cost, stock, fulfilment partner, shipping regions
 - [x] Clickable prototype (app and dashboard), see `aligner-app/klickdummy/`
 - [ ] Pilot with 2–3 practices
 
@@ -623,6 +834,88 @@ Updates must never lose patient data, never interrupt clinical work and always s
 - **UP-D-02:** Deploying a new dashboard version while a clinician writes a message keeps the full draft after reload.
 - **UP-B-04:** Deploying the backend while 100 messages are being sent delivers each message exactly once.
 - **UP-B-02:** Rolling back a release in staging restores the previous state with no lost entries.
+
+---
+
+## 17. Engagement and behavioural design
+
+### 17.1 Purpose
+The goal is to keep patients using the app **because it helps them wear their aligners and finish treatment**, not to maximise time in the app. Success is measured by adherence and outcomes (17.7). The daily loop must be short: a patient should finish what matters in under a minute.
+
+**The loop:** a well-timed prompt (reminder or widget) → one easy action (tap, check-in) → an honest reward (progress, kind feedback, recognition) → a small investment (diary entry, goal, photos) that makes the next round easier.
+
+### 17.2 Mechanisms
+| Mechanism | Behavioural principle | In the app | Guardrail |
+|---|---|---|---|
+| Visible progress | Goal-gradient effect: effort rises near the goal | Mountain, per-tray progress, hours worn, estimated finish date | Never implies failure when progress is slow; no comparison with other patients |
+| Head start | Endowed progress | Welcome achievement and first steps counted at onboarding, so the climber has already left base camp | Only real onboarding steps count; no fake progress |
+| Small wins | Progress principle; ease of action (Fogg model) | 15-second check-in, one-tap widget, tray-day mini goals | Tasks stay short; no long forms |
+| Compassionate streaks | Habit formation; mild loss aversion | Streaks with 2 rest tokens per month; pause mode keeps streaks | No “you lost your streak” messages; none for minors |
+| Own plan | Implementation intentions (“when X, I do Y”) | At onboarding: “When I finish eating, I put them back in” sets the reminder after the learned break length | Patient writes and edits the plan |
+| Personal why | Commitment and identity | Optional “why” and goal date, shown at milestones | Optional and private |
+| Fresh start | Fresh-start effect | Each new tray opens a “new chapter” card with the next small goals | No guilt for the previous tray |
+| Norms | Descriptive social norms | “Most patients at this stage wear their aligners on 6 of 7 days” (aggregated, anonymous, min. 50 patients) | No leaderboards, no individual comparison, never shown as a reproach |
+| Recognition | Reciprocity and social reward | Kudos from the practice; achievements; care kit | Rewards for varied, verified actions; no obligation |
+| Light surprise | Variable reward | Two hidden achievements, occasional surprise tips | No loot boxes, no random paid items, no gambling-like patterns for anyone |
+| Positive endings | Peak-end rule | Each check-in and tray change ends on an honest, warm message | No praise that contradicts the data |
+| Smart defaults | Default effect | Reminders on, practice defaults for goals; ads off for minors | Defaults serve the patient; opt-out in one tap |
+| Right moment | Context-aware prompts | Reminder after the usual meal break, check-in in the evening | Quiet hours and the notification budget (17.4) |
+| Tangible reward | Extrinsic reward | Care kit at 20 achievements | Risk of crowding out intrinsic motivation: reward spans many behaviours, outcome stays the focus |
+
+### 17.3 Tone
+Warm, short, concrete. “Time to put them back in. Your smile will thank you.” rather than “You have been out for 2 hours!”. Low days get “Tomorrow is a fresh start”, not a red number. Copy is approved by clinicians and UX writing and versioned (UP-B-07).
+
+### 17.4 Notification budget
+- At most **4 non-urgent notifications per day**; urgent ones (practice message, appointment change) are exempt.
+- A break reminder is sent once after the usual break length plus 10 minutes, once more after 30 minutes, then stops.
+- Timing adapts to the patient’s meal pattern and quiet hours.
+- A **notification centre** in Profile controls each type separately.
+- **Discreet mode:** neutral text (“Reminder”) and no sound, for school and work.
+
+### 17.5 Guardrails
+| Rule | Detail |
+|---|---|
+| No dark patterns | No fake urgency, hidden opt-outs, guilt-based wording or countdowns to buy. Product links are labelled as ads (3.8.1). |
+| **Calm mode** | One switch in Profile hides journey animation, streaks, achievements and tips and leaves plain tracking and reminders. The practice cannot force gamification on. |
+| Minors | No ads by default, no streak-loss messages, no random rewards; nudges reviewed against age-appropriate design rules (for example the UK Children’s Code); parent view stays optional. |
+| Do not raise anxiety | No daily score that shames; low days are met with support. Comfort diary answers never feed rewards. |
+| Health first | Nothing rewards ignoring pain, wearing aligners while eating or drinking, or skipping cleaning. |
+| Transparency | Profile › “How the app motivates you” explains the mechanisms in plain language. |
+| Data | Engagement analytics only with consent, aggregated; no sale of data; no ad profiling from health data. |
+| Review | Nudge copy and thresholds are reviewed by clinicians and a behavioural scientist; changes go into the content change log. |
+| Experiments | A/B tests of nudges need an ethics review, patient-level opt-out and success measured by adherence, not by clicks. |
+
+### 17.6 Practice side
+Kudos (D-EN-01) and the milestones list (D-EN-03) let the practice take part in the motivation. The practice can switch gamification components on or off (D-EN-04).
+
+### 17.7 Measuring
+| Type | Measure |
+|---|---|
+| Primary | Wear-time adherence; unplanned refinements; appointment attendance |
+| Secondary | Weekly active patients, check-in rate, fit-photo cadence |
+| Guard | Calm-mode and product-link opt-outs, complaints, notification mute rate, comfort diary signals of stress, support tickets about “too many reminders” |
+
+---
+
+## 18. Further gaps found in review
+
+| Gap | Proposal | Prio |
+|---|---|---|
+| Onboarding is thin on motivation | Add personal “why”, goal date, meal pattern for reminders, a short notification permission explanation, a first-day video | S |
+| Education beyond text | Short videos (under 60 s) on inserting and removing aligners, attachments, chewies, cleaning; subtitles and transcripts | S |
+| Practice branding | Co-branded header with the practice’s name and logo inside the Dentsply Sirona design rules | S |
+| App store rating prompts | Ask only after positive moments (an achievement, a tray change), never after pain or an urgent result, at most twice a year, using the OS API | S |
+| Patient-reported outcomes | Short satisfaction and confidence questions at the start, middle and end, with consent, for pilot metrics | S |
+| Photo use by the practice | Separate, revocable consent per photo set for the practice’s own before/after gallery | C |
+| Referral | “Recommend a friend” run by the practice, within local limits on incentives | C |
+| Health platform integration | Optional write of wear time to Apple Health or Health Connect, with explicit consent | C |
+| Accessibility of the journey | Text equivalent of the mountain, high contrast, large text, one-handed use | M |
+| Right-to-left languages | Layout and text-length tests before Arabic or Hebrew | C |
+| After-hours emergency information | Per practice and country (for example 116 117 in Germany) | M |
+| Practice onboarding checklist | First 7 days: add team, set rules, invite first patient, send first kudos | S |
+| In-app help centre and support | Help articles and a support form that never asks for health data; status page | S |
+| Discreet mode | Neutral notification text and no sound (17.4) | S |
+| Patients without a smartphone | Practice handles it on paper or by phone; no app features required | C |
 
 ---
 

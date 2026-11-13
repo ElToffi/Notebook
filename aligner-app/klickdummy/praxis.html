@@ -120,6 +120,21 @@ td select{width:auto}
 .toast{position:fixed;right:20px;bottom:20px;background:var(--text);color:var(--bg);padding:12px 16px;border-radius:12px;font-weight:600;transform:translateY(150%);opacity:0;transition:.3s;z-index:30;max-width:calc(100% - 40px)}
 .toast.show{transform:none;opacity:1}
 
+.modal{max-height:90vh;overflow:auto}
+.modal label{display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:10px}
+.modal input,.modal select{display:block;width:100%;margin-top:4px;border:1.5px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);font:inherit;color:var(--text)}
+.modal label.chk{display:flex;gap:8px;align-items:center;font-weight:600;color:var(--text)}
+.modal label.chk input{width:auto;margin:0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.info{background:var(--ds-primary-soft);color:var(--ds-primary-dark);border-radius:10px;padding:10px;font-size:13px;margin:8px 0}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:10px 0}
+.step{text-align:center;font-size:11px;color:var(--text-2)}
+.step i{display:block;height:6px;border-radius:3px;background:var(--line);margin-bottom:4px}
+.step.on i{background:var(--ds-primary)}
+.step.on{color:var(--text);font-weight:600}
+.thread{display:grid;gap:6px;margin:8px 0;max-height:200px;overflow:auto}
+.thread div{background:var(--bg);border-radius:10px;padding:8px 10px;font-size:13px}
+.thread div.me{background:var(--ds-primary-soft)}
 @media (max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:760px){
   body{display:block}
@@ -177,8 +192,15 @@ let P=[
  {id:7,name:'Mira Schulz',age:26,al:3,tot:16,st:'ok',reason:'All on track · Ø 22:05 h',icon:'check',since:'',w:wear(22.1,{}),vpro:9,fit:'ok'},
  {id:8,name:'Tim Neumann',age:31,al:21,tot:28,st:'ok',reason:'All on track · Ø 22:40 h',icon:'check',since:'',w:wear(22.6,{}),vpro:10,fit:'ok'}
 ];
+const PAIN={1:[1,2,3,2,1,1,0,1,0,0,1,2,3,3],2:[1,1,2,1,1,0,1,2,1,1,0,1,1,2],3:[0,1,1,1,0,0,1,0,0,1,2,1,0,1],4:[1,1,0,1,0,0,1,0,1,0,1,1,0,0],5:[2,3,2,1,1,0,1,1,0,0,1,0,0,1],6:[0,1,0,0,1,0,0,0,1,0,0,0,1,0],7:[1,2,1,1,0,0,1,0,0,0,1,0,0,0],8:[0,0,1,0,0,0,0,1,0,0,0,0,1,0]};
+P.forEach(p=>p.pain=PAIN[p.id]);
 let S={view:'patients',filter:'alle',sel:1,assist:false,markers:[{x:44,y:52,s:null},{x:57,y:50,s:null}],audit:{
   1:[['12:41','System','Alert created: symptom check “contact practice”'],['12:40','Lena Muster','Fit check aligner 7 uploaded (3 photos)'],['08:02','System','Wear time yesterday 22:18 h']]}};
+S.orders=[
+ {id:'LO-1042',pid:2,kind:'Replacement aligner',detail:'Aligner 12, upper',urg:'Standard',ship:'Practice',st:2,created:'Nov 10',eta:'Nov 18',msgs:[['Lab','Production started. Estimated shipping Nov 16.']]},
+ {id:'LO-1038',pid:7,kind:'Additional aligners',detail:'Aligners 4–5, both arches',urg:'Standard',ship:'Practice',st:4,created:'Nov 3',eta:'Nov 10',msgs:[['Lab','Delivered to the practice.']]}];
+S.prop={}; S.kudosAt={}; S.labGeneral=[['Lab','Hello Dr. Weber, send questions about a case here. We reply within 1 working day.']];
+const LAB_ST=['Submitted','Accepted by lab','In production','Shipped','Delivered'];
 const RULES=[
  ['Wear time below target','< 20 h','3 days in a row','watch'],
  ['Wear time well below target','< 18 h','3 of 7 days','act'],
@@ -187,7 +209,11 @@ const RULES=[
  ['Symptom check “contact practice”','immediately','','act'],
  ['Aligner lost / broken','immediately','','act'],
  ['Fit “not tracking”','immediately','','act'],
- ['VPro not used','5 days','in a row','watch']];
+ ['VPro not used','5 days','in a row','watch'],
+ ['Comfort diary: strong or severe','2 days','in a row','watch'],
+ ['Lab order late','2 days','after estimated date','watch'],
+ ['Appointment proposal unanswered','5 days','','watch'],
+ ['Pause longer than 14 days','on request','','act']];
 
 const cur=()=>P.find(p=>p.id===S.sel);
 function audit(t){ (S.audit[S.sel]=S.audit[S.sel]||[]).unshift([new Date().toTimeString().slice(0,5),'Dr. A. Weber',t]); }
@@ -195,11 +221,11 @@ let tt; function toast(t){const e=document.getElementById('toast');e.textContent
 
 function nav(){
   const n=P.filter(p=>p.st==='act').length;
-  const items=[['patients','Patients','users',n],['alerts','Alerts','bell',0],['inbox','Messages','chat',0],['stats','Statistics','chart',0],['rules','Alert rules','gear',0]];
+  const items=[['patients','Patients','users',n],['alerts','Alerts','bell',0],['inbox','Messages','chat',0],['stats','Statistics','chart',0],['lab','Digital lab','box',0],['rules','Alert rules','gear',0]];
   document.getElementById('nav').innerHTML=`
    <div class="brand"><span class="mark">DS</span><span>Aligner Companion<small>Practice dashboard</small></span></div>
    ${items.map(([k,l,i,c])=>`<button onclick="S.view='${k==='alerts'?'patients':k}';S.filter='${k==='alerts'?'act':'alle'}';render()" ${S.view===k||(k==='patients'&&S.view==='patients')?'aria-current="page"':''}>${ic(i)}${l}${c?`<span class="cnt">${c}</span>`:''}</button>`).join('')}
-   <div class="foot">Dr. Weber Orthodontics<br>Prototype v0.2 · <a href="index.html">Patient app →</a></div>`;
+   <div class="foot">Dr. Weber Orthodontics<br>Prototype v0.3 · <a href="index.html">Patient app →</a></div>`;
 }
 
 function teeth(gap,plan){
@@ -262,8 +288,9 @@ function detail(){
         <button class="btn" onclick="msg()">${ic('send')} Message</button>
         <button class="btn sec" onclick="act('New photos requested (fit check, 3 views)','Photo request sent')">${ic('cam')} Request photos</button>
         <button class="btn sec" onclick="act('Aligner ${p.al} extended by 7 days','Extension sent to patient')">${ic('clock')} Extend aligner</button>
-        <button class="btn sec" onclick="act('Appointment proposed: Nov 20, 10:30','Appointment proposal sent')">${ic('cal')} Appointment</button>
-        <button class="btn sec" onclick="act('Replacement aligner ${p.al} ordered from SureSmile','Order placed (demo)')">${ic('box')} Order replacement</button>
+        <button class="btn sec" onclick="openProposal()">${ic('cal')} Propose appointment</button>
+        <button class="btn sec" onclick="openOrder()">${ic('box')} Lab order</button>
+        <button class="btn sec" onclick="kudos()">${ic('check')} Send kudos</button>
         ${p.st!=='ok'?`<button class="btn ghost" onclick="resolve()">${ic('check')} Resolve alert</button>`:''}
       </div>
     </div>
@@ -292,9 +319,11 @@ function detail(){
           <div class="ev"><span class="ic">${ic('vib')}</span><span><b>VPro on ${p.vpro} of 10 days</b><br><span class="muted">transferred automatically from the device</span></span></div>
           <div class="ev"><span class="ic">${ic('tooth')}</span><span><b>Aligner ${p.al} for 11 days</b><br><span class="muted">change planned Nov 16</span></span></div>
           <div class="ev"><span class="ic">${ic('cal')}</span><span><b>Next appointment Nov 20, 10:30</b><br><span class="muted">check-up, IPR at aligner 12</span></span></div>
+          ${propRow(p)}
         </div></div>
     </div>
 
+    ${comfortCard(p)}
     <div class="card"><div class="sec-t">${ic('shield')} <span class="grow">Audit trail</span><span class="muted" style="text-transform:none;letter-spacing:0">tamper-proof log</span></div>
       <table><thead><tr><th>Time</th><th>Who</th><th>What</th></tr></thead><tbody>
       ${(S.audit[p.id]||[['yesterday','System','Wear time synced']]).map(([t,w,x])=>`<tr><td>${t}</td><td>${w}</td><td>${x}</td></tr>`).join('')}
@@ -317,6 +346,102 @@ function msg(){
   </div></div>`;
 }
 
+const val=id=>document.getElementById(id).value;
+const showModal=h=>{document.getElementById('modal').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog">${h}</div></div>`;};
+const closeModal=()=>{document.getElementById('modal').innerHTML='';};
+const fmtSlot=v=>new Date(v).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).replace(',','').replace(/(\d{2}:\d{2})$/,'· $1');
+function comfortCard(p){
+  const L=['None','Mild','Moderate','Strong','Severe'], col=['var(--ok)','color-mix(in srgb,var(--ok) 50%,var(--watch))','var(--watch)','color-mix(in srgb,var(--watch) 50%,var(--act))','var(--act)'];
+  const n=p.pain.length, hi=p.pain[n-1]>=3&&p.pain[n-2]>=3;
+  return `<div class="card" style="margin-bottom:14px"><div class="sec-t"><span class="grow">Comfort diary · 14 days</span>${hi?'<span class="st watch">Strong 2 days in a row</span>':''}</div>
+    <div class="bars" role="img" aria-label="Comfort diary over 14 days">${p.pain.map((v,k)=>`<div class="b" style="height:${(v+1)/5*100}%;background:${col[v]}" title="${L[v]}"></div>`).join('')}</div>
+    <div class="xl"><span>Oct 30</span><span>taller bar = more discomfort · tray change on Nov 2</span><span>Nov 12</span></div></div>`;
+}
+function kudos(){
+  const p=cur();
+  if(S.kudosAt[p.id]){ toast('Kudos already sent this week (frequency cap)'); return; }
+  S.kudosAt[p.id]=true; act('Kudos sent: “Great job, 3 weeks on target!”','Kudos sent to '+p.name);
+}
+function propRow(p){
+  const x=S.prop[p.id]; if(!x) return '';
+  const lbl={proposed:'Waiting for patient',accepted:'Accepted',declined:'Declined'}[x.st];
+  return `<div class="ev"><span class="ic">${ic('send')}</span><span><b>Proposal: ${x.type}</b> <span class="st ${x.st==='accepted'?'ok':x.st==='proposed'?'watch':'act'}">${lbl}</span><br><span class="muted">${x.slots.map(fmtSlot).join(' · ')}</span>
+    ${x.st==='proposed'?`<br><button class="btn ghost" style="margin-top:6px;padding:5px 10px" onclick="simAppt('accepted')">Demo: patient accepts slot 2</button> <button class="btn ghost" style="margin-top:6px;padding:5px 10px" onclick="simAppt('declined')">Demo: patient declines</button>`:''}
+    ${x.st==='accepted'?`<br><span class="muted">Confirmed: ${fmtSlot(x.slots[1])}</span>`:''}</span></div>`;
+}
+function simAppt(st){ const p=cur(),x=S.prop[p.id]; x.st=st; audit(st==='accepted'?'Patient accepted: '+fmtSlot(x.slots[1]):'Patient declined the proposal (will book by phone)'); toast(st==='accepted'?'Patient accepted slot 2':'Patient declined'); render(); }
+function openProposal(){
+  const p=cur();
+  showModal(`<h3>Appointment proposal for ${p.name}</h3>
+    <div class="fgrid"><label>Type<select id="ap_type"><option>Check-up</option><option>IPR visit</option><option>Attachment check</option><option>Refinement scan</option></select></label>
+    <label>Duration<select id="ap_dur"><option>20 min</option><option>30 min</option><option>45 min</option></select></label></div>
+    <label>Time 1<input type="datetime-local" id="ap_s1" value="2026-11-23T09:00"></label>
+    <label>Time 2<input type="datetime-local" id="ap_s2" value="2026-11-24T15:30"></label>
+    <label>Time 3<input type="datetime-local" id="ap_s3" value="2026-11-26T11:00"></label>
+    <label>Note to the patient<textarea id="ap_note">We would like to check your progress.</textarea></label>
+    <div class="info">The patient gets a push without content and can accept one time, decline or suggest another time. Reminder after 2 days; the proposal expires after 5 days.</div>
+    <div class="actions" style="justify-content:flex-end"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="sendProposal()">${ic('send')} Send proposal</button></div>`);
+}
+function sendProposal(){
+  const p=cur(), slots=[1,2,3].map(n=>val('ap_s'+n)), type=val('ap_type');
+  S.prop[p.id]={st:'proposed',type,slots}; audit('Appointment proposed: '+type+', 3 time slots'); closeModal(); toast('Proposal sent to '+p.name); render();
+}
+function openOrder(){
+  const p=cur(), lost=p.id===3;
+  showModal(`<h3>New lab order</h3>
+    <div class="fgrid"><label>Patient<select id="o_pat">${P.map(x=>`<option value="${x.id}" ${x.id===p.id?'selected':''}>${x.name}</option>`).join('')}</select></label>
+    <label>Order type<select id="o_type"><option>Replacement aligner</option><option>Additional aligners</option><option>Refinement set</option><option>Retainer set</option><option>Remake because of fit</option><option>Other</option></select></label>
+    <label>Trays and arch<input id="o_detail" value="${lost?'Aligner 4, lower (broken)':'Aligner '+p.al+', upper'}"></label>
+    <label>Urgency<select id="o_urg"><option ${lost?'selected':''}>Express</option><option ${lost?'':'selected'}>Standard</option></select></label>
+    <label>Ship to<select id="o_ship"><option>Practice</option><option ${lost?'selected':''}>Patient home</option></select></label></div>
+    <label>Note for the lab<textarea id="o_note">${lost?'Patient reports a broken tray, photo attached. Patient wears the previous tray meanwhile.':''}</textarea></label>
+    <label class="chk"><input type="checkbox" id="o_att" ${lost?'checked':''}> Attach the patient’s report photo</label>
+    <div class="info">Price and warranty terms from your Dentsply Sirona agreement are shown here before you submit (demo).</div>
+    <p class="muted" style="margin-bottom:10px">The lab receives only the case ID, tray numbers, your note and the attachment. The order is logged in the audit trail.</p>
+    <div class="actions" style="justify-content:flex-end"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="submitOrder()">${ic('send')} Submit to lab</button></div>`);
+}
+function submitOrder(){
+  const pid=+val('o_pat'), urg=val('o_urg');
+  const o={id:'LO-'+(1044+S.orders.length),pid,kind:val('o_type'),detail:val('o_detail'),urg,ship:val('o_ship'),st:0,created:'Nov 13',eta:urg==='Express'?'Nov 17':'Nov 20',msgs:[]};
+  S.orders.unshift(o); S.sel=pid; audit('Lab order '+o.id+' submitted: '+o.kind+', '+o.detail+' ('+urg+')');
+  closeModal(); S.view='lab'; toast('Order '+o.id+' submitted to the lab'); render();
+}
+function advance(i){
+  const o=S.orders[i]; if(o.st>=4) return; o.st++; S.sel=o.pid;
+  const m=['','Order accepted. We will start production today.','Production started.','Shipped. Tracking 1Z-DEMO-4821.','Delivered.'][o.st];
+  o.msgs.push(['Lab',m]); audit('Lab order '+o.id+' status: '+LAB_ST[o.st]); toast(o.id+': '+LAB_ST[o.st]); render();
+}
+function labMsg(i){
+  const t=i<0?S.labGeneral:S.orders[i].msgs, title=i<0?'Contact the lab':'Lab thread · '+S.orders[i].id;
+  showModal(`<h3>${title}</h3><div class="thread">${t.map(([w,x])=>`<div class="${w==='Lab'?'':'me'}"><b>${w}:</b> ${x}</div>`).join('')}</div>
+    <label>Your message<textarea id="lm_t" placeholder="e.g. Please check the fit of the lower arch."></textarea></label>
+    <p class="muted" style="margin-bottom:10px">Attachments possible. Sent encrypted; only lab staff under a processor agreement can read it.</p>
+    <div class="actions" style="justify-content:flex-end"><button class="btn ghost" onclick="closeModal()">Close</button><button class="btn" onclick="sendLab(${i})">${ic('send')} Send</button></div>`);
+}
+function sendLab(i){
+  const x=val('lm_t').trim(); if(!x) return; (i<0?S.labGeneral:S.orders[i].msgs).push(['Practice',x]);
+  if(i>=0){S.sel=S.orders[i].pid;audit('Message to lab ('+S.orders[i].id+'): '+x.slice(0,50));}
+  closeModal(); toast('Message sent to the lab'); render();
+}
+function orderCard(o,i){
+  const p=P.find(x=>x.id===o.pid);
+  return `<div class="card" style="margin-bottom:12px">
+    <div class="dhead" style="margin-bottom:4px"><div class="grow"><b>${o.id}</b> · ${p.name}<div class="muted">${o.kind} · ${o.detail}</div></div><span class="st ${o.urg==='Express'?'watch':'ok'}">${o.urg}</span></div>
+    <div class="stepper" role="img" aria-label="Status: ${LAB_ST[o.st]}">${LAB_ST.map((l,k)=>`<div class="step ${k<=o.st?'on':''}"><i></i>${l}</div>`).join('')}</div>
+    <div class="muted" style="margin-bottom:6px">Ship to: ${o.ship} · created ${o.created} · ${o.st===4?'delivered':'estimated '+o.eta}${o.st===3?' · tracking 1Z-DEMO-4821':''}</div>
+    ${o.msgs.length?`<div class="muted"><b>Lab:</b> ${o.msgs[o.msgs.length-1][1]}</div>`:''}
+    <div class="actions"><button class="btn sec" onclick="labMsg(${i})">${ic('chat')} Message lab</button>${o.st<4?`<button class="btn ghost" onclick="advance(${i})">Demo: advance status</button>`:''}<button class="btn ghost" onclick="S.sel=${o.pid};S.view='patients';S.filter='alle';render()">Open patient</button></div></div>`;
+}
+function lab(){
+  const open=S.orders.filter(o=>o.st<4).length;
+  return `<header class="top"><h1>Digital lab</h1><button class="btn ghost" onclick="labMsg(-1)">${ic('chat')} Contact lab</button><button class="btn" onclick="openOrder()">+ New order</button><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
+  <div class="kpis"><div class="card kpi"><div class="muted">Open orders</div><div class="v">${open}</div><div class="muted">in progress</div></div>
+    <div class="card kpi"><div class="muted">Ø turnaround</div><div class="v">6.5 d</div><div class="muted">last 90 days (demo)</div></div>
+    <div class="card kpi"><div class="muted">Late orders</div><div class="v">0</div><div class="muted">alert after 2 days late</div></div>
+    <div class="card kpi"><div class="muted">Lab region</div><div class="v">EU</div><div class="muted">routed by practice location</div></div></div>
+  ${S.orders.map(orderCard).join('')}
+  <p class="muted">Prices are never shown to patients. Patients see “replacement ordered” with an estimated delivery date.</p>`;
+}
 function rules(){
   return `<header class="top"><h1>Alert rules</h1><div class="user"><span class="avatar">AW</span>Dr. A. Weber</div></header>
   <div class="card" style="margin-bottom:14px"><div class="sec-t">Rules for this practice</div>
@@ -359,7 +484,7 @@ function inbox(){
 }
 function render(){
   nav();
-  document.getElementById('main').innerHTML={patients,rules,stats,inbox}[S.view]();
+  document.getElementById('main').innerHTML={patients,rules,stats,inbox,lab}[S.view]();
 }
 render();
 </script>
