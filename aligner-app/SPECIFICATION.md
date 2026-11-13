@@ -1,10 +1,14 @@
 # Aligner Companion – Product Specification
 
-**Version:** 0.3 (draft) · **Date:** Nov 13, 2026
+**Version:** 0.4 (draft) · **Date:** Nov 13, 2026
 **Platforms:** patient app for Android (first) and iOS from one code base; practice dashboard as a web app
 **Design:** Dentsply Sirona corporate design
 **Inputs:** spec v0.1/v0.2 and the draft “Aligner Compliance Monitoring App – Option B” (v0.1)
 **Related:** `INFRASTRUKTUR.md` (infrastructure, security, onboarding; German), `klickdummy/` (clickable prototype)
+
+### Changes from v0.3
+- **New chapter 16: updates without data loss** for the patient app, the practice dashboard, the backend, content and VPro firmware, including communication to patients and clinicians.
+- **Product links in the guides (3.8):** Retainer Brite® for cleaning and Chewies™ for seating aligners, each linking to the local Amazon store of the patient’s market.
 
 ### Changes from v0.2
 - Document translated to English.
@@ -170,6 +174,19 @@ Photos and health details are health data under GDPR Art. 9 and PHI under HIPAA 
 | P-GU-02 | Travel checklist (spare aligners, case, toothbrush, time zones) and tips for social situations. | S | P-12 |
 | P-GU-03 | Explanations of attachments, IPR, chewies and refinements. | S | P-11 |
 | P-GU-04 | Content maintained centrally, approved by clinicians, changeable without an app update. | S | |
+| P-GU-05 | **Cleaning guide (aligners and retainers):** recommends **Retainer Brite®** (Dentsply Sirona) with a “Buy on Amazon” button that opens the **local Amazon store** of the patient’s market (see 3.8.1). Also shown in retainer mode (P-AL-05). | S | |
+| P-GU-06 | **Chewies™ Aligner Tray Seaters** (Dentsply Sirona) with the same local Amazon button in the chewies guide, after a fit-related symptom check result (P-SY) and in the fit-check tips. | S | |
+| P-GU-07 | The practice can switch product links off or replace them with its own source (e.g. “available at our practice”). | S | |
+
+#### 3.8.1 Product links to the local Amazon store
+| Topic | Rule |
+|---|---|
+| Market | Taken from the **country of the practice**; fallback: app store country of the device; fallback: device region. Not from the app language, so a German-speaking patient in Austria lands on amazon.de only if the practice is in Germany. |
+| Link targets | One curated product page per product and market (e.g. amazon.com, .ca, .com.mx, .com.br, .co.uk, .de, .fr, .it, .es, .nl, .se, .pl, .com.be, .com.tr, .ae, .sa, .in, .co.jp, .sg, .com.au). Kept as **remote content**, so links can be added or fixed without an app update. Preferably to the official Dentsply Sirona brand store or offers sold by Amazon or an authorized seller, because counterfeit and look-alike products are reported for both products. |
+| Fallback | If no curated page exists for a market: a search link on the local store (e.g. `https://www.amazon.de/s?k=Retainer+Brite+Dentsply`). If there is no Amazon store for the market: hide the button and show “ask your practice”. |
+| Privacy | The link opens in the external browser. No health data, patient ID or practice ID in the URL. Opening a link is counted only with analytics consent and only as “link opened, product, market”. |
+| Disclosure | The button states that the product is from Dentsply Sirona. If an Amazon Associates tag is used, the app shows the required disclosure. Legal checks advertising rules (e.g. German HWG, UCPD, FTC) and Apple/Google store rules before release. |
+| Link health | A weekly automated check reports broken or redirected links to the content team. |
 
 ### 3.9 Parent view (P-PA)
 | ID | Requirement | Prio | Ref. |
@@ -510,6 +527,8 @@ Targets are placeholders until a baseline from the pilot is available.
 | Second factor for patients | mandatory (proposal) · optional with biometrics |
 | Patient recovery without codes | via practice (proposal) · via DS support with ID check |
 | Rooted devices | allowed with warning (proposal) · blocked |
+| Product links | Amazon only · Amazon plus DS webshop · practice’s own source; with or without Amazon Associates tag |
+| Hard minimum version | only for security issues (proposal) · also for major feature changes |
 
 ### Next steps
 - [ ] Check the Reddit topic counts on a hand sample; add a compliance tab to the dashboard
@@ -518,9 +537,92 @@ Targets are placeholders until a baseline from the pilot is available.
 - [ ] Interviews with 5–8 clinicians on alert thresholds, review effort, delegation and shared workstations
 - [ ] Legal/data protection: controller/processor model, DPIA, BAA, practice transfer and closure
 - [ ] Request VPro protocol or SDK internally
+- [ ] DS e-commerce: curated Amazon product pages per market for Retainer Brite® and Chewies™; Legal: advertising and affiliate rules
 - [ ] Decide on identity provider together with DS IT (see INFRASTRUKTUR.md 7.2)
 - [x] Clickable prototype (app and dashboard), see `aligner-app/klickdummy/`
 - [ ] Pilot with 2–3 practices
+
+---
+
+## 16. Updates without data loss
+
+Updates must never lose patient data, never interrupt clinical work and always stay traceable for regulatory purposes. Requirements carry the prefix **UP**.
+
+### 16.1 Principles
+- **The server never rejects data because a client is old.** Data from an outdated app is accepted, stored and, if needed, converted.
+- **Every write has a client-generated ID.** Retries during a deployment or a lost connection never create duplicates and never lose entries (idempotency).
+- **Changes are backwards compatible.** Nothing old is removed in the same release that adds something new (expand/contract).
+- **Every release can be rolled back** without data loss.
+- **Nobody is surprised.** Patients and practices learn about relevant changes before or when they happen.
+
+### 16.2 Patient app
+| ID | Requirement | Prio |
+|---|---|---|
+| UP-A-01 | Distribution through Google Play and the App Store with a **staged rollout** (1 % → 10 % → 50 % → 100 %). The rollout stops automatically if crash rate, sync errors or failed migrations exceed set thresholds. | M |
+| UP-A-02 | **Local database migrations** are versioned, run in a transaction and are tested on upgrade paths from every supported older version (at least the last 4). Before a migration the app makes an encrypted local copy of the database and restores it if the migration fails. | M |
+| UP-A-03 | **Unsynced data is never deleted** by an update. The app tries to upload pending events before a migration. The format of the pending queue is versioned and readable by newer versions. | M |
+| UP-A-04 | Keys in the Keystore / Secure Enclave are kept across updates. Re-encrypting the local database with a new key happens only as a separate, resumable step, never as part of a migration. | M |
+| UP-A-05 | Local reminders are rescheduled after every update and after a device restart (Android clears alarms on app update). | M |
+| UP-A-06 | **Minimum version:** the server can recommend (“soft”) or require (“hard”) an update. Even under a hard block the app first uploads all pending data, then shows only the update screen and the practice phone number. | M |
+| UP-A-07 | The server accepts sync from app versions up to **6 months old**. Older API versions get a deprecation signal at least 60 days before they end. | M |
+| UP-A-08 | Updates are not applied during an active VPro session, photo capture or unsent message. Android uses the in-app update API in “flexible” mode; “immediate” only for security updates. | S |
+| UP-A-09 | New features are released behind **feature flags** (per market, per practice, per percentage), with a remote kill switch for faulty features. | M |
+| UP-A-10 | “What’s new” in the app after an update, in plain language. Changes that affect the treatment routine (e.g. a new reminder logic) are also shown to the practice beforehand. No marketing push messages. | S |
+
+### 16.3 VPro firmware
+| ID | Requirement | Prio |
+|---|---|---|
+| UP-V-01 | Firmware only signed by Dentsply Sirona; the device checks the signature before installing. | M* |
+| UP-V-02 | Update only with battery ≥ 50 %, never during a session, resumable after a broken connection. | M* |
+| UP-V-03 | Device keeps the previous firmware and falls back to it if the new one does not start (A/B or rollback). | M* |
+| UP-V-04 | Usage data stored on the device is read before the update and never deleted by it. | M* |
+
+### 16.4 Practice dashboard
+| ID | Requirement | Prio |
+|---|---|---|
+| UP-D-01 | Deployments **without downtime** (blue/green or canary). Running sessions remain valid. | M |
+| UP-D-02 | **Drafts are saved on the server** while typing (messages, notes, fit ratings in progress). A reload or new version never loses input. | M |
+| UP-D-03 | A new version shows a banner “New version available – reload when convenient”. The dashboard never reloads by itself while someone is typing. The server supports the previous dashboard version for at least 24 h. | M |
+| UP-D-04 | Planned maintenance that affects use is announced **at least 7 days ahead** (dashboard banner, email to practice admins, status page), placed outside usual practice hours per region. Security patches may be applied at short notice. | M |
+| UP-D-05 | Changelog in the dashboard. Bigger changes come with a short guide; changes to clinical workflows can be enabled per practice first (pilot practices). | S |
+| UP-D-06 | Changes that alter data or workflows practices rely on (e.g. alert rules, exports, roles) are announced **at least 30 days ahead**. | M |
+
+### 16.5 Backend and data
+| ID | Requirement | Prio |
+|---|---|---|
+| UP-B-01 | **Database changes follow expand/contract:** add the new structure, write to both, backfill, switch reads, remove the old structure in a later release. No destructive change in the same release as the code that needs it. | M |
+| UP-B-02 | A snapshot is taken right before every migration; point-in-time recovery stays on. Every release has a documented rollback plan, tested in staging. | M |
+| UP-B-03 | Migrations are tested with production-sized **synthetic** data (no real patient data outside production) and their run time is measured. | M |
+| UP-B-04 | Queues are durable; workers finish or hand back running jobs during deployment (graceful shutdown). No alert, message or notification is lost or sent twice. | M |
+| UP-B-05 | Rollout region by region (EU and US separately), each first to a canary group, with monitoring of error rates and alert latency (NF-03). | M |
+| UP-B-06 | Changes to the SureSmile plan import format are versioned on both sides; the old format is accepted until all practices have moved. | M |
+| UP-B-07 | **Content updates** (symptom check, guides, product links) are versioned, approved and can be rolled back. Every symptom check stores the content version used, so the practice can see what the patient was shown. | M |
+
+### 16.6 Quality and regulatory
+| ID | Requirement | Prio |
+|---|---|---|
+| UP-Q-01 | Every release goes through change control under IEC 62304: impact analysis, risk review (ISO 14971), regression tests, traceability, approval. If the app is a medical device, check whether the change is significant (MDCG 2020-3) or needs FDA notification. | M |
+| UP-Q-02 | SOUP and library updates are part of the same process; critical security fixes follow a fast track (deployed within 7 days). | M |
+| UP-Q-03 | After every release: monitoring for 72 h with defined rollback criteria (crash rate, sync errors, alert latency, support tickets). | M |
+
+### 16.7 Who learns what, and when
+| Change | Patients | Practices |
+|---|---|---|
+| Bug fix, small improvement | Store release notes | Changelog |
+| New feature in the app | “What’s new” after update | Changelog; for clinical relevance email beforehand |
+| Change in treatment-related behavior (reminders, alerts, photo cadence) | “What’s new” plus explanation | Email ≥ 30 days ahead, can test with pilot |
+| Planned maintenance | Notice in the app if the app is affected | Banner, email, status page ≥ 7 days ahead |
+| Security update (forced) | Update screen with reason in plain language | Email to admins the same day |
+| Incident with data impact | Per GDPR Art. 34 if required | Immediately, per contract and GDPR Art. 33 |
+
+### 16.8 Acceptance criteria
+- **UP-A-02/03:** Upgrading from each of the last 4 versions with 500 unsynced wear events keeps all 500 events, locally and after sync.
+- **UP-A-02:** Killing the app during the migration and starting it again leaves the data complete and the app usable.
+- **UP-A-06:** With a hard minimum version set, an outdated app still uploads its pending events before showing the update screen.
+- **UP-A-05:** After an app update and after a restart, all reminders fire at the planned times.
+- **UP-D-02:** Deploying a new dashboard version while a clinician writes a message keeps the full draft after reload.
+- **UP-B-04:** Deploying the backend while 100 messages are being sent delivers each message exactly once.
+- **UP-B-02:** Rolling back a release in staging restores the previous state with no lost entries.
 
 ---
 
@@ -533,4 +635,7 @@ Targets are placeholders until a baseline from the pilot is available.
 - TrioClear: https://apps.apple.com/app/id1631479021
 - BSI TR-03161 and C5: https://www.pwc.de/de/risk-regulatory/tr-03161-und-c5-das-fundament-fuer-sichere-digitale-gesundheitsanwendungen.html
 - Johner Institute, data protection and security for health apps: https://international.johner-institute.com/articles/regulatory-affairs/and-more/data-security-and-protection-requirements-for-digital-health-applications/
+- Chewies™ (Dentsply Sirona, FDA GUDID): https://accessgudid.nlm.nih.gov/devices/D746ACWR1
+- Retainer Brite® instructions (Dentsply Sirona): https://assets.dentsplysirona.com/websites/dentsply_sirona_orthodontics/dfus/RTE-311-17_RB-Foam_RB-FDFU.pdf
+- SureSmile aligner care booklet (kit with Chewies and Retainer Brite): https://www.suresmile.com/en/wp-content/uploads/2020/07/RTE-007-18_r2_SureSmileAlignerCareBooklet.pdf
 - Reddit analysis r/Invisalign (Oct 2024 – Oct 2026), internal draft Option B

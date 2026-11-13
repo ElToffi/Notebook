@@ -259,6 +259,11 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
     <button onclick="restart()">Restart</button>
     <button onclick="toggleTheme()">Light/Dark</button>
   </div>
+  <h2>Market (demo)</h2>
+  <p>Product links open the local Amazon store of the practice’s country.</p>
+  <select id="marketSel" onchange="market=this.value;render()" style="margin-top:8px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--text)">
+    <option value="DE">Germany (amazon.de)</option><option value="US">USA (amazon.com)</option><option value="UK">UK (amazon.co.uk)</option><option value="FR">France (amazon.fr)</option><option value="IT">Italy (amazon.it)</option><option value="ES">Spain (amazon.es)</option><option value="NL">Netherlands (amazon.nl)</option><option value="CA">Canada (amazon.ca)</option><option value="AU">Australia (amazon.com.au)</option><option value="JP">Japan (amazon.co.jp)</option><option value="CH">Switzerland (no Amazon store)</option>
+  </select>
   <h2>Practice side</h2>
   <p><a href="praxis.html" style="color:var(--ds-primary);font-weight:700">Open practice dashboard →</a></p>
   <h2>Design note</h2>
@@ -654,6 +659,17 @@ function sendPhotos(){
   setTimeout(()=>{ S.photoSets[0].status='received'; render(); },2500);
 }
 
+/* ----- Product links (local Amazon store by practice country) ----- */
+/* Demo uses search links; production uses curated product pages per market from remote content. */
+const MARKETS={DE:'amazon.de',US:'amazon.com',UK:'amazon.co.uk',FR:'amazon.fr',IT:'amazon.it',ES:'amazon.es',NL:'amazon.nl',CA:'amazon.ca',AU:'amazon.com.au',JP:'amazon.co.jp',CH:null};
+let market='DE';
+const PRODUCTS={rb:{name:'Retainer Brite®',q:'Retainer+Brite+Dentsply'},ch:{name:'Chewies™',q:'Chewies+Dentsply+aligner+seaters'}};
+function shopBtn(p){
+  const x=PRODUCTS[p], host=MARKETS[market];
+  if(!host) return `<div class="hint" style="margin-top:6px"><span>${x.name} is available at your practice. Just ask at your next visit.</span></div>`;
+  return `<a class="btn secondary" style="text-decoration:none;margin-top:4px" href="https://www.${host}/s?k=${x.q}" target="_blank" rel="noopener noreferrer">Buy ${x.name} on ${host}</a>
+  <p class="muted" style="font-size:11px;margin-top:4px">Product by Dentsply Sirona · opens ${host} in your browser · no personal data is shared</p>`;
+}
 /* ----- Help ----- */
 /* Content and rules are placeholders and must be approved by clinicians. */
 const SY={
@@ -676,9 +692,9 @@ const SY={
 };
 const RG={
   'Eating & drinking':['cup','<p>Always take your aligners out to eat. You can drink water with them in.</p><p><b>Coffee, tea, red wine, cola:</b> only without aligners or through a straw, then rinse your mouth. Otherwise the aligners stain and sugar stays on your teeth.</p><p><b>After eating:</b> brush your teeth or at least rinse thoroughly, then put your aligners back in.</p>'],
-  'Cleaning':['spark','<p>Clean your aligners morning and evening with a soft brush and cold water. No hot water, no abrasive toothpaste.</p><p>Clean the case regularly and let it dry.</p>'],
+  'Cleaning':['spark','<p>Clean your aligners morning and evening with a soft brush and cold water. No hot water, no abrasive toothpaste.</p><p><b>Deep clean:</b> soak aligners or retainers once a day for 15 minutes in lukewarm water with one Retainer Brite® tablet, then rinse.</p>{{shop:rb}}<p>Clean the case regularly and let it dry.</p>'],
   'Travel & on the go':['bag','<p><b>Checklist:</b></p><ul style="padding-left:18px;line-height:1.7"><li>Case and spare aligners (previous set)</li><li>Travel toothbrush and floss</li><li>Chewies</li><li>Wax for sharp edges</li><li>Practice contact details</li></ul><p>When you change time zones, the app adjusts your wear time automatically.</p>'],
-  'Attachments, IPR & chewies':['book','<p><b>Attachments</b> are small tooth-colored bumps that help the aligner move teeth precisely.</p><p><b>IPR</b> means a tiny amount of enamel is polished away between some teeth to create space.</p><p><b>Chewies</b> are soft bite aids that press the aligner fully onto your teeth.</p>'],
+  'Attachments, IPR & chewies':['book','<p><b>Attachments</b> are small tooth-colored bumps that help the aligner move teeth precisely.</p><p><b>IPR</b> means a tiny amount of enamel is polished away between some teeth to create space.</p><p><b>Chewies</b> are soft bite aids that press the aligner fully onto your teeth. Bite on them for 5 minutes, twice a day, especially after a tray change.</p>{{shop:ch}}'],
   'Refinements':['info','<p>Many treatments need an extra set of correction aligners towards the end. That is <b>not a setback</b> but a normal part of treatment to make the result fit exactly.</p>']
 };
 function scrHelp(){
@@ -702,7 +718,7 @@ function sheetGuide(k){
   const [i,html]=RG[k];
   return `<div class="sheet-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="sheet" role="dialog" aria-label="${k}">
     <div class="grab"></div><div class="row" style="margin-bottom:10px;color:var(--ds-primary)">${ic(i)}<h2 style="margin:0;color:var(--text)">${k}</h2></div>
-    <div style="font-size:15px;line-height:1.55;display:grid;gap:10px">${html}</div>
+    <div style="font-size:15px;line-height:1.55;display:grid;gap:10px">${html.replace(/\{\{shop:(\w+)\}\}/g,(_,p)=>'<div>'+shopBtn(p)+'</div>')}</div>
     <p class="muted" style="font-size:11px;margin:14px 0">Approved by clinicians (placeholder text)</p>
     <button class="btn secondary" onclick="S.sheet=null;render()">Close</button></div></div>`;
 }
@@ -743,6 +759,7 @@ function scrSymptom(){
     </div>
     ${r===2?`<button class="btn" onclick="symptomSend()">${ic('send')} Send answers to practice</button>`:''}
     ${r===3?`<a class="btn" style="text-decoration:none;background:var(--ds-danger)" href="tel:+49301234567">${ic('phone')} Call practice</a>`:''}
+    ${y.topic==='Fit / gap'&&r<2?`<div class="card" style="padding:12px 16px"><b>Chewies™ help the aligner seat fully</b>${shopBtn('ch')}</div>`:''}
     ${r<2?`<button class="btn secondary" onclick="symptomSend()">Ask practice anyway</button>`:''}
     <button class="btn ghost" style="margin-top:10px" onclick="S.stack=[];tab('help')">Done</button>
     <p class="muted" style="font-size:12px;margin-top:12px">General information, not a substitute for an examination.</p>
